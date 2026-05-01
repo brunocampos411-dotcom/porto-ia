@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Porto IA — Assistente para Corretores</title>
+  <style>
+    /* ========================
+       RESET & VARIAVEIS
+    ======================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --porto-red:     #E8002D;
+      --porto-red-dk:  #C0001F;
+      --porto-dark:    #1A1A2E;
+      --porto-navy:    #16213E;
+      --porto-blue:    #0F3460;
+      --porto-accent:  #E94560;
+      --white:         #FFFFFF;
+      --gray-50:       #F8F9FA;
+      --gray-100:      #F1F3F5;
+      --gray-200:      #E9ECEF;
+      --gray-300:      #DEE2E6;
+      --gray-400:      #CED4DA;
+      --gray-500:      #ADB5BD;
+      --gray-600:      #6C757D;
+      --gray-700:      #495057;
+      --gray-800:      #343A40;
+      --gray-900:      #212529;
+      --border-radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.12);
+      --shadow-md: 0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05);
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ========================
+       HEADER
+    ======================== */
+    header {
+      background: linear-gradient(135deg, var(--porto-dark) 0%, var(--porto-blue) 100%);
+      color: white;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      box-shadow: var(--shadow-md);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      background: var(--porto-red);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: -1px;
+      box-shadow: 0 2px 8px rgba(232,0,45,.4);
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      opacity: 0.7;
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .header-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #22C55E;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(34,197,94,.3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(34,197,94,.3); }
+      50%       { box-shadow: 0 0 0 5px rgba(34,197,94,.1); }
+    }
+
+    /* ========================
+       LAYOUT PRINCIPAL
+    ======================== */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ========================
+       SIDEBAR
+    ======================== */
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .sidebar-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .sidebar-section h3 {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gray-500);
+      margin-bottom: 10px;
+    }
+
+    .suggestions-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .suggestion-btn {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all .15s;
+      line-height: 1.4;
+    }
+
+    .suggestion-btn:hover {
+      background: #FFF5F6;
+      border-color: var(--porto-red);
+      color: var(--porto-red-dk);
+    }
+
+    .sidebar-info {
+      padding: 14px 16px;
+      margin-top: auto;
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .info-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--gray-600);
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 3px 9px;
+      margin: 2px;
+    }
+
+    .info-pill .dot {
+      width: 5px;
+      height: 5px;
+      background: var(--porto-red);
+      border-radius: 50%;
+    }
+
+    /* ========================
+       CHAT AREA
+    ======================== */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    /* Welcome */
+    .welcome-card {
+      background: linear-gradient(135deg, #FFF0F2 0%, #FFF5F6 100%);
+      border: 1px solid #FFCDD5;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      text-align: center;
+      max-width: 560px;
+      margin: 20px auto 0;
+    }
+
+    .welcome-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--porto-red);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 26px;
+      box-shadow: 0 4px 12px rgba(232,0,45,.25);
+    }
+
+    .welcome-card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--porto-dark);
+      margin-bottom: 8px;
+    }
+
+    .welcome-card p {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    .welcome-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .welcome-tag {
+      background: white;
+      border: 1px solid #FFCDD5;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--porto-red-dk);
+      font-weight: 500;
+    }
+
+    /* Messages */
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 80%;
+      animation: slideIn .2s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message.assistant {
+      align-self: flex-start;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .avatar.user-av {
+      background: var(--porto-blue);
+      color: white;
+    }
+
+    .avatar.ai-av {
+      background: var(--porto-red);
+      color: white;
+    }
+
+    .bubble {
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      font-size: 14px;
+      line-height: 1.6;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .message.user .bubble {
+      background: var(--porto-blue);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.assistant .bubble {
+      background: white;
+      color: var(--gray-800);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--gray-100);
+    }
+
+    /* Markdown dentro das respostas */
+    .bubble h1, .bubble h2, .bubble h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 10px 0 6px;
+      color: var(--porto-dark);
+    }
+    .bubble h1:first-child,
+    .bubble h2:first-child,
+    .bubble h3:first-child { margin-top: 0; }
+
+    .bubble p { margin: 6px 0; }
+    .bubble p:first-child { margin-top: 0; }
+
+    .bubble ul, .bubble ol {
+      margin: 6px 0 6px 20px;
+    }
+
+    .bubble li { margin: 3px 0; }
+
+    .bubble strong { color: var(--porto-dark); }
+
+    .bubble table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 12.5px;
+    }
+
+    .bubble th {
+      background: var(--gray-100);
+      font-weight: 600;
+      padding: 6px 10px;
+      text-align: left;
+      border: 1px solid var(--gray-200);
+    }
+
+    .bubble td {
+      padding: 5px 10px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .bubble tr:nth-child(even) td { background: var(--gray-50); }
+
+    .bubble code {
+      background: var(--gray-100);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    /* Source badge */
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      color: var(--gray-500);
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 2px 8px;
+      margin-top: 6px;
+      margin-right: 4px;
+    }
+
+    /* Loading */
+    .loading-bubble {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 12px 16px;
+    }
+
+    .dot-bounce {
+      width: 7px;
+      height: 7px;
+      background: var(--porto-red);
+      border-radius: 50%;
+      animation: bounce .8s infinite;
+    }
+
+    .dot-bounce:nth-child(2) { animation-delay: .15s; }
+    .dot-bounce:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%            { transform: translateY(-6px); }
+    }
+
+    /* ========================
+       INPUT AREA
+    ======================== */
+    .input-area {
+      padding: 16px 24px 20px;
+      background: white;
+      border-top: 1px solid var(--gray-200);
+      flex-shrink: 0;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    textarea {
+      flex: 1;
+      border: 1.5px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      padding: 12px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      min-height: 48px;
+      max-height: 140px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      overflow-y: auto;
+    }
+
+    textarea:focus {
+      border-color: var(--porto-red);
+      box-shadow: 0 0 0 3px rgba(232,0,45,.1);
+    }
+
+    textarea::placeholder { color: var(--gray-400); }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      background: var(--porto-red);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s, transform .1s;
+      box-shadow: 0 2px 8px rgba(232,0,45,.3);
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: var(--porto-red-dk);
+      transform: translateY(-1px);
+    }
+
+    .send-btn:disabled {
+      background: var(--gray-300);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    .send-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .input-hint {
+      font-size: 11px;
+      color: var(--gray-400);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* ========================
+       SCROLLBAR
+    ======================== */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--gray-300);
+      border-radius: 3px;
+    }
+
+    /* ========================
+       RESPONSIVO
+    ======================== */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .message { max-width: 95%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-brand">
+    <div class="logo-badge">P</div>
+    <div class="brand-text">
+      <h1>Porto IA</h1>
+      <p>Assistente Inteligente para Corretores</p>
+    </div>
+  </div>
+  <div class="header-badge">
+    <span class="status-dot"></span>
+    <span>Online · Seguro Auto</span>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Perguntas Frequentes</h3>
+    </div>
+    <ul class="suggestions-list" id="suggestionsList" style="padding: 10px;">
+      <!-- preenchido via JS -->
+    </ul>
+
+    <div class="sidebar-info">
+      <p style="font-size: 11px; color: var(--gray-500); margin-bottom: 8px;">Base de conhecimento:</p>
+      <span class="info-pill"><span class="dot"></span> Condições Gerais</span>
+      <span class="info-pill"><span class="dot"></span> Manual do Segurado</span>
+      <span class="info-pill"><span class="dot"></span> Proteção Combinada</span>
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <div class="chat-area">
+    <div class="messages-container" id="messagesContainer">
+      <!-- Welcome card -->
+      <div class="welcome-card" id="welcomeCard">
+        <div class="welcome-icon">🤖</div>
+        <h2>Olá, Corretor! 👋</h2>
+        <p>Sou a <strong>Porto IA</strong>, sua assistente especializada no Seguro Auto Porto Seguro.<br>
+        Tire suas dúvidas sobre coberturas, cláusulas, assistências e muito mais.</p>
+        <div class="welcome-tags">
+          <span class="welcome-tag">📋 Condições Gerais</span>
+          <span class="welcome-tag">🚗 Coberturas</span>
+          <span class="welcome-tag">🔧 Assistência 24h</span>
+          <span class="welcome-tag">📞 Sinistros</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <textarea
+          id="chatInput"
+          placeholder="Digite sua dúvida sobre o Seguro Auto Porto Seguro..."
+          rows="1"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <p class="input-hint">Enter para enviar · Shift+Enter para nova linha</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ========================
+// ESTADO
+// ========================
+let history = [];
+let isLoading = false;
+
+// ========================
+// CARREGAR SUGESTOES
+// ========================
+async function loadSuggestions() {
+  try {
+    const r = await fetch('/api/suggest');
+    const data = await r.json();
+    const list = document.getElementById('suggestionsList');
+    list.innerHTML = '';
+    data.suggestions.forEach(s => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.className = 'suggestion-btn';
+      btn.textContent = s;
+      btn.onclick = () => { sendMessage(s); };
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  } catch(e) {
+    console.error('Erro ao carregar sugestoes:', e);
+  }
+}
+
+// ========================
+// MARKDOWN SIMPLES
+// ========================
+function parseMarkdown(text) {
+  // Escapar HTML primeiro
+  text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  
+  // Tabelas
+  text = text.replace(/\|(.+)\|/g, (match) => {
+    const rows = match.split('\n').filter(r => r.trim() && r.trim() !== '|');
+    if (rows.length < 2) return match;
+    
+    let html = '<table><thead><tr>';
+    const headers = rows[0].split('|').filter(c => c.trim());
+    headers.forEach(h => { html += `<th>${h.trim()}</th>`; });
+    html += '</tr></thead><tbody>';
+    
+    for (let i = 2; i < rows.length; i++) {
+      const cells = rows[i].split('|').filter(c => c.trim());
+      if (cells.length > 0) {
+        html += '<tr>';
+        cells.forEach(c => { html += `<td>${c.trim()}</td>`; });
+        html += '</tr>';
+      }
+    }
+    html += '</tbody></table>';
+    return html;
+  });
+  
+  // Headers
+  text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  
+  // Bold e italic
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  
+  // Code inline
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  
+  // Listas
+  text = text.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+  text = text.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+  
+  // Listas numeradas
+  text = text.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  
+  // Paragrafos (linhas em branco)
+  text = text.replace(/\n\n/g, '</p><p>');
+  text = '<p>' + text + '</p>';
+  
+  // Limpar paragrafos vazios e com so tags de bloco
+  text = text.replace(/<p>(<h[123]>|<ul>|<table>)/g, '$1');
+  text = text.replace(/(<\/h[123]>|<\/ul>|<\/table>)<\/p>/g, '$1');
+  text = text.replace(/<p>\s*<\/p>/g, '');
+  
+  return text;
+}
+
+// ========================
+// ADICIONAR MENSAGEM
+// ========================
+function addMessage(role, content, sources = []) {
+  const container = document.getElementById('messagesContainer');
+  
+  // Remover welcome card
+  const welcome = document.getElementById('welcomeCard');
+  if (welcome) welcome.remove();
+  
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  
+  const avatar = document.createElement('div');
+  avatar.className = `avatar ${role === 'user' ? 'user-av' : 'ai-av'}`;
+  avatar.textContent = role === 'user' ? 'C' : 'P';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  
+  if (role === 'assistant') {
+    bubble.innerHTML = parseMarkdown(content);
+    
+    // Badges de fonte
+    if (sources.length > 0) {
+      const sourcesDiv = document.createElement('div');
+      sourcesDiv.style.marginTop = '8px';
+      sources.forEach(src => {
+        const badge = document.createElement('span');
+        badge.className = 'source-badge';
+        badge.textContent = '📄 ' + src;
+        sourcesDiv.appendChild(badge);
+      });
+      bubble.appendChild(sourcesDiv);
+    }
+  } else {
+    bubble.textContent = content;
+  }
+  
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  container.appendChild(div);
+  
+  // Scroll para o final
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function addLoading() {
+  const container = document.getElementById('messagesContainer');
+  const div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'loadingMessage';
+  
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ai-av';
+  avatar.textContent = 'P';
+  
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble loading-bubble';
+  
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot-bounce';
+    bubble.appendChild(dot);
+  }
+  
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeLoading() {
+  const loading = document.getElementById('loadingMessage');
+  if (loading) loading.remove();
+}
+
+// ========================
+// ENVIAR MENSAGEM
+// ========================
+async function sendMessage(text = null) {
+  if (isLoading) return;
+  
+  const input = document.getElementById('chatInput');
+  const message = text || input.value.trim();
+  
+  if (!message) return;
+  
+  // Limpar input
+  input.value = '';
+  input.style.height = 'auto';
+  
+  // Adicionar mensagem do usuario
+  addMessage('user', message);
+  
+  // Adicionar ao historico
+  history.push({ role: 'user', content: message });
+  
+  // Loading
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  addLoading();
+  
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: message,
+        history: history.slice(0, -1)  // historico sem a ultima mensagem (ja incluida)
+      })
+    });
+    
+    removeLoading();
+    
+    if (!response.ok) {
+      throw new Error(`Erro ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Adicionar resposta
+    addMessage('assistant', data.answer, data.sources || []);
+    history.push({ role: 'assistant', content: data.answer });
+    
+    // Limitar historico
+    if (history.length > 20) {
+      history = history.slice(-20);
+    }
+    
+  } catch(e) {
+    removeLoading();
+    addMessage('assistant', 
+      'Desculpe, ocorreu um erro ao processar sua pergunta. Por favor, tente novamente.\n\n' +
+      `Detalhe: ${e.message}`,
+      []
+    );
+  } finally {
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
+}
+
+// ========================
+// EVENTS
+// ========================
+document.addEventListener('DOMContentLoaded', () => {
+  loadSuggestions();
+  
+  const input = document.getElementById('chatInput');
+  
+  // Auto-resize
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+  });
+  
+  // Enter para enviar
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  
+  input.focus();
+});
+</script>
+
+</body>
+</html>
