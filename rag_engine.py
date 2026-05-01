@@ -285,10 +285,7 @@ _index_instance = None
 def get_index() -> TFIDFIndex:
     global _index_instance
     if _index_instance is None:
-        idx = TFIDFIndex()
-        if INDEX_PATH.exists():
-            idx.load(str(INDEX_PATH))
-        else:
-            idx = build_index()
+        # Sempre reconstruir para garantir chunks atualizados
+        idx = build_index()
         _index_instance = idx
     return _index_instance
