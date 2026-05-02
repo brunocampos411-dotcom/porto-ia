@@ -175,6 +175,37 @@ class TFIDFIndex:
         scores.sort(key=lambda x: x[1], reverse=True)
         return scores[:top_k]
 
+    def search_in_source(self, query: str, source_key: str, top_k: int = 3) -> List[Tuple[Dict, float]]:
+        """Busca apenas nos chunks de uma seguradora especifica, com reranking por topico"""
+        import unicodedata
+
+        def norm(t):
+            return ''.join(c for c in unicodedata.normalize('NFD', t.lower())
+                           if unicodedata.category(c) != 'Mn')
+
+        src_key_norm = norm(source_key)
+        query_tokens = self.tokenize(query)
+        if not query_tokens:
+            return []
+
+        query_tf = {}
+        for t in query_tokens:
+            query_tf[t] = query_tf.get(t, 0) + 1
+        query_tfidf = {t: (c/len(query_tokens))*self.idf.get(t, 1.0) for t, c in query_tf.items()}
+        query_norm_val = math.sqrt(sum(v**2 for v in query_tfidf.values()))
+
+        scores = []
+        for i, doc_tfidf in enumerate(self.tfidf_matrix):
+            if src_key_norm not in norm(self.chunks[i]['source']):
+                continue
+            dot = sum(query_tfidf.get(t, 0)*doc_tfidf.get(t, 0) for t in query_tfidf)
+            dnorm = math.sqrt(sum(v**2 for v in doc_tfidf.values()))
+            score = dot/(query_norm_val*dnorm) if query_norm_val > 0 and dnorm > 0 else 0.0
+            scores.append((self.chunks[i], score))
+
+        scores.sort(key=lambda x: x[1], reverse=True)
+        return scores[:top_k]
+
     def save(self, path: str):
         data = {
             'chunks': self.chunks,
@@ -276,29 +307,33 @@ def query_rag(question: str, index: TFIDFIndex, conversation_history: List[Dict]
 
     # Detectar quais seguradoras foram mencionadas na pergunta
     q_norm = norm(question)
-    seguradora_map = {
-        'porto': 'Porto Seguro',
-        'azul': 'Azul Seguros',
-        'itau': 'Itau Seguros',
-        'mitsui': 'Mitsui Seguros',
+    seguradora_keys = {
+        'porto': ['porto seguro', 'auto protecao combinada', 'porto'],
+        'azul': ['azul'],
+        'itau': ['itau'],
+        'mitsui': ['mitsui'],
     }
-    mencoes = [key for key in seguradora_map if key in q_norm]
+    mencoes = [key for key in seguradora_keys if key in q_norm]
 
     seen_ids = set()
     context_parts = []
 
     if len(mencoes) >= 2:
-        # Busca separada por seguradora mencionada — garante representacao de cada uma
+        # Para perguntas comparativas: busca focada por seguradora usando search_in_source
+        # Remove nomes das seguradoras da query para focar no topico
+        topic_query = question
+        for key in seguradora_keys:
+            for variant in [key, key.capitalize(), key.upper()]:
+                topic_query = topic_query.replace(variant, '')
+        topic_query = ' '.join(topic_query.split())  # normalizar espacos
+
         for key in mencoes:
-            seg_results = index.search(question, top_k=10)
-            for chunk, score in seg_results:
-                cid = chunk.get('chunk_id')
-                src_norm = norm(chunk['source'])
-                if score > 0.02 and key in src_norm and cid not in seen_ids:
+            results = index.search_in_source(topic_query, key, top_k=3)
+            for chunk, score in results:
+                cid = (chunk['source'], chunk['chunk_id'])
+                if cid not in seen_ids:
                     context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
                     seen_ids.add(cid)
-                    if len([p for p in context_parts if key in norm(p.split('\n')[0])]) >= 3:
-                        break
     else:
         results = index.search(question, top_k=6)
         for chunk, score in results:
