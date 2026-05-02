@@ -269,12 +269,41 @@ REGRAS:
 
 
 def query_rag(question: str, index: TFIDFIndex, conversation_history: List[Dict] = None) -> str:
-    results = index.search(question, top_k=6)
+    import unicodedata
 
+    def norm(t):
+        return ''.join(c for c in unicodedata.normalize('NFD', t.lower()) if unicodedata.category(c) != 'Mn')
+
+    # Detectar quais seguradoras foram mencionadas na pergunta
+    q_norm = norm(question)
+    seguradora_map = {
+        'porto': 'Porto Seguro',
+        'azul': 'Azul Seguros',
+        'itau': 'Itau Seguros',
+        'mitsui': 'Mitsui Seguros',
+    }
+    mencoes = [key for key in seguradora_map if key in q_norm]
+
+    seen_ids = set()
     context_parts = []
-    for chunk, score in results:
-        if score > 0.02:
-            context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
+
+    if len(mencoes) >= 2:
+        # Busca separada por seguradora mencionada — garante representacao de cada uma
+        for key in mencoes:
+            seg_results = index.search(question, top_k=10)
+            for chunk, score in seg_results:
+                cid = chunk.get('chunk_id')
+                src_norm = norm(chunk['source'])
+                if score > 0.02 and key in src_norm and cid not in seen_ids:
+                    context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
+                    seen_ids.add(cid)
+                    if len([p for p in context_parts if key in norm(p.split('\n')[0])]) >= 3:
+                        break
+    else:
+        results = index.search(question, top_k=6)
+        for chunk, score in results:
+            if score > 0.02:
+                context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
 
     context = "\n\n---\n\n".join(context_parts) if context_parts else "Nenhum contexto relevante encontrado."
 
