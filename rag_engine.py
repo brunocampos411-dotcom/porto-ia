@@ -193,13 +193,23 @@ class TFIDFIndex:
 def build_index():
     all_docs = []
 
+    # Mapeamento de arquivo -> nome legivel da fonte
     doc_files = {
-        'Auto Porto - Condicoes Gerais': str(DOCS_PATH / 'auto_porto_full.txt'),
-        'Auto Protecao Combinada Porto': str(DOCS_PATH / 'auto_protecao_combinada_full.txt'),
+        '24_Horas_-_Itau.txt': '24 Horas - Itau',
+        'Auto_-_Azul.txt': 'Auto - Azul Seguros',
+        'Auto_-_Itau.txt': 'Auto - Itau Seguros',
+        'Auto_-_Mitsui.txt': 'Auto - Mitsui Seguros',
+        'Auto_-_Porto.txt': 'Auto - Porto Seguro',
+        'Auto_Compacto_-_Azul.txt': 'Auto Compacto - Azul Seguros',
+        'Auto_Compacto_-_Itau.txt': 'Auto Compacto - Itau Seguros',
+        'Auto_Frota_-_Mitsui.txt': 'Auto Frota - Mitsui Seguros',
+        'Auto_Protecao_Combinada_-_Porto.txt': 'Auto Protecao Combinada - Porto Seguro',
+        'Moto_-_Azul.txt': 'Moto - Azul Seguros',
     }
 
-    for source, filepath in doc_files.items():
-        if not Path(filepath).exists():
+    for filename, source in doc_files.items():
+        filepath = DOCS_PATH / filename
+        if not filepath.exists():
             print(f"AVISO: {filepath} nao encontrado")
             continue
 
@@ -223,9 +233,21 @@ def build_index():
 
 
 # ---- RAG Query ----
-SYSTEM_PROMPT = """Você é a Porto IA, assistente inteligente da Insurian para corretores de seguros que vendem produtos Porto Seguro.
+SYSTEM_PROMPT = """Você é a Porto IA, assistente inteligente da Insurian para corretores de seguros do Grupo Porto.
 
-Seu objetivo é responder dúvidas técnicas sobre coberturas, cláusulas, limites e condições do Seguro Auto Porto Seguro com base nas Condições Gerais e Manual do Segurado.
+Seu objetivo é responder dúvidas técnicas sobre coberturas, cláusulas, limites e condições dos produtos de Seguro Auto das seguradoras do Grupo Porto: Porto Seguro, Azul Seguros, Itaú Seguros e Mitsui Seguros.
+
+Você tem acesso às Condições Gerais dos seguintes produtos:
+- Auto - Porto Seguro
+- Auto Proteção Combinada - Porto Seguro
+- Auto - Azul Seguros
+- Auto Compacto - Azul Seguros
+- Moto - Azul Seguros
+- Auto - Itaú Seguros
+- Auto Compacto - Itaú Seguros
+- 24 Horas - Itaú
+- Auto - Mitsui Seguros
+- Auto Frota - Mitsui Seguros
 
 REGRAS:
 1. Responda SEMPRE em português brasileiro, de forma clara e objetiva
@@ -236,10 +258,9 @@ REGRAS:
 6. Seja cordial e profissional
 7. Para perguntas sobre coberturas específicas, sempre mencione os limites e exclusões relevantes
 8. NUNCA invente informações — se não souber, diga que não encontrou nos documentos
-9. NUNCA forneça números de telefone, 0800, WhatsApp ou canais de atendimento — esses dados ficam desatualizados e você pode passar informação errada. Se perguntarem sobre contato, oriente o corretor a acessar o site www.portoseguro.com.br
-10. Foque em responder sobre COBERTURAS, CLÁUSULAS, LIMITES, FRANQUIAS, EXCLUSÕES e PROCEDIMENTOS — esse é seu foco como assistente técnico
-
-Você tem acesso ao Manual do Segurado e às Condições Gerais do Seguro Auto Porto Seguro."""
+9. NUNCA forneça números de telefone, 0800, WhatsApp ou canais de atendimento — esses dados ficam desatualizados. Se perguntarem sobre contato, oriente o corretor a acessar o site oficial de cada seguradora
+10. Foque em responder sobre COBERTURAS, CLÁUSULAS, LIMITES, FRANQUIAS, EXCLUSÕES e PROCEDIMENTOS
+11. Quando comparar seguradoras, apresente as diferenças de forma objetiva e imparcial"""
 
 
 def query_rag(question: str, index: TFIDFIndex, conversation_history: List[Dict] = None) -> str:
