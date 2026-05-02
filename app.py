@@ -105,21 +105,21 @@ async def chat(request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.get("/api/suggest")
 async def suggest_questions():
+    """Sugestoes de perguntas frequentes"""
     return {
         "suggestions": [
-            "Qual é o limite do guincho e quantas utilizações tenho por apólice?",
-            "O que cobre a assistência 24 horas em caso de pane?",
-            "Como funciona o carro reserva em caso de sinistro?",
-            "Quais são as exclusões para perda total?",
-            "O que é a cláusula 87 - Reparo Rápido e Supermartelinho?",
-            "Qual é o limite de reembolso para chaveiro?",
-            "Como acionar o serviço de motorista da vez?",
-            "O que está coberto para danos a terceiros?",
+            "Qual é o limite do guincho na Porto Seguro e na Azul Seguros?",
+            "Como funciona o carro reserva em caso de sinistro no Itaú Seguros?",
+            "Quais são as exclusões para perda total na Mitsui Seguros?",
+            "O que cobre a assistência 24 horas na Azul Seguros?",
+            "Qual a diferença entre Auto e Auto Compacto da Azul Seguros?",
+            "O que é coberto em caso de roubo no Auto Frota da Mitsui?",
+            "Quais são as coberturas do produto 24 Horas do Itaú?",
+            "Como funciona o reparo de vidros na Porto Seguro?",
             "Quais documentos preciso para registrar um sinistro?",
-            "Qual é a diferença entre as cláusulas 31, 102 e 103?",
+            "Compare a cobertura de danos a terceiros entre Porto e Itaú.",
         ]
     }
 
