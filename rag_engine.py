@@ -81,18 +81,23 @@ class TFIDFIndex:
         self.tfidf_matrix: List[Dict[str, float]] = []
 
     def tokenize(self, text: str) -> List[str]:
-        text = text.lower()
-        tokens = re.findall(r'\b[a-záéíóúâêîôûãõçàüñ\w]{2,}\b', text)
+        import unicodedata
+        # Normalizar acentos: "Itaú" -> "itau", "assistências" -> "assistencias"
+        text = ''.join(
+            c for c in unicodedata.normalize('NFD', text.lower())
+            if unicodedata.category(c) != 'Mn'
+        )
+        tokens = re.findall(r'\b[a-z\w]{2,}\b', text)
         stopwords = {
             'de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para',
             'com', 'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as',
             'dos', 'como', 'mas', 'ao', 'ele', 'das', 'seu', 'sua',
-            'ou', 'quando', 'muito', 'nos', 'ja', 'eu', 'também',
+            'ou', 'quando', 'muito', 'nos', 'ja', 'eu', 'tambem',
             'pelo', 'pela', 'ate', 'isso', 'ela', 'entre', 'depois',
             'sem', 'mesmo', 'aos', 'seus', 'quem', 'nas', 'me', 'esse',
             'eles', 'essa', 'num', 'nem', 'suas', 'meu', 'minha', 'te',
-            'essa', 'nao', 'nesta', 'deste', 'estava', 'este', 'havia',
-            'ser', 'ter', 'pode', 'foi', 'sao', 'esta', 'tambem',
+            'nao', 'nesta', 'deste', 'estava', 'este', 'havia',
+            'ser', 'ter', 'pode', 'foi', 'sao', 'esta',
         }
         return [t for t in tokens if t not in stopwords]
 
