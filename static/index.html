@@ -11,16 +11,19 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Identidade Porto Seguro - Azul claro e branco */
+      --porto-navy:       #0C447C;   /* header principal */
       --porto-blue:       #0066CC;
       --porto-blue-light: #1A8FE3;
-      --porto-blue-mid:   #0050A0;
       --porto-blue-dark:  #003875;
+      --porto-link:       #378ADD;   /* fonte/citacao */
       --porto-sky:        #E8F4FD;
       --porto-sky-mid:    #D0E8F8;
       --porto-white:      #FFFFFF;
-      --porto-accent:     #FF6B00;   /* laranja Porto para destaques */
-      --porto-green:      #00A651;
+      --porto-accent:     #FF6B00;
+      --porto-green:      #22C55E;
+      --msg-user-bg:      #0C447C;   /* bolha usuario */
+      --msg-bot-bg:       #F1EFE8;   /* bolha IA */
+      --msg-bot-text:     #1A1A1A;
       --text-primary:     #1A2B4A;
       --text-secondary:   #4A6282;
       --text-muted:       #8A9BB5;
@@ -45,16 +48,16 @@
     }
 
     /* ========================
-       HEADER
+       HEADER — fundo #0C447C
     ======================== */
     header {
-      background: linear-gradient(135deg, var(--porto-blue-dark) 0%, var(--porto-blue) 60%, var(--porto-blue-light) 100%);
+      background: #0C447C;
       color: white;
       padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 62px;
+      height: 64px;
       box-shadow: var(--shadow-md);
       flex-shrink: 0;
       z-index: 10;
@@ -72,28 +75,29 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .logo-wrap {
-      background: rgba(255,255,255,.18);
-      border: 1.5px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.15);
+      border: 1.5px solid rgba(255,255,255,.30);
       border-radius: var(--radius-sm);
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
-      letter-spacing: -1px;
       backdrop-filter: blur(4px);
+      flex-shrink: 0;
     }
 
     .brand h1 {
       font-size: 17px;
       font-weight: 700;
       letter-spacing: -.3px;
+      line-height: 1.2;
     }
     .brand p {
       font-size: 11px;
@@ -101,59 +105,69 @@
       margin-top: 1px;
     }
 
+    /* Status online */
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--porto-green);
+      box-shadow: 0 0 0 2px rgba(34,197,94,.25);
+      animation: pulse-dot 2s infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse-dot {
+      0%,100% { box-shadow: 0 0 0 2px rgba(34,197,94,.25); }
+      50%      { box-shadow: 0 0 0 5px rgba(34,197,94,.08); }
+    }
+    .status-label {
+      font-size: 10px;
+      opacity: .75;
+    }
+
     .header-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    /* ---- CONTADOR SEMANAL ---- */
+    /* Contador semanal */
     .weekly-counter {
-      background: rgba(255,255,255,.15);
-      border: 1.5px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.12);
+      border: 1.5px solid rgba(255,255,255,.22);
       border-radius: 50px;
-      padding: 6px 14px;
+      padding: 5px 14px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       backdrop-filter: blur(6px);
       cursor: default;
       transition: background .2s;
     }
-    .weekly-counter:hover {
-      background: rgba(255,255,255,.22);
-    }
-    .counter-icon {
-      font-size: 15px;
-    }
-    .counter-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-    .counter-number {
-      font-size: 17px;
-      font-weight: 800;
-      color: #fff;
-    }
-    .counter-label {
-      font-size: 9px;
-      opacity: .8;
-      text-transform: uppercase;
-      letter-spacing: .6px;
-    }
+    .weekly-counter:hover { background: rgba(255,255,255,.20); }
+    .counter-icon { font-size: 14px; }
+    .counter-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .counter-number { font-size: 16px; font-weight: 800; color: #fff; }
+    .counter-label  { font-size: 9px; opacity: .75; text-transform: uppercase; letter-spacing: .6px; }
 
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #00E676;
-      box-shadow: 0 0 0 3px rgba(0,230,118,.25);
-      animation: pulse-dot 2s infinite;
+    /* Botao sair */
+    #logoutBtn {
+      background: rgba(255,255,255,.15);
+      border: 1.5px solid rgba(255,255,255,.28);
+      color: white;
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      backdrop-filter: blur(6px);
     }
-    @keyframes pulse-dot {
-      0%,100% { box-shadow: 0 0 0 3px rgba(0,230,118,.25); }
-      50%      { box-shadow: 0 0 0 6px rgba(0,230,118,.08); }
-    }
+    #logoutBtn:hover { background: rgba(255,255,255,.25); }
 
     /* ========================
        TELA DE LOGIN
@@ -161,7 +175,7 @@
     #loginOverlay {
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, var(--porto-blue-dark) 0%, var(--porto-blue) 60%, var(--porto-blue-light) 100%);
+      background: #0C447C;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -181,139 +195,100 @@
       align-items: center;
       gap: 20px;
     }
-
     .login-logo {
-      background: var(--porto-blue);
+      background: #0C447C;
       color: white;
-      width: 58px;
-      height: 58px;
+      width: 56px; height: 56px;
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 900;
-      letter-spacing: -1px;
     }
-
-    .login-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-      text-align: center;
-    }
-    .login-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
-      text-align: center;
-      margin-top: -12px;
-    }
-
-    .login-form {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
+    .login-title   { font-size: 20px; font-weight: 700; color: var(--text-primary); text-align: center; }
+    .login-subtitle{ font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: -12px; }
+    .login-form    { width: 100%; display: flex; flex-direction: column; gap: 14px; }
     .login-field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 5px;
+      text-transform: uppercase; letter-spacing: .5px;
     }
     .login-field input {
-      width: 100%;
-      padding: 11px 14px;
+      width: 100%; padding: 11px 14px;
       border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      font-size: 14px;
-      color: var(--text-primary);
-      outline: none;
-      transition: border-color .2s;
+      border-radius: var(--radius-sm); font-size: 14px;
+      color: var(--text-primary); outline: none; transition: border-color .2s;
     }
-    .login-field input:focus {
-      border-color: var(--porto-blue);
-    }
-
+    .login-field input:focus { border-color: #0C447C; }
     .login-btn {
-      width: 100%;
-      padding: 13px;
-      background: var(--porto-blue);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
+      width: 100%; padding: 13px;
+      background: #0C447C; color: white;
+      border: none; border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 700; cursor: pointer;
       transition: background .2s, transform .1s;
     }
-    .login-btn:hover { background: var(--porto-blue-mid); }
-    .login-btn:active { transform: scale(.98); }
-    .login-btn:disabled { opacity: .6; cursor: not-allowed; }
-
+    .login-btn:hover   { background: #0a3a6e; }
+    .login-btn:active  { transform: scale(.98); }
+    .login-btn:disabled{ opacity: .6; cursor: not-allowed; }
     .login-error {
-      color: #D32F2F;
-      font-size: 13px;
-      text-align: center;
-      background: #FFEBEE;
-      border: 1px solid #FFCDD2;
-      border-radius: var(--radius-sm);
-      padding: 9px 12px;
-      display: none;
+      color: #D32F2F; font-size: 13px; text-align: center;
+      background: #FFEBEE; border: 1px solid #FFCDD2;
+      border-radius: var(--radius-sm); padding: 9px 12px; display: none;
     }
     .login-error.visible { display: block; }
 
-    /* Botao sair no header */
-    #logoutBtn {
-      background: rgba(255,255,255,.18);
-      border: 1.5px solid rgba(255,255,255,.35);
-      color: white;
-      border-radius: 50px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s;
-      backdrop-filter: blur(6px);
-    }
-    #logoutBtn:hover { background: rgba(255,255,255,.28); }
-
     /* ========================
-       SUGESTOES / CHIPS
+       SUGESTOES / PILLS
+       (antes do primeiro envio)
     ======================== */
-    .suggestions-bar {
+    #suggestionsArea {
       background: var(--porto-white);
       border-bottom: 1px solid var(--border-color);
-      padding: 8px 16px;
+      padding: 10px 16px;
       display: flex;
+      align-items: center;
       gap: 8px;
       overflow-x: auto;
       flex-shrink: 0;
       scrollbar-width: none;
+      transition: opacity .3s, max-height .4s;
+      max-height: 60px;
+      overflow: hidden;
     }
-    .suggestions-bar::-webkit-scrollbar { display: none; }
+    #suggestionsArea.hidden {
+      max-height: 0;
+      padding: 0;
+      border: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #suggestionsArea::-webkit-scrollbar { display: none; }
 
-    .chip {
+    .suggestions-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pill {
       white-space: nowrap;
       background: var(--porto-sky);
-      border: 1px solid var(--border-color);
-      color: var(--porto-blue);
+      border: 1.5px solid var(--porto-link);
+      color: var(--porto-navy);
       border-radius: 50px;
-      padding: 5px 13px;
+      padding: 5px 14px;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: all .18s;
       flex-shrink: 0;
     }
-    .chip:hover {
-      background: var(--porto-blue);
+    .pill:hover {
+      background: var(--porto-navy);
       color: white;
-      border-color: var(--porto-blue);
+      border-color: var(--porto-navy);
       transform: translateY(-1px);
       box-shadow: var(--shadow-sm);
     }
@@ -337,7 +312,6 @@
       gap: 16px;
       scroll-behavior: smooth;
     }
-
     #chat::-webkit-scrollbar { width: 5px; }
     #chat::-webkit-scrollbar-track { background: transparent; }
     #chat::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
@@ -353,8 +327,8 @@
       box-shadow: var(--shadow-sm);
     }
     .welcome-card .emoji { font-size: 40px; margin-bottom: 12px; }
-    .welcome-card h2 { font-size: 20px; color: var(--porto-blue-dark); font-weight: 700; margin-bottom: 6px; }
-    .welcome-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+    .welcome-card h2 { font-size: 20px; color: var(--porto-navy); font-weight: 700; margin-bottom: 6px; }
+    .welcome-card p  { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
 
     /* Mensagens */
     .msg {
@@ -368,6 +342,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* Usuario alinhado a direita */
     .msg.user { flex-direction: row-reverse; }
 
     .avatar {
@@ -381,7 +356,7 @@
       flex-shrink: 0;
     }
     .avatar.bot {
-      background: linear-gradient(135deg, var(--porto-blue) 0%, var(--porto-blue-light) 100%);
+      background: var(--porto-navy);
       color: white;
       box-shadow: var(--shadow-sm);
     }
@@ -390,47 +365,58 @@
       color: white;
     }
 
+    /* Bolhas diferenciadas */
     .bubble {
       max-width: 78%;
       padding: 12px 16px;
-      border-radius: var(--radius-md);
       font-size: 14px;
       line-height: 1.6;
       box-shadow: var(--shadow-sm);
     }
 
+    /* Bolha IA: fundo #F1EFE8, texto #1A1A1A, alinhado esquerda */
     .bubble.bot {
-      background: var(--porto-white);
-      border: 1px solid var(--border-color);
-      border-top-left-radius: 4px;
+      background: #F1EFE8;
+      color: #1A1A1A;
+      border-radius: 4px 12px 12px 12px;
+      border: 1px solid #E0DDD5;
     }
 
+    /* Bolha usuario: fundo #0C447C, branco, alinhado direita */
     .bubble.user {
-      background: linear-gradient(135deg, var(--porto-blue) 0%, var(--porto-blue-light) 100%);
+      background: #0C447C;
       color: white;
-      border-top-right-radius: 4px;
+      border-radius: 12px 4px 12px 12px;
     }
+
+    /* Coluna de msg do bot */
+    .msg-col {
+      display: flex;
+      flex-direction: column;
+    }
+    .msg.user .msg-col { align-items: flex-end; }
+
+    /* Fonte da resposta — abaixo da bolha da IA */
+    .source-line {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--porto-link);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .source-line span { font-weight: 500; }
 
     .bubble-meta {
       font-size: 10px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 3px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .msg.user .bubble-meta { justify-content: flex-end; }
-
-    /* fonte tag */
-    .source-tag {
-      background: var(--porto-sky);
-      border: 1px solid var(--border-color);
-      color: var(--porto-blue);
-      border-radius: 50px;
-      padding: 1px 8px;
-      font-size: 10px;
-      font-weight: 500;
-    }
 
     /* ========================
        MARKDOWN RENDERING
@@ -438,22 +424,16 @@
     .bubble.bot h3 {
       font-size: 14px;
       font-weight: 700;
-      color: var(--porto-blue-dark);
+      color: var(--porto-navy);
       margin: 12px 0 6px;
       border-bottom: 2px solid var(--porto-sky-mid);
       padding-bottom: 4px;
     }
     .bubble.bot h3:first-child { margin-top: 0; }
-
     .bubble.bot p { margin-bottom: 6px; }
     .bubble.bot p:last-child { margin-bottom: 0; }
-
-    .bubble.bot strong { color: var(--porto-blue-dark); font-weight: 700; }
-
-    .bubble.bot ul, .bubble.bot ol {
-      padding-left: 20px;
-      margin: 6px 0;
-    }
+    .bubble.bot strong { color: var(--porto-navy); font-weight: 700; }
+    .bubble.bot ul, .bubble.bot ol { padding-left: 20px; margin: 6px 0; }
     .bubble.bot li { margin-bottom: 3px; }
 
     /* TABELAS */
@@ -464,90 +444,55 @@
       border: 1px solid var(--border-color);
       box-shadow: var(--shadow-sm);
     }
-
-    .bubble.bot table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    .bubble.bot table thead tr {
-      background: linear-gradient(135deg, var(--porto-blue-dark) 0%, var(--porto-blue) 100%);
-      color: white;
-    }
-
+    .bubble.bot table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .bubble.bot table thead tr { background: var(--porto-navy); color: white; }
     .bubble.bot table thead th {
-      padding: 9px 12px;
-      text-align: left;
-      font-weight: 600;
-      white-space: nowrap;
-      font-size: 12px;
-      letter-spacing: .3px;
+      padding: 9px 12px; text-align: left;
+      font-weight: 600; white-space: nowrap;
+      font-size: 12px; letter-spacing: .3px;
     }
-
-    .bubble.bot table tbody tr:nth-child(even) {
-      background: var(--porto-sky);
-    }
-    .bubble.bot table tbody tr:nth-child(odd) {
-      background: var(--porto-white);
-    }
-    .bubble.bot table tbody tr:hover {
-      background: var(--porto-sky-mid);
-    }
-
+    .bubble.bot table tbody tr:nth-child(even) { background: var(--porto-sky); }
+    .bubble.bot table tbody tr:nth-child(odd)  { background: var(--porto-white); }
+    .bubble.bot table tbody tr:hover { background: var(--porto-sky-mid); }
     .bubble.bot table td {
       padding: 8px 12px;
       border-bottom: 1px solid var(--border-color);
       vertical-align: top;
     }
-    .bubble.bot table td:first-child {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    /* Emojis sim/nao nas tabelas */
-    .bubble.bot table td .yes  { color: #00A651; font-weight: 700; }
-    .bubble.bot table td .no   { color: #D32F2F; font-weight: 700; }
-    .bubble.bot table td .warn { color: #E65100; font-weight: 700; }
+    .bubble.bot table td:first-child { font-weight: 600; color: var(--text-primary); }
+    .bubble.bot table td .yes  { color: #16A34A; font-weight: 700; }
+    .bubble.bot table td .no   { color: #DC2626; font-weight: 700; }
+    .bubble.bot table td .warn { color: #D97706; font-weight: 700; }
 
     /* code inline */
     .bubble.bot code {
-      background: var(--porto-sky);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-size: 12px;
-      font-family: monospace;
-      color: var(--porto-blue-dark);
+      background: var(--porto-sky); border: 1px solid var(--border-color);
+      border-radius: 4px; padding: 1px 6px; font-size: 12px;
+      font-family: monospace; color: var(--porto-navy);
     }
-
-    /* bloco de destaque */
     .bubble.bot blockquote {
-      border-left: 3px solid var(--porto-blue);
-      background: var(--porto-sky);
-      padding: 8px 12px;
-      margin: 8px 0;
+      border-left: 3px solid var(--porto-link);
+      background: var(--porto-sky); padding: 8px 12px; margin: 8px 0;
       border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-style: italic;
-      color: var(--text-secondary);
+      font-style: italic; color: var(--text-secondary);
     }
 
     /* ========================
-       TYPING
+       LOADING — tres pontos pulsando
     ======================== */
+    .typing-dots { display: flex; align-items: center; gap: 4px; padding: 2px 0; }
     .typing-dots span {
       display: inline-block;
-      width: 7px; height: 7px;
-      background: var(--porto-blue-light);
+      width: 8px; height: 8px;
+      background: var(--porto-link);
       border-radius: 50%;
-      animation: bounce .9s infinite;
-      margin: 0 2px;
+      animation: pulse 1.2s infinite;
     }
-    .typing-dots span:nth-child(2) { animation-delay: .15s; }
-    .typing-dots span:nth-child(3) { animation-delay: .3s; }
-    @keyframes bounce {
-      0%,80%,100% { transform: translateY(0); }
-      40%          { transform: translateY(-6px); }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes pulse {
+      0%,100% { opacity: .3; transform: scale(.85); }
+      50%      { opacity: 1;  transform: scale(1); }
     }
 
     /* ========================
@@ -560,7 +505,6 @@
       flex-shrink: 0;
       box-shadow: 0 -4px 16px rgba(0,102,204,.07);
     }
-
     .input-row {
       display: flex;
       gap: 10px;
@@ -568,7 +512,6 @@
       max-width: 900px;
       margin: 0 auto;
     }
-
     #msgInput {
       flex: 1;
       background: var(--porto-sky);
@@ -587,48 +530,26 @@
     }
     #msgInput:focus {
       outline: none;
-      border-color: var(--porto-blue);
-      box-shadow: 0 0 0 3px rgba(0,102,204,.12);
+      border-color: var(--porto-navy);
+      box-shadow: 0 0 0 3px rgba(12,68,124,.12);
       background: var(--porto-white);
     }
     #msgInput::placeholder { color: var(--text-muted); }
-
     #sendBtn {
-      background: linear-gradient(135deg, var(--porto-blue) 0%, var(--porto-blue-light) 100%);
-      color: white;
-      border: none;
+      background: var(--porto-navy);
+      color: white; border: none;
       border-radius: var(--radius-md);
       width: 44px; height: 44px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 18px;
       transition: all .18s;
       box-shadow: var(--shadow-sm);
       flex-shrink: 0;
     }
-    #sendBtn:hover:not(:disabled) {
-      transform: translateY(-1px) scale(1.04);
-      box-shadow: var(--shadow-md);
-    }
-    #sendBtn:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .input-footer {
-      text-align: center;
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    /* ========================
-       SCROLLBAR
-    ======================== */
-    * { scrollbar-width: thin; scrollbar-color: var(--border-color) transparent; }
+    #sendBtn:hover:not(:disabled) { transform: translateY(-1px) scale(1.04); box-shadow: var(--shadow-md); background: #0a3a6e; }
+    #sendBtn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .input-footer { text-align: center; font-size: 10px; color: var(--text-muted); margin-top: 6px; }
 
     /* ========================
        RESPONSIVE
@@ -669,11 +590,13 @@
     <div class="logo-wrap">🛡️</div>
     <div class="brand">
       <h1>Porto IA</h1>
-      <p>Assistente para Corretores · Insurian</p>
+      <div class="status-row">
+        <div class="status-dot" title="Sistema operacional"></div>
+        <span class="status-label">Assistente técnico · Grupo Porto</span>
+      </div>
     </div>
   </div>
   <div class="header-right">
-    <!-- CONTADOR SEMANAL -->
     <div class="weekly-counter" title="Dúvidas respondidas esta semana">
       <span class="counter-icon">💬</span>
       <div class="counter-text">
@@ -681,13 +604,18 @@
         <span class="counter-label">dúvidas esta semana</span>
       </div>
     </div>
-    <div class="status-dot" title="Sistema operacional"></div>
     <button id="logoutBtn" onclick="doLogout()" title="Sair">Sair</button>
   </div>
 </header>
 
-<!-- ============ CHIPS DE SUGESTAO ============ -->
-<div class="suggestions-bar" id="suggestionsBar"></div>
+<!-- ============ PILLS DE SUGESTAO (somem apos 1o envio) ============ -->
+<div id="suggestionsArea">
+  <span class="suggestions-label">Pergunte sobre:</span>
+  <button class="pill" onclick="sendPill('Coberturas auto')">Coberturas auto</button>
+  <button class="pill" onclick="sendPill('Assistência 24h')">Assistência 24h</button>
+  <button class="pill" onclick="sendPill('Campanhas ativas')">Campanhas ativas</button>
+  <button class="pill" onclick="sendPill('Como acionar sinistro')">Como acionar sinistro</button>
+</div>
 
 <!-- ============ CHAT ============ -->
 <div class="chat-wrap">
@@ -717,10 +645,9 @@
 <script>
 // ============ AUTH ============
 const SESSION_KEY = 'porto_ia_token';
+let firstMessageSent = false;
 
-function getToken() {
-  return localStorage.getItem(SESSION_KEY);
-}
+function getToken() { return localStorage.getItem(SESSION_KEY); }
 
 function authHeaders() {
   const token = getToken();
@@ -732,7 +659,6 @@ function authHeaders() {
 async function checkAuth() {
   const token = getToken();
   if (!token) { showLogin(); return; }
-  // Validar token com o servidor
   try {
     const r = await fetch('/api/counter', { headers: { 'X-Session-Token': token } });
     if (r.status === 401) { localStorage.removeItem(SESSION_KEY); showLogin(); }
@@ -740,31 +666,27 @@ async function checkAuth() {
       hideLogin();
       const d = await r.json();
       document.getElementById('weeklyCount').textContent = d.weekly_count;
-      loadSuggestions();
     }
-  } catch(e) { hideLogin(); } // sem rede, deixar tentar
+  } catch(e) { hideLogin(); }
 }
 
 function showLogin() {
   document.getElementById('loginOverlay').classList.remove('hidden');
   document.getElementById('loginUser').focus();
 }
-
 function hideLogin() {
   document.getElementById('loginOverlay').classList.add('hidden');
 }
 
 async function doLogin(e) {
   e.preventDefault();
-  const btn = document.getElementById('loginSubmitBtn');
+  const btn   = document.getElementById('loginSubmitBtn');
   const errEl = document.getElementById('loginError');
-  const user = document.getElementById('loginUser').value.trim();
-  const pass = document.getElementById('loginPass').value;
-
+  const user  = document.getElementById('loginUser').value.trim();
+  const pass  = document.getElementById('loginPass').value;
   btn.disabled = true;
   btn.textContent = 'Entrando...';
   errEl.classList.remove('visible');
-
   try {
     const r = await fetch('/api/login', {
       method: 'POST',
@@ -776,7 +698,6 @@ async function doLogin(e) {
       localStorage.setItem(SESSION_KEY, d.token);
       hideLogin();
       loadCounter();
-      loadSuggestions();
     } else {
       errEl.classList.add('visible');
     }
@@ -784,7 +705,6 @@ async function doLogin(e) {
     errEl.textContent = 'Erro de conexão. Tente novamente.';
     errEl.classList.add('visible');
   }
-
   btn.disabled = false;
   btn.textContent = 'Entrar';
 }
@@ -795,8 +715,9 @@ async function doLogout() {
     try { await fetch('/api/logout', { method: 'POST', headers: { 'X-Session-Token': token } }); } catch(e) {}
     localStorage.removeItem(SESSION_KEY);
   }
+  firstMessageSent = false;
+  document.getElementById('suggestionsArea').classList.remove('hidden');
   showLogin();
-  // Limpar chat
   const chatEl = document.getElementById('chat');
   chatEl.innerHTML = `<div class="welcome-card"><div class="emoji">🛡️</div><h2>Porto IA — Assistente Técnico</h2><p>Consulte coberturas, limites, comparativos e condições gerais de todas as seguradoras.<br>Respostas baseadas nos documentos oficiais — precisas e objetivas.</p></div>`;
   history.length = 0;
@@ -807,36 +728,36 @@ function handleUnauthorized() {
   showLogin();
 }
 
+// ============ PILLS ============
+function sendPill(text) {
+  document.getElementById('msgInput').value = text;
+  sendMessage();
+}
+
 // ============ MARKDOWN PARSER ============
 function parseMarkdown(text) {
-  // Escape HTML primeiro
   function esc(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // Processar tabelas
   function parseTable(block) {
     const lines = block.split('\n').filter(l => l.trim());
     if (lines.length < 2) return null;
-    // Verificar se e uma tabela (tem |)
     if (!lines[0].includes('|')) return null;
-    // Linha separadora
     const sepIdx = lines.findIndex(l => /^\s*\|[\s\-|:]+\|\s*$/.test(l) || /^\s*[-|: ]+$/.test(l));
     if (sepIdx < 0) return null;
 
     const headerLine = lines[0];
     const bodyLines  = lines.slice(sepIdx + 1);
 
-    const parseCells = (line) => {
-      return line.split('|')
+    const parseCells = (line) =>
+      line.split('|')
         .map(c => c.trim())
         .filter((c, i, arr) => !(i === 0 && c === '') && !(i === arr.length-1 && c === ''));
-    };
 
     const headers = parseCells(headerLine);
     const rows    = bodyLines.map(parseCells);
 
-    // Formatar celula com icones coloridos
     function fmtCell(c) {
       const raw = esc(c);
       return raw
@@ -857,7 +778,6 @@ function parseMarkdown(text) {
     return html;
   }
 
-  // Processar linha a linha com estados
   const lines = text.split('\n');
   let html = '';
   let tableBuffer = [];
@@ -892,8 +812,7 @@ function parseMarkdown(text) {
     const l = lines[i];
     const trimmed = l.trim();
 
-    // Linha de tabela
-    if (trimmed.startsWith('|') || /^\s*[-:| ]+$/.test(trimmed) && tableBuffer.length > 0) {
+    if (trimmed.startsWith('|') || (/^\s*[-:| ]+$/.test(trimmed) && tableBuffer.length > 0)) {
       flushList();
       tableBuffer.push(trimmed);
       continue;
@@ -901,59 +820,52 @@ function parseMarkdown(text) {
       flushTable();
     }
 
-    // Heading
     if (/^#{1,3}\s/.test(trimmed)) {
       flushList();
-      const lvl = trimmed.match(/^(#+)/)[1].length;
       const txt = fmtInline(trimmed.replace(/^#+\s*/, ''));
       html += `<h3>${txt}</h3>`;
       continue;
     }
-
-    // Blockquote
     if (trimmed.startsWith('>')) {
       flushList();
       html += `<blockquote>${fmtInline(trimmed.slice(1).trim())}</blockquote>`;
       continue;
     }
-
-    // Lista nao ordenada
     if (/^[-•*]\s/.test(trimmed)) {
       if (listType === 'ol') flushList();
       listType = 'ul';
       listBuffer.push(fmtInline(trimmed.replace(/^[-•*]\s/, '')));
       continue;
     }
-    // Lista ordenada
     if (/^\d+\.\s/.test(trimmed)) {
       if (listType === 'ul') flushList();
       listType = 'ol';
       listBuffer.push(fmtInline(trimmed.replace(/^\d+\.\s/, '')));
       continue;
     }
-
-    // Linha vazia — flush listas pendentes
-    if (!trimmed) {
-      flushList();
-      continue;
-    }
-
-    // Paragrafo normal
+    if (!trimmed) { flushList(); continue; }
     flushList();
     html += `<p>${fmtInline(trimmed)}</p>`;
   }
 
   flushList();
   flushTable();
-
   return html;
 }
 
+// ============ EXTRAIR FONTE DA RESPOSTA ============
+function extractSource(text) {
+  // Detectar padrao "Fonte: [documento] · [clausula]"
+  const m = text.match(/Fonte:\s*([^\n·]+(?:·[^\n]+)?)/i);
+  if (m) return m[1].trim();
+  return null;
+}
+
 // ============ ESTADO ============
-const chatEl   = document.getElementById('chat');
-const inputEl  = document.getElementById('msgInput');
-const sendBtn  = document.getElementById('sendBtn');
-let history    = [];
+const chatEl  = document.getElementById('chat');
+const inputEl = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+let history   = [];
 
 // ============ COUNTER ============
 async function loadCounter() {
@@ -967,23 +879,6 @@ async function loadCounter() {
   }
 }
 
-// ============ SUGESTOES ============
-async function loadSuggestions() {
-  try {
-    const r = await fetch('/api/suggest', { headers: authHeaders() });
-    if (r.status === 401) { handleUnauthorized(); return; }
-    const d = await r.json();
-    const bar = document.getElementById('suggestionsBar');
-    d.suggestions.forEach(s => {
-      const chip = document.createElement('button');
-      chip.className = 'chip';
-      chip.textContent = s;
-      chip.onclick = () => { inputEl.value = s; sendMessage(); };
-      bar.appendChild(chip);
-    });
-  } catch(e) {}
-}
-
 // ============ MENSAGEM ============
 function addMessage(role, content, meta) {
   const isUser = role === 'user';
@@ -995,7 +890,7 @@ function addMessage(role, content, meta) {
   av.textContent = isUser ? '👤' : '🛡️';
 
   const col = document.createElement('div');
-  col.style.cssText = 'display:flex;flex-direction:column;' + (isUser ? 'align-items:flex-end;' : '');
+  col.className = 'msg-col';
 
   const bub = document.createElement('div');
   bub.className = `bubble ${isUser ? 'user' : 'bot'}`;
@@ -1008,22 +903,21 @@ function addMessage(role, content, meta) {
 
   col.appendChild(bub);
 
-  if (meta) {
+  // Fonte da resposta (apenas para IA)
+  if (!isUser && meta && meta.sources && meta.sources.length > 0) {
+    const srcLine = document.createElement('div');
+    srcLine.className = 'source-line';
+    srcLine.innerHTML = '📄 <span>Fonte: ' + meta.sources.slice(0,3).map(s =>
+      s.length > 30 ? s.slice(0,30) + '…' : s
+    ).join(' · ') + '</span>';
+    col.appendChild(srcLine);
+  }
+
+  // Tempo de resposta
+  if (!isUser && meta && meta.time) {
     const m = document.createElement('div');
     m.className = 'bubble-meta';
-    if (meta.sources && meta.sources.length > 0) {
-      meta.sources.slice(0,3).forEach(s => {
-        const tag = document.createElement('span');
-        tag.className = 'source-tag';
-        tag.textContent = s.length > 28 ? s.slice(0,28) + '…' : s;
-        m.appendChild(tag);
-      });
-    }
-    if (meta.time) {
-      const t = document.createElement('span');
-      t.textContent = `${meta.time}s`;
-      m.appendChild(t);
-    }
+    m.textContent = `${meta.time}s`;
     col.appendChild(m);
   }
 
@@ -1063,6 +957,12 @@ async function sendMessage() {
   const msg = inputEl.value.trim();
   if (!msg) return;
 
+  // Esconder pills apos primeiro envio
+  if (!firstMessageSent) {
+    firstMessageSent = true;
+    document.getElementById('suggestionsArea').classList.add('hidden');
+  }
+
   inputEl.value = '';
   inputEl.style.height = '';
   sendBtn.disabled = true;
@@ -1089,7 +989,6 @@ async function sendMessage() {
     });
     history.push({ role: 'assistant', content: answer });
 
-    // Atualizar contador
     if (data.weekly_count !== undefined) {
       document.getElementById('weeklyCount').textContent = data.weekly_count;
     }
@@ -1111,7 +1010,6 @@ inputEl.addEventListener('keydown', e => {
     sendMessage();
   }
 });
-// Auto-resize textarea
 inputEl.addEventListener('input', () => {
   inputEl.style.height = 'auto';
   inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
