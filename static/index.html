@@ -156,6 +156,133 @@
     }
 
     /* ========================
+       TELA DE LOGIN
+    ======================== */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, var(--porto-blue-dark) 0%, var(--porto-blue) 60%, var(--porto-blue-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #loginOverlay.hidden { display: none; }
+
+    .login-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 40px 36px 36px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .login-logo {
+      background: var(--porto-blue);
+      color: white;
+      width: 58px;
+      height: 58px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .login-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+    }
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: -12px;
+    }
+
+    .login-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .login-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .login-field input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .login-field input:focus {
+      border-color: var(--porto-blue);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--porto-blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+    .login-btn:hover { background: var(--porto-blue-mid); }
+    .login-btn:active { transform: scale(.98); }
+    .login-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .login-error {
+      color: #D32F2F;
+      font-size: 13px;
+      text-align: center;
+      background: #FFEBEE;
+      border: 1px solid #FFCDD2;
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      display: none;
+    }
+    .login-error.visible { display: block; }
+
+    /* Botao sair no header */
+    #logoutBtn {
+      background: rgba(255,255,255,.18);
+      border: 1.5px solid rgba(255,255,255,.35);
+      color: white;
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+      backdrop-filter: blur(6px);
+    }
+    #logoutBtn:hover { background: rgba(255,255,255,.28); }
+
+    /* ========================
        SUGESTOES / CHIPS
     ======================== */
     .suggestions-bar {
@@ -515,6 +642,27 @@
 </head>
 <body>
 
+<!-- ============ LOGIN OVERLAY ============ -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <div class="login-title">Porto IA</div>
+    <div class="login-subtitle">Acesso exclusivo para corretores</div>
+    <form class="login-form" id="loginForm" onsubmit="doLogin(event)">
+      <div class="login-field">
+        <label for="loginUser">Usuário</label>
+        <input type="text" id="loginUser" autocomplete="username" placeholder="Digite seu usuário" required />
+      </div>
+      <div class="login-field">
+        <label for="loginPass">Senha</label>
+        <input type="password" id="loginPass" autocomplete="current-password" placeholder="Digite sua senha" required />
+      </div>
+      <div class="login-error" id="loginError">Usuário ou senha incorretos.</div>
+      <button type="submit" class="login-btn" id="loginSubmitBtn">Entrar</button>
+    </form>
+  </div>
+</div>
+
 <!-- ============ HEADER ============ -->
 <header>
   <div class="header-left">
@@ -534,6 +682,7 @@
       </div>
     </div>
     <div class="status-dot" title="Sistema operacional"></div>
+    <button id="logoutBtn" onclick="doLogout()" title="Sair">Sair</button>
   </div>
 </header>
 
@@ -566,6 +715,98 @@
 </div>
 
 <script>
+// ============ AUTH ============
+const SESSION_KEY = 'porto_ia_token';
+
+function getToken() {
+  return localStorage.getItem(SESSION_KEY);
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token
+    ? { 'Content-Type': 'application/json', 'X-Session-Token': token }
+    : { 'Content-Type': 'application/json' };
+}
+
+async function checkAuth() {
+  const token = getToken();
+  if (!token) { showLogin(); return; }
+  // Validar token com o servidor
+  try {
+    const r = await fetch('/api/counter', { headers: { 'X-Session-Token': token } });
+    if (r.status === 401) { localStorage.removeItem(SESSION_KEY); showLogin(); }
+    else {
+      hideLogin();
+      const d = await r.json();
+      document.getElementById('weeklyCount').textContent = d.weekly_count;
+      loadSuggestions();
+    }
+  } catch(e) { hideLogin(); } // sem rede, deixar tentar
+}
+
+function showLogin() {
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('loginUser').focus();
+}
+
+function hideLogin() {
+  document.getElementById('loginOverlay').classList.add('hidden');
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginSubmitBtn');
+  const errEl = document.getElementById('loginError');
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+  errEl.classList.remove('visible');
+
+  try {
+    const r = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    const d = await r.json();
+    if (r.ok && d.token) {
+      localStorage.setItem(SESSION_KEY, d.token);
+      hideLogin();
+      loadCounter();
+      loadSuggestions();
+    } else {
+      errEl.classList.add('visible');
+    }
+  } catch(e) {
+    errEl.textContent = 'Erro de conexão. Tente novamente.';
+    errEl.classList.add('visible');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Entrar';
+}
+
+async function doLogout() {
+  const token = getToken();
+  if (token) {
+    try { await fetch('/api/logout', { method: 'POST', headers: { 'X-Session-Token': token } }); } catch(e) {}
+    localStorage.removeItem(SESSION_KEY);
+  }
+  showLogin();
+  // Limpar chat
+  const chatEl = document.getElementById('chat');
+  chatEl.innerHTML = `<div class="welcome-card"><div class="emoji">🛡️</div><h2>Porto IA — Assistente Técnico</h2><p>Consulte coberturas, limites, comparativos e condições gerais de todas as seguradoras.<br>Respostas baseadas nos documentos oficiais — precisas e objetivas.</p></div>`;
+  history.length = 0;
+}
+
+function handleUnauthorized() {
+  localStorage.removeItem(SESSION_KEY);
+  showLogin();
+}
+
 // ============ MARKDOWN PARSER ============
 function parseMarkdown(text) {
   // Escape HTML primeiro
@@ -717,7 +958,8 @@ let history    = [];
 // ============ COUNTER ============
 async function loadCounter() {
   try {
-    const r = await fetch('/api/counter');
+    const r = await fetch('/api/counter', { headers: authHeaders() });
+    if (r.status === 401) { handleUnauthorized(); return; }
     const d = await r.json();
     document.getElementById('weeklyCount').textContent = d.weekly_count;
   } catch(e) {
@@ -728,7 +970,8 @@ async function loadCounter() {
 // ============ SUGESTOES ============
 async function loadSuggestions() {
   try {
-    const r = await fetch('/api/suggest');
+    const r = await fetch('/api/suggest', { headers: authHeaders() });
+    if (r.status === 401) { handleUnauthorized(); return; }
     const d = await r.json();
     const bar = document.getElementById('suggestionsBar');
     d.suggestions.forEach(s => {
@@ -831,11 +1074,13 @@ async function sendMessage() {
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ message: msg, history: history.slice(-10) })
     });
     const data = await res.json();
     removeTyping();
+
+    if (res.status === 401) { handleUnauthorized(); return; }
 
     const answer = data.answer || 'Desculpe, não consegui responder.';
     addMessage('assistant', answer, {
@@ -873,8 +1118,7 @@ inputEl.addEventListener('input', () => {
 });
 
 // ============ INIT ============
-loadCounter();
-loadSuggestions();
+checkAuth();
 inputEl.focus();
 </script>
 </body>
