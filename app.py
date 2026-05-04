@@ -17,7 +17,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
-from rag_engine import get_index, query_rag, TFIDFIndex
+from rag_engine import get_index, query_rag, EmbeddingIndex
 
 BASE_DIR = Path(__file__).parent
 
@@ -35,7 +35,7 @@ static_dir = BASE_DIR / "static"
 static_dir.mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
-_index: Optional[TFIDFIndex] = None
+_index: Optional[EmbeddingIndex] = None
 
 # ---- Credenciais de acesso (via variaveis de ambiente) ----
 # No Render: defina APP_USERNAME e APP_PASSWORD no painel de Environment
@@ -175,12 +175,15 @@ async def chat(request: ChatRequest, _auth=Depends(require_auth)):
             for msg in request.history
         ]
 
+        # Buscar fontes (top 5 chunks semanticos)
         results = idx.search(request.message, top_k=5)
         sources = list(set([
             r[0]['source']
             for r in results
-            if r[1] > 0.01
+            if r[1] > 0.2
         ]))
+        if not sources and results:
+            sources = list(set([r[0]['source'] for r in results[:3]]))
 
         answer = query_rag(request.message, idx, history)
 
@@ -234,15 +237,16 @@ async def stats(_auth=Depends(require_auth)):
     idx = get_cached_index()
     return {
         "total_chunks": len(idx.chunks),
-        "total_terms": len(idx.idf),
+        "embedding_dim": idx.embeddings.shape[1] if idx.embeddings is not None else 0,
         "sources": list(set([c['source'] for c in idx.chunks])),
-        "status": "operacional"
+        "status": "operacional",
+        "engine": "embeddings-semanticos"
     }
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
-    print("Iniciando Porto IA v2.1...")
+    print("Iniciando Porto IA v3.0 (Embeddings Semanticos)...")
     print("Carregando base de conhecimento...")
     _index = get_index()
     print(f"Base carregada: {len(_index.chunks)} chunks")
