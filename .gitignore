@@ -8,3 +8,9 @@ venv/
 *.egg-info/
 .DS_Store
 chroma_db/
+# Formato legado pesado (substituido por chunks.json + embeddings.npy)
+embeddings.json
+index.json
+# Arquivos duplicados
+docs/auto_porto_full.txt
+docs/auto_protecao_combinada_full.txt
