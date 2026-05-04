@@ -3,6 +3,8 @@ Porto IA - Backend FastAPI
 API do chatbot da Porto Seguro para corretores
 """
 import time
+import datetime
+import json
 from typing import List, Optional
 from pathlib import Path
 
@@ -33,6 +35,28 @@ app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 _index: Optional[TFIDFIndex] = None
 
+# ---- Contador semanal (em memoria, reseta ao reiniciar no Render free tier) ----
+_counter_data = {"count": 0, "week": 0, "year": 0}
+
+def get_current_week():
+    today = datetime.date.today()
+    return today.isocalendar()[1], today.year
+
+def increment_counter() -> int:
+    global _counter_data
+    week, year = get_current_week()
+    if _counter_data["week"] != week or _counter_data["year"] != year:
+        _counter_data = {"count": 0, "week": week, "year": year}
+    _counter_data["count"] += 1
+    return _counter_data["count"]
+
+def get_counter_value() -> int:
+    global _counter_data
+    week, year = get_current_week()
+    if _counter_data["week"] != week or _counter_data["year"] != year:
+        return 0
+    return _counter_data["count"]
+
 
 def get_cached_index():
     global _index
@@ -57,6 +81,7 @@ class ChatResponse(BaseModel):
     answer: str
     sources: List[str] = []
     response_time: float = 0.0
+    weekly_count: int = 0
 
 
 # ---- Endpoints ----
@@ -70,7 +95,7 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "Porto IA", "version": "1.0.0"}
+    return {"status": "ok", "service": "Porto IA", "version": "2.0.0"}
 
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -94,32 +119,48 @@ async def chat(request: ChatRequest):
 
         answer = query_rag(request.message, idx, history)
 
+        # Incrementar contador semanal
+        weekly_count = increment_counter()
+
         elapsed = time.time() - start
 
         return ChatResponse(
             answer=answer,
             sources=sources,
-            response_time=round(elapsed, 2)
+            response_time=round(elapsed, 2),
+            weekly_count=weekly_count
         )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/counter")
+async def get_counter():
+    """Retorna contador de interacoes da semana"""
+    week, year = get_current_week()
+    return {
+        "weekly_count": get_counter_value(),
+        "week": week,
+        "year": year
+    }
+
 
 @app.get("/api/suggest")
 async def suggest_questions():
     """Sugestoes de perguntas frequentes"""
     return {
         "suggestions": [
-            "Qual é o limite do guincho na Porto Seguro e na Azul Seguros?",
-            "Como funciona o carro reserva em caso de sinistro no Itaú Seguros?",
-            "Quais são as exclusões para perda total na Mitsui Seguros?",
-            "O que cobre a assistência 24 horas na Azul Seguros?",
-            "Qual a diferença entre Auto e Auto Compacto da Azul Seguros?",
-            "O que é coberto em caso de roubo no Auto Frota da Mitsui?",
-            "Quais são as coberturas do produto 24 Horas do Itaú?",
-            "Como funciona o reparo de vidros na Porto Seguro?",
-            "Quais documentos preciso para registrar um sinistro?",
-            "Compare a cobertura de danos a terceiros entre Porto e Itaú.",
+            "Compare a assistência 24h da Porto, Itaú, Azul e Mitsui",
+            "Quais são os diferenciais exclusivos do Seguro Auto Porto?",
+            "Como funciona o Projeto 15 Minutos da Porto?",
+            "Qual é o limite do guincho em cada seguradora?",
+            "O que cobre a assistência 24 horas em caso de pane?",
+            "Quais as vantagens do Cartão Porto Bank?",
+            "Como funciona o carro reserva em caso de sinistro?",
+            "Quais são as exclusões para perda total?",
+            "O que é a cláusula 87 - Reparo Rápido e Supermartelinho?",
+            "Compare coberturas de danos a terceiros entre Porto e Itaú",
         ]
     }
 
@@ -137,7 +178,7 @@ async def stats():
 
 if __name__ == "__main__":
     port = int(__import__("os").environ.get("PORT", 8001))
-    print("Iniciando Porto IA...")
+    print("Iniciando Porto IA v2...")
     print("Carregando base de conhecimento...")
     _index = get_index()
     print(f"Base carregada: {len(_index.chunks)} chunks")
