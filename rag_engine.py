@@ -1,23 +1,27 @@
 """
-Porto IA - RAG Engine
-Sistema de busca semantica nos documentos da Porto Seguro
-usando TF-IDF simples sem dependencias externas
+Porto IA - RAG Engine v3.1
+Busca semantica por embeddings (OpenAI text-embedding-3-small)
+Formato de armazenamento: chunks.json + embeddings.npy (76% menor que JSON unico)
 """
 import os
 import re
-import math
 import json
+import math
+import numpy as np
 from pathlib import Path
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 import openai
 
 # ---- Configuracao ----
 BASE_DIR = Path(__file__).parent
 DOCS_PATH = BASE_DIR / "docs"
-INDEX_PATH = BASE_DIR / "index.json"
+EMBEDDINGS_PATH = BASE_DIR / "embeddings.json"   # legado (fallback)
+CHUNKS_PATH      = BASE_DIR / "chunks.json"       # novo formato
+EMBEDDINGS_NPY   = BASE_DIR / "embeddings.npy"    # novo formato binario
 
 
 def get_llm_client():
+    """Cliente para chat/LLM via OpenRouter"""
     key = os.environ.get("OPENROUTER_API_KEY", "")
     return openai.OpenAI(
         api_key=key,
@@ -25,9 +29,16 @@ def get_llm_client():
     )
 
 
-# ---- Chunking por clausula ----
-def chunk_text(text: str, chunk_size: int = 1200, overlap: int = 200) -> List[str]:
-    """Divide o texto em chunks, respeitando clausulas quando possivel"""
+def get_embedding_client():
+    """Cliente para embeddings via OpenRouter (openai/text-embedding-3-small)"""
+    key = os.environ.get("OPENROUTER_API_KEY", os.environ.get("OPENAI_API_KEY", ""))
+    base_url = "https://openrouter.ai/api/v1" if key.startswith("sk-or-") else "https://api.openai.com/v1"
+    return openai.OpenAI(api_key=key, base_url=base_url)
+
+
+# ---- Chunking ----
+def chunk_text(text: str, chunk_size: int = 500, overlap: int = 80) -> List[str]:
+    """Divide texto em chunks de 300-500 palavras com overlap"""
     text = re.sub(r'\n{3,}', '\n\n', text)
 
     # Tentar dividir por clausulas primeiro
@@ -43,193 +54,142 @@ def chunk_text(text: str, chunk_size: int = 1200, overlap: int = 200) -> List[st
         if not section or len(section) < 50:
             continue
 
-        if len(section) <= chunk_size:
+        words = section.split()
+        if len(words) <= chunk_size:
             chunks.append(section)
         else:
-            # Dividir secao grande em sub-chunks com overlap
             paragraphs = section.split('\n\n')
             current = ""
+            current_words = 0
             for para in paragraphs:
                 para = para.strip()
                 if not para:
                     continue
-                if len(current) + len(para) <= chunk_size:
+                para_words = len(para.split())
+                if current_words + para_words <= chunk_size:
                     current += "\n\n" + para if current else para
+                    current_words += para_words
                 else:
                     if current:
                         chunks.append(current.strip())
-                        # overlap
-                        words = current.split()
-                        overlap_text = " ".join(words[-40:]) if len(words) > 40 else current
+                        w = current.split()
+                        overlap_text = " ".join(w[-30:]) if len(w) > 30 else current
                         current = overlap_text + "\n\n" + para
+                        current_words = len(current.split())
                     else:
-                        chunks.append(para[:chunk_size])
-                        current = para[chunk_size - overlap:]
+                        chunks.append(para[:chunk_size * 6])
+                        current = ""
+                        current_words = 0
             if current:
                 chunks.append(current.strip())
 
-    chunks = [c for c in chunks if len(c) > 80]
+    chunks = [c for c in chunks if len(c.split()) > 30]
     return chunks
 
 
-# ---- TF-IDF Index ----
-class TFIDFIndex:
+# ---- Embedding Index ----
+class EmbeddingIndex:
     def __init__(self):
         self.chunks: List[Dict] = []
-        self.vocab: Dict[str, int] = {}
-        self.idf: Dict[str, float] = {}
-        self.tfidf_matrix: List[Dict[str, float]] = []
-
-    def tokenize(self, text: str) -> List[str]:
-        import unicodedata
-        # Normalizar acentos: "Itaú" -> "itau", "assistências" -> "assistencias"
-        text = ''.join(
-            c for c in unicodedata.normalize('NFD', text.lower())
-            if unicodedata.category(c) != 'Mn'
-        )
-        tokens = re.findall(r'\b[a-z\w]{2,}\b', text)
-        stopwords = {
-            'de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para',
-            'com', 'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as',
-            'dos', 'como', 'mas', 'ao', 'ele', 'das', 'seu', 'sua',
-            'ou', 'quando', 'muito', 'nos', 'ja', 'eu', 'tambem',
-            'pelo', 'pela', 'ate', 'isso', 'ela', 'entre', 'depois',
-            'sem', 'mesmo', 'aos', 'seus', 'quem', 'nas', 'me', 'esse',
-            'eles', 'essa', 'num', 'nem', 'suas', 'meu', 'minha', 'te',
-            'nao', 'nesta', 'deste', 'estava', 'este', 'havia',
-            'ser', 'ter', 'pode', 'foi', 'sao', 'esta',
-        }
-        return [t for t in tokens if t not in stopwords]
+        self.embeddings: Optional[np.ndarray] = None  # shape (N, 1536)
 
     def build(self, documents: List[Dict]):
-        print(f"Construindo indice com {len(documents)} chunks...")
+        """documents: lista de {text, source, chunk_id}"""
         self.chunks = documents
-        N = len(documents)
+        print(f"Indice tem {len(documents)} chunks. Gerando embeddings...")
 
-        tokenized = [self.tokenize(doc['text']) for doc in documents]
+        client = get_embedding_client()
+        all_embeddings = []
+        batch_size = 50
+        emb_model = "openai/text-embedding-3-small" if 'openrouter' in str(client.base_url) else "text-embedding-3-small"
 
-        all_tokens = set()
-        for tokens in tokenized:
-            all_tokens.update(tokens)
-        self.vocab = {t: i for i, t in enumerate(sorted(all_tokens))}
+        texts = [d['text'] for d in documents]
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i:i + batch_size]
+            print(f"  Batch {i//batch_size + 1}/{math.ceil(len(texts)/batch_size)}...")
+            resp = client.embeddings.create(
+                model=emb_model,
+                input=batch
+            )
+            for item in resp.data:
+                all_embeddings.append(item.embedding)
 
-        doc_freq = {}
-        for tokens in tokenized:
-            for t in set(tokens):
-                doc_freq[t] = doc_freq.get(t, 0) + 1
+        self.embeddings = np.array(all_embeddings, dtype=np.float32)
+        norms = np.linalg.norm(self.embeddings, axis=1, keepdims=True)
+        norms = np.where(norms == 0, 1, norms)
+        self.embeddings = self.embeddings / norms
+        print(f"Embeddings gerados: shape={self.embeddings.shape}")
 
-        self.idf = {}
-        for term, df in doc_freq.items():
-            self.idf[term] = math.log((N + 1) / (df + 1)) + 1
-
-        self.tfidf_matrix = []
-        for tokens in tokenized:
-            tf = {}
-            for t in tokens:
-                tf[t] = tf.get(t, 0) + 1
-            tfidf = {}
-            for t, count in tf.items():
-                tf_val = count / len(tokens) if tokens else 0
-                idf_val = self.idf.get(t, 1.0)
-                tfidf[t] = tf_val * idf_val
-            self.tfidf_matrix.append(tfidf)
-
-        print(f"Indice construido: {len(self.vocab)} termos unicos")
-
-    def search(self, query: str, top_k: int = 6) -> List[Tuple[Dict, float]]:
-        query_tokens = self.tokenize(query)
-
-        # Busca por numero de clausula se mencionado
-        clausula_match = re.search(r'cl[aá]usula\s+(\d+\w*)', query.lower())
-        if clausula_match:
-            num = clausula_match.group(1).upper()
-            exact = []
-            for i, chunk in enumerate(self.chunks):
-                if re.search(rf'CL[AÁ]USULA\s+{num}\b', chunk['text'], re.IGNORECASE):
-                    exact.append((chunk, 1.0))
-            if exact:
-                return exact[:top_k]
-
-        query_tf = {}
-        for t in query_tokens:
-            query_tf[t] = query_tf.get(t, 0) + 1
-
-        query_tfidf = {}
-        for t, count in query_tf.items():
-            tf_val = count / len(query_tokens) if query_tokens else 0
-            idf_val = self.idf.get(t, 1.0)
-            query_tfidf[t] = tf_val * idf_val
-
-        scores = []
-        query_norm = math.sqrt(sum(v**2 for v in query_tfidf.values()))
-
-        for i, doc_tfidf in enumerate(self.tfidf_matrix):
-            dot = sum(query_tfidf.get(t, 0) * doc_tfidf.get(t, 0) for t in query_tfidf)
-            doc_norm = math.sqrt(sum(v**2 for v in doc_tfidf.values()))
-            if query_norm > 0 and doc_norm > 0:
-                score = dot / (query_norm * doc_norm)
-            else:
-                score = 0.0
-            scores.append((self.chunks[i], score))
-
-        scores.sort(key=lambda x: x[1], reverse=True)
-        return scores[:top_k]
-
-    def search_in_source(self, query: str, source_key: str, top_k: int = 3) -> List[Tuple[Dict, float]]:
-        """Busca apenas nos chunks de uma seguradora especifica, com reranking por topico"""
-        import unicodedata
-
-        def norm(t):
-            return ''.join(c for c in unicodedata.normalize('NFD', t.lower())
-                           if unicodedata.category(c) != 'Mn')
-
-        src_key_norm = norm(source_key)
-        query_tokens = self.tokenize(query)
-        if not query_tokens:
+    def search(self, query: str, top_k: int = 5) -> List[Tuple[Dict, float]]:
+        """Busca semantica por cosine similarity"""
+        if self.embeddings is None or len(self.chunks) == 0:
             return []
 
-        query_tf = {}
-        for t in query_tokens:
-            query_tf[t] = query_tf.get(t, 0) + 1
-        query_tfidf = {t: (c/len(query_tokens))*self.idf.get(t, 1.0) for t, c in query_tf.items()}
-        query_norm_val = math.sqrt(sum(v**2 for v in query_tfidf.values()))
+        client = get_embedding_client()
+        emb_model = "openai/text-embedding-3-small" if 'openrouter' in str(client.base_url) else "text-embedding-3-small"
+        resp = client.embeddings.create(
+            model=emb_model,
+            input=[query]
+        )
+        q_vec = np.array(resp.data[0].embedding, dtype=np.float32)
+        q_norm = np.linalg.norm(q_vec)
+        if q_norm > 0:
+            q_vec = q_vec / q_norm
 
-        scores = []
-        for i, doc_tfidf in enumerate(self.tfidf_matrix):
-            if src_key_norm not in norm(self.chunks[i]['source']):
-                continue
-            dot = sum(query_tfidf.get(t, 0)*doc_tfidf.get(t, 0) for t in query_tfidf)
-            dnorm = math.sqrt(sum(v**2 for v in doc_tfidf.values()))
-            score = dot/(query_norm_val*dnorm) if query_norm_val > 0 and dnorm > 0 else 0.0
-            scores.append((self.chunks[i], score))
+        scores = self.embeddings @ q_vec  # shape (N,)
+        top_indices = np.argsort(scores)[::-1][:top_k]
 
-        scores.sort(key=lambda x: x[1], reverse=True)
-        return scores[:top_k]
+        return [(self.chunks[i], float(scores[i])) for i in top_indices]
 
     def save(self, path: str):
+        """Salva no formato legado JSON (para compatibilidade)"""
         data = {
             'chunks': self.chunks,
-            'idf': self.idf,
-            'tfidf_matrix': self.tfidf_matrix
+            'embeddings': self.embeddings.tolist() if self.embeddings is not None else []
         }
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False)
-        print(f"Indice salvo em {path}")
+        size_mb = Path(path).stat().st_size / 1024 / 1024
+        print(f"Indice salvo: {path} ({size_mb:.1f} MB)")
+
+    def save_split(self, chunks_path: str, npy_path: str):
+        """Salva no formato otimizado: chunks.json + embeddings.npy (76% menor)"""
+        # Salvar chunks
+        with open(chunks_path, 'w', encoding='utf-8') as f:
+            json.dump({'chunks': self.chunks}, f, ensure_ascii=False)
+        chunks_mb = Path(chunks_path).stat().st_size / 1024 / 1024
+        print(f"chunks.json salvo: {chunks_mb:.2f} MB")
+
+        # Salvar embeddings como numpy binario
+        np.save(npy_path, self.embeddings)
+        npy_mb = Path(npy_path).stat().st_size / 1024 / 1024
+        print(f"embeddings.npy salvo: {npy_mb:.1f} MB")
+        print(f"Total formato split: {chunks_mb + npy_mb:.1f} MB")
 
     def load(self, path: str):
+        """Carrega do formato legado JSON"""
+        print(f"Carregando embeddings de {path}...")
         with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         self.chunks = data['chunks']
-        self.idf = data['idf']
-        self.tfidf_matrix = data['tfidf_matrix']
-        print(f"Indice carregado: {len(self.chunks)} chunks")
+        self.embeddings = np.array(data['embeddings'], dtype=np.float32)
+        print(f"Embeddings carregados: {len(self.chunks)} chunks, shape={self.embeddings.shape}")
+
+    def load_split(self, chunks_path: str, npy_path: str):
+        """Carrega do formato otimizado chunks.json + embeddings.npy"""
+        print(f"Carregando chunks de {chunks_path}...")
+        with open(chunks_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        self.chunks = data['chunks']
+        print(f"Carregando embeddings de {npy_path}...")
+        self.embeddings = np.load(npy_path)
+        print(f"Embeddings carregados: {len(self.chunks)} chunks, shape={self.embeddings.shape}")
 
 
 # ---- Build Index ----
 def build_index():
     all_docs = []
 
-    # Mapeamento de arquivo -> nome legivel da fonte
     doc_files = {
         '24_Horas_-_Itau.txt': '24 Horas - Itau',
         'Auto_-_Azul.txt': 'Auto - Azul Seguros',
@@ -253,7 +213,7 @@ def build_index():
         with open(filepath, 'r', encoding='utf-8') as f:
             text = f.read()
 
-        chunks = chunk_text(text, chunk_size=1200, overlap=200)
+        chunks = chunk_text(text, chunk_size=500, overlap=80)
         print(f"{source}: {len(chunks)} chunks")
 
         for i, chunk in enumerate(chunks):
@@ -263,15 +223,22 @@ def build_index():
                 'chunk_id': f"{source}_{i}"
             })
 
-    index = TFIDFIndex()
+    index = EmbeddingIndex()
     index.build(all_docs)
-    index.save(str(INDEX_PATH))
+    # Salvar nos dois formatos
+    index.save(str(EMBEDDINGS_PATH))        # legado
+    index.save_split(str(CHUNKS_PATH), str(EMBEDDINGS_NPY))  # otimizado
     return index
 
 
 # ---- RAG Query ----
-SYSTEM_PROMPT = """Você é a Porto IA, assistente técnico especializado para corretores de seguros da Insurian.
-Você tem acesso às Condições Gerais, Manuais do Segurado e informações do site oficial da Porto Seguro, Azul Seguros, Itaú Seguros e Mitsui Seguros.
+SYSTEM_PROMPT = """Você é a IA oficial do Grupo Porto, especializada em responder dúvidas de corretores sobre produtos, coberturas e condições gerais.
+
+Responda sempre com base nos documentos fornecidos abaixo. Ao final de cada resposta, cite o documento e a cláusula de origem no formato:
+'Fonte: [nome do documento] · [cláusula ou seção]'
+
+Se a informação não estiver nos documentos, diga claramente: 'Não encontrei essa informação nos documentos disponíveis. Consulte seu gerente comercial.'
+Nunca invente informações. Seja direto, claro e profissional.
 
 ═══════════════════════════════════════════════
 REGRAS DE FORMATO — SIGA SEMPRE SEM EXCEÇÃO
@@ -313,8 +280,7 @@ REGRAS DE FORMATO — SIGA SEMPRE SEM EXCEÇÃO
 
 8. NUNCA forneça telefones, 0800 ou endereços — podem estar desatualizados
 9. Cite cláusula/seção quando disponível (ex: "Cláusula 5ª", "Seção III")
-10. Se não tiver a informação no contexto: diga claramente "Não encontrei essa informação no contexto disponível"
-11. Para sinistros: oriente a acessar o App Porto ou portoseguro.com.br/atendimento/sinistros
+10. Para sinistros: oriente a acessar o App Porto ou portoseguro.com.br/atendimento/sinistros
 
 ═══════════════════════════════════════════════
 PADRÃO DE QUALIDADE DAS RESPOSTAS
@@ -335,56 +301,18 @@ Documentos disponíveis:
 - Moto Azul Seguros"""
 
 
-def query_rag(question: str, index: TFIDFIndex, conversation_history: List[Dict] = None) -> str:
-    import unicodedata
+def query_rag(question: str, index: EmbeddingIndex, conversation_history: List[Dict] = None) -> str:
+    """Busca semantica + resposta via LLM"""
 
-    def norm(t):
-        return ''.join(c for c in unicodedata.normalize('NFD', t.lower()) if unicodedata.category(c) != 'Mn')
+    results = index.search(question, top_k=5)
 
-    # Detectar quais seguradoras foram mencionadas na pergunta
-    q_norm = norm(question)
-    seguradora_keys = {
-        'porto': ['porto seguro', 'auto protecao combinada', 'porto'],
-        'azul': ['azul'],
-        'itau': ['itau'],
-        'mitsui': ['mitsui'],
-    }
-    mencoes = [key for key in seguradora_keys if key in q_norm]
-
-    # Detectar se eh pergunta comparativa geral (sem citar seguradoras especificas)
-    palavras_comparativas = ['compare', 'comparar', 'comparativo', 'diferenca', 'diferente',
-                              'todas', 'cada', 'por seguradora', 'entre as seguradoras',
-                              'todas as seguradoras', 'qual seguradora', 'quais seguradoras']
-    eh_comparativa_geral = any(p in q_norm for p in palavras_comparativas)
-
-    # Se pergunta mencionar "todas" as seguradoras implicitamente, buscar em todas
-    if eh_comparativa_geral and len(mencoes) == 0:
-        mencoes = list(seguradora_keys.keys())
-
-    seen_ids = set()
     context_parts = []
+    for chunk, score in results:
+        if score > 0.2:
+            context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
 
-    if len(mencoes) >= 2:
-        # Para perguntas comparativas: busca focada por seguradora usando search_in_source
-        # Remove nomes das seguradoras da query para focar no topico
-        topic_query = question
-        for key in seguradora_keys:
-            for variant in [key, key.capitalize(), key.upper()]:
-                topic_query = topic_query.replace(variant, '')
-        topic_query = ' '.join(topic_query.split())  # normalizar espacos
-
-        for key in mencoes:
-            results = index.search_in_source(topic_query, key, top_k=3)
-            for chunk, score in results:
-                cid = (chunk['source'], chunk['chunk_id'])
-                if cid not in seen_ids:
-                    context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
-                    seen_ids.add(cid)
-    else:
-        results = index.search(question, top_k=6)
-        for chunk, score in results:
-            if score > 0.02:
-                context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
+    if not context_parts and results:
+        context_parts = [f"[{c['source']}]\n{c['text']}" for c, _ in results[:3]]
 
     context = "\n\n---\n\n".join(context_parts) if context_parts else "Nenhum contexto relevante encontrado."
 
@@ -393,7 +321,7 @@ def query_rag(question: str, index: TFIDFIndex, conversation_history: List[Dict]
     if conversation_history:
         messages.extend(conversation_history[-6:])
 
-    user_message = f"""Contexto dos documentos Porto Seguro:
+    user_message = f"""Contexto dos documentos:
 
 {context}
 
@@ -418,10 +346,18 @@ Pergunta do corretor: {question}"""
 _index_instance = None
 
 
-def get_index() -> TFIDFIndex:
+def get_index() -> EmbeddingIndex:
     global _index_instance
     if _index_instance is None:
-        # Sempre reconstruir para garantir chunks atualizados
-        idx = build_index()
+        idx = EmbeddingIndex()
+        # Preferir formato otimizado (chunks.json + embeddings.npy)
+        if CHUNKS_PATH.exists() and EMBEDDINGS_NPY.exists():
+            idx.load_split(str(CHUNKS_PATH), str(EMBEDDINGS_NPY))
+        elif EMBEDDINGS_PATH.exists():
+            print("Usando formato legado embeddings.json...")
+            idx.load(str(EMBEDDINGS_PATH))
+        else:
+            print("Nenhum indice encontrado. Execute indexer.py primeiro.")
+            idx = build_index()
         _index_instance = idx
     return _index_instance
