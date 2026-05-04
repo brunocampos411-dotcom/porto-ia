@@ -2,17 +2,19 @@
 Porto IA - Backend FastAPI
 API do chatbot da Porto Seguro para corretores
 """
+import os
 import time
+import secrets
 import datetime
 import json
 from typing import List, Optional
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 from rag_engine import get_index, query_rag, TFIDFIndex
@@ -34,6 +36,44 @@ static_dir.mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 _index: Optional[TFIDFIndex] = None
+
+# ---- Credenciais de acesso (via variaveis de ambiente) ----
+# No Render: defina APP_USERNAME e APP_PASSWORD no painel de Environment
+APP_USERNAME = os.environ.get("APP_USERNAME", "corretor")
+APP_PASSWORD = os.environ.get("APP_PASSWORD", "porto2024")
+
+# ---- Tokens de sessao em memoria ----
+# Cada token e valido por 8 horas
+_sessions: dict = {}  # token -> expiry_timestamp
+
+SESSION_TTL_HOURS = 8
+
+def create_session_token() -> str:
+    token = secrets.token_urlsafe(32)
+    expiry = time.time() + (SESSION_TTL_HOURS * 3600)
+    _sessions[token] = expiry
+    return token
+
+def validate_token(token: str) -> bool:
+    if not token or token not in _sessions:
+        return False
+    if time.time() > _sessions[token]:
+        del _sessions[token]
+        return False
+    return True
+
+def cleanup_sessions():
+    """Remove sessoes expiradas"""
+    now = time.time()
+    expired = [t for t, exp in _sessions.items() if now > exp]
+    for t in expired:
+        del _sessions[t]
+
+def require_auth(request: Request):
+    """Dependencia FastAPI que verifica autenticacao"""
+    token = request.headers.get("X-Session-Token") or request.cookies.get("session_token")
+    if not validate_token(token):
+        raise HTTPException(status_code=401, detail="Nao autorizado. Faca login novamente.")
 
 # ---- Contador semanal (em memoria, reseta ao reiniciar no Render free tier) ----
 _counter_data = {"count": 0, "week": 0, "year": 0}
@@ -84,7 +124,12 @@ class ChatResponse(BaseModel):
     weekly_count: int = 0
 
 
-# ---- Endpoints ----
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+# ---- Endpoints publicos ----
 @app.get("/", response_class=HTMLResponse)
 async def root():
     html_path = BASE_DIR / "static" / "index.html"
@@ -95,11 +140,31 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "Porto IA", "version": "2.0.0"}
+    return {"status": "ok", "service": "Porto IA", "version": "2.1.0"}
 
 
+@app.post("/api/login")
+async def login(req: LoginRequest):
+    """Autentica o usuario e retorna um token de sessao"""
+    cleanup_sessions()
+    if req.username.strip() == APP_USERNAME and req.password == APP_PASSWORD:
+        token = create_session_token()
+        return {"success": True, "token": token, "expires_in_hours": SESSION_TTL_HOURS}
+    raise HTTPException(status_code=401, detail="Usuario ou senha incorretos")
+
+
+@app.post("/api/logout")
+async def logout(request: Request):
+    """Invalida o token de sessao"""
+    token = request.headers.get("X-Session-Token") or request.cookies.get("session_token")
+    if token and token in _sessions:
+        del _sessions[token]
+    return {"success": True}
+
+
+# ---- Endpoints protegidos ----
 @app.post("/api/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, _auth=Depends(require_auth)):
     start = time.time()
 
     try:
@@ -119,7 +184,6 @@ async def chat(request: ChatRequest):
 
         answer = query_rag(request.message, idx, history)
 
-        # Incrementar contador semanal
         weekly_count = increment_counter()
 
         elapsed = time.time() - start
@@ -136,7 +200,7 @@ async def chat(request: ChatRequest):
 
 
 @app.get("/api/counter")
-async def get_counter():
+async def get_counter(_auth=Depends(require_auth)):
     """Retorna contador de interacoes da semana"""
     week, year = get_current_week()
     return {
@@ -147,7 +211,7 @@ async def get_counter():
 
 
 @app.get("/api/suggest")
-async def suggest_questions():
+async def suggest_questions(_auth=Depends(require_auth)):
     """Sugestoes de perguntas frequentes"""
     return {
         "suggestions": [
@@ -166,7 +230,7 @@ async def suggest_questions():
 
 
 @app.get("/api/stats")
-async def stats():
+async def stats(_auth=Depends(require_auth)):
     idx = get_cached_index()
     return {
         "total_chunks": len(idx.chunks),
@@ -177,8 +241,8 @@ async def stats():
 
 
 if __name__ == "__main__":
-    port = int(__import__("os").environ.get("PORT", 8001))
-    print("Iniciando Porto IA v2...")
+    port = int(os.environ.get("PORT", 8001))
+    print("Iniciando Porto IA v2.1...")
     print("Carregando base de conhecimento...")
     _index = get_index()
     print(f"Base carregada: {len(_index.chunks)} chunks")
