@@ -1,23 +1,24 @@
 """
-Porto IA - Backend FastAPI
-API do chatbot da Porto Seguro para corretores
+Porto IA - Backend FastAPI v4.0
+API do chatbot para corretores — com streaming SSE
 """
 import os
 import time
 import secrets
 import datetime
 import json
-from typing import List, Optional
+import asyncio
+from typing import List, Optional, AsyncGenerator
 from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
-from rag_engine import get_index, query_rag, EmbeddingIndex
+from rag_engine import get_index, query_rag, query_rag_stream, EmbeddingIndex
 
 BASE_DIR = Path(__file__).parent
 
@@ -37,22 +38,21 @@ app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 _index: Optional[EmbeddingIndex] = None
 
-# ---- Credenciais de acesso (via variaveis de ambiente) ----
-# No Render: defina APP_USERNAME e APP_PASSWORD no painel de Environment
+# ---- Credenciais de acesso ----
 APP_USERNAME = os.environ.get("APP_USERNAME", "corretor")
 APP_PASSWORD = os.environ.get("APP_PASSWORD", "porto2024")
 
-# ---- Tokens de sessao em memoria ----
-# Cada token e valido por 8 horas
-_sessions: dict = {}  # token -> expiry_timestamp
-
+# ---- Tokens de sessao em memoria (validos por 8h) ----
+_sessions: dict = {}
 SESSION_TTL_HOURS = 8
+
 
 def create_session_token() -> str:
     token = secrets.token_urlsafe(32)
     expiry = time.time() + (SESSION_TTL_HOURS * 3600)
     _sessions[token] = expiry
     return token
+
 
 def validate_token(token: str) -> bool:
     if not token or token not in _sessions:
@@ -62,25 +62,28 @@ def validate_token(token: str) -> bool:
         return False
     return True
 
+
 def cleanup_sessions():
-    """Remove sessoes expiradas"""
     now = time.time()
     expired = [t for t, exp in _sessions.items() if now > exp]
     for t in expired:
         del _sessions[t]
 
+
 def require_auth(request: Request):
-    """Dependencia FastAPI que verifica autenticacao"""
     token = request.headers.get("X-Session-Token") or request.cookies.get("session_token")
     if not validate_token(token):
         raise HTTPException(status_code=401, detail="Nao autorizado. Faca login novamente.")
 
-# ---- Contador semanal (em memoria, reseta ao reiniciar no Render free tier) ----
+
+# ---- Contador semanal ----
 _counter_data = {"count": 0, "week": 0, "year": 0}
+
 
 def get_current_week():
     today = datetime.date.today()
     return today.isocalendar()[1], today.year
+
 
 def increment_counter() -> int:
     global _counter_data
@@ -89,6 +92,7 @@ def increment_counter() -> int:
         _counter_data = {"count": 0, "week": week, "year": year}
     _counter_data["count"] += 1
     return _counter_data["count"]
+
 
 def get_counter_value() -> int:
     global _counter_data
@@ -140,12 +144,11 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "Porto IA", "version": "2.1.0"}
+    return {"status": "ok", "service": "Porto IA", "version": "4.0.0"}
 
 
 @app.post("/api/login")
 async def login(req: LoginRequest):
-    """Autentica o usuario e retorna um token de sessao"""
     cleanup_sessions()
     if req.username.strip() == APP_USERNAME and req.password == APP_PASSWORD:
         token = create_session_token()
@@ -155,7 +158,6 @@ async def login(req: LoginRequest):
 
 @app.post("/api/logout")
 async def logout(request: Request):
-    """Invalida o token de sessao"""
     token = request.headers.get("X-Session-Token") or request.cookies.get("session_token")
     if token and token in _sessions:
         del _sessions[token]
@@ -165,30 +167,20 @@ async def logout(request: Request):
 # ---- Endpoints protegidos ----
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, _auth=Depends(require_auth)):
+    """Chat normal (resposta completa de uma vez)"""
+    import traceback
     start = time.time()
-
     try:
         idx = get_cached_index()
+        history = [{"role": msg.role, "content": msg.content} for msg in request.history]
 
-        history = [
-            {"role": msg.role, "content": msg.content}
-            for msg in request.history
-        ]
-
-        # Buscar fontes (top 5 chunks semanticos)
         results = idx.search(request.message, top_k=5)
-        sources = list(set([
-            r[0]['source']
-            for r in results
-            if r[1] > 0.2
-        ]))
+        sources = list(set([r[0]['source'] for r in results if r[1] > 0.1]))
         if not sources and results:
             sources = list(set([r[0]['source'] for r in results[:3]]))
 
         answer = query_rag(request.message, idx, history)
-
         weekly_count = increment_counter()
-
         elapsed = time.time() - start
 
         return ChatResponse(
@@ -197,37 +189,79 @@ async def chat(request: ChatRequest, _auth=Depends(require_auth)):
             response_time=round(elapsed, 2),
             weekly_count=weekly_count
         )
-
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        tb = traceback.format_exc()
+        print(f"ERRO /api/chat: {e}\n{tb}")
+        raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {str(e)}")
+
+
+@app.post("/api/chat/stream")
+async def chat_stream(request: ChatRequest, _auth=Depends(require_auth)):
+    """
+    Chat com streaming SSE — resposta palavra por palavra.
+    Formato dos eventos:
+      data: {"type": "chunk", "content": "texto"}
+      data: {"type": "sources", "sources": [...], "weekly_count": N}
+      data: {"type": "done"}
+    """
+    async def generate() -> AsyncGenerator[str, None]:
+        try:
+            idx = get_cached_index()
+            history = [{"role": msg.role, "content": msg.content} for msg in request.history]
+
+            sources_sent = False
+            for text_chunk, sources in query_rag_stream(request.message, idx, history):
+                event = json.dumps({"type": "chunk", "content": text_chunk}, ensure_ascii=False)
+                yield f"data: {event}\n\n"
+
+                if not sources_sent and sources:
+                    count = increment_counter()
+                    meta = json.dumps({
+                        "type": "sources",
+                        "sources": sources,
+                        "weekly_count": count
+                    }, ensure_ascii=False)
+                    yield f"data: {meta}\n\n"
+                    sources_sent = True
+
+                await asyncio.sleep(0)  # Cede controle para o event loop
+
+            yield "data: {\"type\": \"done\"}\n\n"
+
+        except Exception as e:
+            err = json.dumps({"type": "error", "message": str(e)}, ensure_ascii=False)
+            yield f"data: {err}\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        }
+    )
 
 
 @app.get("/api/counter")
 async def get_counter(_auth=Depends(require_auth)):
-    """Retorna contador de interacoes da semana"""
     week, year = get_current_week()
-    return {
-        "weekly_count": get_counter_value(),
-        "week": week,
-        "year": year
-    }
+    return {"weekly_count": get_counter_value(), "week": week, "year": year}
 
 
 @app.get("/api/suggest")
 async def suggest_questions(_auth=Depends(require_auth)):
-    """Sugestoes de perguntas frequentes"""
     return {
         "suggestions": [
+            "Quais os produtos disponíveis no Grupo Porto?",
             "Compare a assistência 24h da Porto, Itaú, Azul e Mitsui",
-            "Quais são os diferenciais exclusivos do Seguro Auto Porto?",
+            "O seguro viagem cobre cancelamento de voo?",
+            "Qual a diferença entre Auto Compacto e Auto Frota Compacto?",
             "Como funciona o Projeto 15 Minutos da Porto?",
-            "Qual é o limite do guincho em cada seguradora?",
-            "O que cobre a assistência 24 horas em caso de pane?",
-            "Quais as vantagens do Cartão Porto Bank?",
-            "Como funciona o carro reserva em caso de sinistro?",
+            "O que cobre o seguro residencial da Porto?",
             "Quais são as exclusões para perda total?",
-            "O que é a cláusula 87 - Reparo Rápido e Supermartelinho?",
-            "Compare coberturas de danos a terceiros entre Porto e Itaú",
+            "Como funciona o seguro de vida Porto?",
+            "O que é RC Profissional e quem precisa?",
+            "Quais as vantagens do Cartão Porto Bank?",
         ]
     }
 
@@ -238,15 +272,15 @@ async def stats(_auth=Depends(require_auth)):
     return {
         "total_chunks": len(idx.chunks),
         "embedding_dim": idx.embeddings.shape[1] if idx.embeddings is not None else 0,
-        "sources": list(set([c['source'] for c in idx.chunks])),
+        "sources": sorted(list(set([c['source'] for c in idx.chunks]))),
         "status": "operacional",
-        "engine": "embeddings-semanticos"
+        "engine": "hibrido-embeddings-tfidf"
     }
 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
-    print("Iniciando Porto IA v3.0 (Embeddings Semanticos)...")
+    print("Iniciando Porto IA v4.0 (Busca Hibrida + Streaming)...")
     print("Carregando base de conhecimento...")
     _index = get_index()
     print(f"Base carregada: {len(_index.chunks)} chunks")
