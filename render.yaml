@@ -7,3 +7,5 @@ services:
     envVars:
       - key: OPENROUTER_API_KEY
         sync: false
+      - key: ACCESS_TOKEN
+        sync: false
