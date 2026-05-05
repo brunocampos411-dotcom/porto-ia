@@ -1,0 +1,22 @@
+w14:paraId="515A18D9" w14:textId="6586D15A" w:rsidR="00935C4F" w:rsidRDefault="00636FE1">Porto – Auto
+w14:paraId="3DAEF8DF" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRPr="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">Quais os locais de abrangência do Seguro Auto?
+w14:paraId="53375757" w14:textId="217727B3" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">O Seguro Auto tem abrangência em todo o território nacional. Você pode acionar os serviços de sinistro e os benefícios em qualquer cidade e estado brasileiro que possua o atendimento. Caso você viaje com seu carro para países do Mercosul, a Porto Seguros oferece o seguro Carta Verde, que é obrigatório nesses locais.
+w14:paraId="733ABD44" w14:textId="2F7BBF3B" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">
+w14:paraId="7C99161D" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">Quais fatores interferem no valor do meu Seguro Auto?
+w14:paraId="39641912" w14:textId="5535D2C9" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">Para fazer o cálculo do seguro para o seu carro, os principais fatores que determinam o preço são: marca, modelo e ano do veículo; em quais áreas e cidades o carro circula e fica estacionado a maior parte do tempo; quem é e qual a idade do condutor principal. As diferentes cláusulas e coberturas a serem contratadas, bem como o valor da franquia, também podem alterar o valor final do seguro.
+w14:paraId="0CE445C9" w14:textId="2C55DE8D" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">
+w14:paraId="409C039F" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">O que é franquia de seguro?
+w14:paraId="75479957" w14:textId="1C1B45DE" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">O termo franquia, refere-se ao valor previsto em contrato que deve ser pago quando a seguradora for acionada pelo cliente. Esse valor deve cobrir algum sinistro de perda parcial, exceto nos casos de incêndio, explosão acidental ou em consequências de raios.
+w14:paraId="5D541D5A" w14:textId="7EF6FF60" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">
+w14:paraId="4ED831D1" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">Em caso de alagamento, os veículos na garagem estão cobertos pelo Seguro Auto?
+w14:paraId="64B0057A" w14:textId="25E54CBF" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">Sim, a cobertura compreensiva indeniza o segurado dos prejuízos que venha a sofrer em consequência de danos materiais, causados ao veículo segurado, provenientes dos riscos cobertos a seguir relacionados: a submersão parcial ou total do veículo em água doce, proveniente de enchentes ou inundações, inclusive nos casos de veículos guardados no subsolo.
+w14:paraId="68BE05CA" w14:textId="5CF0FE62" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">
+w14:paraId="1D95BFA3" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">O que posso fazer para ganhar desconto na renovação do Seguro Auto?
+w14:paraId="061188C6" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">Clientes que não possuem cartão Porto Bank, podem ganhar até 15% de desconto (5% pagamento à vista + 5% contratando e usando o cartão Porto Bank + 5% de cashback ao utilizar o cartão).
+w14:paraId="69B8D8DD" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">
+w14:paraId="73647451" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">Já para aqueles que possuem o cartão Porto Bank, o cliente conta com 10% de desconto para pagamento com o cartão de crédito Porto Bank em até 12x sem juros, mais 5% se o pagamento for à vista.
+w14:paraId="245BD3F0" w14:textId="63CB2BD4" w:rsidR="00636FE1" w:rsidRDefault="00636FE1"/>
+w14:paraId="69DB8E53" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1" w:rsidP="00636FE1">O que significa a Operação ser da Porto Seguro?
+w14:paraId="045D58FC" w14:textId="7B7041A9" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">Os seguros de carro operados pela Porto Seguro são uma parceria para administração e atendimento ao cliente, ou seja, todos os serviços, benefícios, processos de sinistro, pagamento e atendimento ao cliente são geridos e operados pela Porto Seguro.
+w14:paraId="1C93E390" w14:textId="708DC5D4" w:rsidR="00636FE1" w:rsidRDefault="00636FE1">
+w14:paraId="09EB50E7" w14:textId="77777777" w:rsidR="00636FE1" w:rsidRDefault="00636FE1"/>
