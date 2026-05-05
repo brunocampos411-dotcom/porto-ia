@@ -1,0 +1,91 @@
+w14:paraId="70EDA6D1" w14:textId="7BFAF3D3" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Celular - Porto
+w14:paraId="071AFCB3" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="682A9DFD" w14:textId="5192344F" w:rsidR="008F01FE" w:rsidRDefault="005F1DE0">Tire suas dúvidas sobre o Seguro Celular da Porto Seguro
+w14:paraId="2FCCF7EB" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRPr="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Como contratar o Seguro Celular da Porto Seguro?
+w14:paraId="58E9FD89" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">A contratação do Seguro Celular da Porto Seguro é rápida, simples e 100% digital. Veja como funciona:
+w14:paraId="23B04BBC" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">1) Clique em "Cote agora";
+w14:paraId="3D563268" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">2) Informe a marca, modelo e capacidade do seu celular, além dos seus dados pessoais, para receber uma cotação personalizada;
+w14:paraId="2ED881B8" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">3) Escolha o plano com as coberturas ideais para você;
+w14:paraId="42F543B0" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">4) Cadastre os dados de pagamento;
+w14:paraId="56329A97" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">5) Baixe o App Porto, ative a localização e ganhe 5% de desconto na franquia;
+w14:paraId="6E618305" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">6) Se necessário, faça a verificação do celular pelo App (instruções enviadas por e-mail).
+Pronto! Agora é só aguardar até 72h para a análise da sua proposta.
+w14:paraId="2FB2C92A" w14:textId="3A2664C7" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0"/>
+w14:paraId="7B7B901D" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Preciso manter o App Porto instalado no meu celular?
+w14:paraId="6DF4E77A" w14:textId="25E98AF6" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Sim! Com o App Porto instalado e a localização ativada, você garante a redução da franquia de 25% para 20%, aproveitando ainda mais benefícios durante a vigência do seu Seguro Celular. 🚀📲
+w14:paraId="0B84BA1D" w14:textId="7DE4AD98" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="112032C6" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">O que está coberto no Seguro Celular da Porto Seguro?
+w14:paraId="619F646A" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRPr="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">O Seguro Celular da Porto Seguro está disponível em 4 planos, com coberturas que se encaixam às suas necessidades. São elas:
+w14:paraId="3ADC106C" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRPr="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Roubo, com cobertura para roubo e furto com vestígios (dentro ou fora da residência do segurado);
+w14:paraId="276ED7E0" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRPr="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Quebra + Roubo, que inclui todas as coberturas do plano de Roubo, além da quebra acidental, como oscilações de energia, curto-circuito e oxidação causada por líquido;
+w14:paraId="625C81A4" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRPr="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Quebra + Roubo + Furto Simples, que inclui todas as coberturas dos planos Quebra + Roubo e cobre furto sem vestígio, sendo a ausência de ameaça ou arrombamento.
+w14:paraId="11E6658B" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRPr="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Quebra + Roubo + Furto Simples + Transações Digitais e Pix, que inclui todas as coberturas dos planos Quebra + Roubo + Furto Simples e cobre também  as transações digitais indevidas após roubo/furto.
+w14:paraId="48E48FDD" w14:textId="01787CE5" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0"/>
+w14:paraId="065C0369" w14:textId="12FB78B0" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0"/>
+w14:paraId="7FA82B79" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Em quanto tempo meu Seguro Celular da Porto Seguro estará ativo?
+w14:paraId="5451B6FC" w14:textId="2C49A14E" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Informaremos o resultado da contratação pelo e-mail cadastrado. Se aprovado, você receberá sua apólice, em até 72h.
+w14:paraId="1FBDF139" w14:textId="54DBE0E9" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="2D488681" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">É necessário realizar o processo de vistoria do celular segurado?
+w14:paraId="1250363F" w14:textId="5FD8C97A" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Sim, quando solicitado por e-mail, o cliente deve seguir este passo a passo para a verificação:
+1) Baixe o App Porto;
+2) Faça login no App usando o celular que será segurado;
+3) Acesse a opção "Realizar vistoria";
+4) Selecione o aparelho e insira o IMEI (sem espaços ou pontos);
+5) Realize a raspadinha para a verificação da tela;
+6) O status da vistoria é informado na hora.
+📌 Após a vistoria, aguarde até 72 horas para o resultado da análise da proposta.
+w14:paraId="1AB6394B" w14:textId="5BC0C245" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="7B3AEE1C" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">O seguro celular aceita aparelho usado?
+w14:paraId="0CE9AA9C" w14:textId="3DD5AB15" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Sim, aceitamos aparelhos com até 24 meses da data de aquisição e que tenham nota fiscal.
+w14:paraId="491106B7" w14:textId="2D3B7C43" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="7F8D4290" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Quais são as formas de pagamentos aceitas no Seguro Celular da Porto Seguro?
+w14:paraId="5E1AF1C0" w14:textId="4B68CB22" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Você pode realizar o pagamento do seguro celular na Loja Porto Seguro através do seu cartão de crédito convencional, em até 12 vezes sem juros, ou do Cartão de Crédito da Porto, que garante 5% de desconto no valor da apólice (contrato).
+w14:paraId="0E45A727" w14:textId="212A47CE" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="3DF56FB6" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Posso cancelar o meu seguro celular a qualquer momento?
+w14:paraId="6E81EC1E" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Sim, o cancelamento do seu seguro celular pode ser feito a qualquer momento, sem multas ou permanência mínima.
+w14:paraId="094C26F3" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">
+w14:paraId="497EE90E" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Você pode solicitar o cancelamento do seu seguro diretamente com seu corretor, ou enviando um e-mail para: cancelamento.segurocelular@portoseguro.com.br. O prazo para retorno é de até 72 horas.
+w14:paraId="24BFA171" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">
+w14:paraId="66A14058" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Lembre-se: para que o cancelamento seja processado é preciso que você nos envie as informações relacionadas abaixo. Este procedimento é necessário para podermos garantir sua identidade.
+w14:paraId="532E5712" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">
+w14:paraId="33CF24FB" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Nome completo da pessoa segurada;
+w14:paraId="2CCA8A0D" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Número do CPF;
+w14:paraId="711ED888" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Número da apólice que deseja cancelar (você pode encontrar este número na apólice digital enviada para você por e-mail após a aquisição do seguro, ou então pelo App Porto)
+w14:paraId="4765C202" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Motivo do cancelamento;
+w14:paraId="25D09015" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Documento da pessoa segurada digitalizado.
+w14:paraId="6FB92B6B" w14:textId="6B566CA4" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="6D92B6E7" w14:textId="307FA857" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="5C2EE99B" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Qual é a vigência do Seguro Celular da Porto Seguro?
+w14:paraId="2C69E527" w14:textId="3BAA9699" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">O Seguro Celular da Porto Seguro possui vigência de 365 dias, sem carência, a partir da emissão da apólice do seguro, que é enviada para o seu e-mail cadastrado, após a realização e aprovação de todo o processo de contratação. Garantir 1 ano inteirinho de proteção para o seu aparelho é com a Porto.
+w14:paraId="1A6038D6" w14:textId="787127A1" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="47456311" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Preciso ter a nota fiscal do aparelho para contratar o seguro celular?
+w14:paraId="7ACCF929" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Ter a nota fiscal do aparelho não é necessário para adquirir o Seguro Celular da Porto Seguro, mas vale ressaltar que, para acionar o seguro, é sim preciso ter comprovação de aquisição do celular através de ao menos um dos seguintes documentos:
+w14:paraId="247F88A4" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">
+w14:paraId="4BA9C109" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Comprovante de pagamento do bem;
+w14:paraId="4A5F5EB8" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Manuais do aparelho;
+w14:paraId="47C19AA0" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Recibo de Compra e Venda (em que conste a data de aquisição do aparelho) com reconhecimento de firma em cartório;
+w14:paraId="6955C789" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Invoice;
+w14:paraId="1AD4C3B0" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Declaração de Importação (feita em papel timbrado ou com carimbo de CNPJ da importadora com a descrição e valor do aparelho);
+w14:paraId="6F640682" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Cupom fiscal.
+w14:paraId="280A4D0B" w14:textId="50DAE625" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="78BBEAA9" w14:textId="5C2651B3" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="4A315A50" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">O que é PortoPlus?
+w14:paraId="4519270E" w14:textId="4100880C" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Trata-se de um programa de benefícios oferecidos aos clientes da Porto, com troca de pontos e descontos especiais em marcas parceiras. Para saber mais, clique aqui
+w14:paraId="4C700E46" w14:textId="01E06C13" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0"/>
+w14:paraId="23D64B93" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">O seguro Celular aceita menor de idade?
+w14:paraId="199EC3CF" w14:textId="54F89877" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">O usuário do celular segurado deve ter mais de 18 anos. As contratações para usuários menores de idade estão disponíveis exclusivamente por meio de um corretor parceiro. Clique em “Encontre um Corretor”.
+w14:paraId="5FFDED70" w14:textId="2B8ADB39" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="2AF350CF" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Quer incluir acessórios na sua apólice?
+w14:paraId="078B6BCF" w14:textId="7933E92C" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">Essa solicitação deve ser feita por meio de um Corretor. Se você já tem uma apólice ativa, os dados do seu Corretor estão disponíveis no próprio documento da apólice. Caso ainda não tenha um Corretor, clique aqui para localizar um ou entre em contato com o profissional de sua preferência.
+w14:paraId="57853864" w14:textId="2CD13476" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="2C0576A2" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Como faço para trocar meus pontos do Cartão Porto Bank por cashback no Seguro Celular?
+w14:paraId="06974190" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Se você é cliente do Porto Seguro Celular e possui o Cartão Porto Bank, pode transformar seus pontos acumulados em crédito direto na sua fatura. O processo é simples e feito totalmente pelo App Porto.
+w14:paraId="73BAED7A" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Confira o passo a passo para realizar o resgate:
+w14:paraId="65355C0D" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Acesse o App Porto: Faça o login com seu CPF e senha.
+w14:paraId="4B194CF1" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Vá em Pontos: No menu principal, localize a seção de pontos logo abaixo do seu nome.
+w14:paraId="24A99ACF" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Selecione o Seguro Celular: Escolha o produto Seguro Celular  entre as opções de produtos Porto disponíveis.
+w14:paraId="19A4C833" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Escolha a quantidade de pontos: Defina quantos pontos deseja converter em cashback.
+w14:paraId="61A10D90" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Confirme a operação: O cashback será aplicado diretamente na fatura do seu Cartão Porto Bank em até 72 horas úteis.
+w14:paraId="7A9240A0" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0" w:rsidP="005F1DE0">Importante: A opção de resgate fica disponível no app logo após a emissão da sua apólice. Lembre-se de verificar no app se você possui a quantidade mínima de pontos necessária para a troca.
+w14:paraId="70D66E6D" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0">
+w14:paraId="456CFA26" w14:textId="77777777" w:rsidR="005F1DE0" w:rsidRDefault="005F1DE0"/>
