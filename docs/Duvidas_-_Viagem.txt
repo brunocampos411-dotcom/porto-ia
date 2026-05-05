@@ -1,0 +1,36 @@
+w14:paraId="13AB08FA" w14:textId="42B1FAE1" w:rsidR="00935C4F" w:rsidRDefault="00EC0B71">Duvidas – Viagem
+w14:paraId="2FAB31B5" w14:textId="40F26A2C" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71"/>
+w14:paraId="34E342B6" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRPr="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Como acionar o Seguro Viagem
+w14:paraId="0D831DC8" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRPr="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Conte com atendimento na sua viagem sempre que precisar.
+w14:paraId="315E43D5" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Atendimento Emergencial
+w14:paraId="085CFFC0" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">WhatsApp: +55 11 3003-9303
+w14:paraId="72CC1328" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">A Central de Assistência Médica Emergencial oferece atendimento em português, 24h por dia, no Brasil e no exterior, incluindo telemedicina.
+w14:paraId="1A07DE65" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Atendimento Emergencial
+w14:paraId="3AEB7BB8" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Brasil e exterior: +55 11 3366 3330
+w14:paraId="76F61011" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Assistência disponível 24h por dia, em português e para receber ligações a cobrar.
+w14:paraId="58D34E4A" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Central de relacionamento
+w14:paraId="3D6F5F4C" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">WhatsApp: +55 11 3003 9303
+w14:paraId="74A7CE75" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Atendimento de segunda a sexta-feira, das 8h15 às 18h30.
+w14:paraId="2EDFEB0F" w14:textId="7526C32C" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71"/>
+w14:paraId="6B1A77BA" w14:textId="71700770" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71"/>
+w14:paraId="7DB50DEA" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Como ter assistência emergencial durante a viagem?
+w14:paraId="71DA510A" w14:textId="25E3C318" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71"/>
+w14:paraId="769FE66C" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Você pode acionar a assistência para atendimento emergencial, de qualquer lugar do mundo, durante o período de viagem, ligando para 55 11 3366 3330 (inclusive a cobrar).
+w14:paraId="6F57B830" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">
+w14:paraId="13420C7D" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Há alguns países que contam com um serviço da Embratel chamado "Brasil Direto" e têm números pré-definidos para realizar ligações, disponíveis no site da Embratel.
+w14:paraId="2DC03794" w14:textId="27DCF785" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71"/>
+w14:paraId="63106BED" w14:textId="08094F4C" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71"/>
+w14:paraId="1A80BB42" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">O Seguro Viagem possui cobertura para pandemias e epidemias?
+w14:paraId="6833D52C" w14:textId="44516133" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">Acionamentos decorrentes de COVID-19 estarão cobertos desde 8/10/2021, observando-se os termos e coberturas contratadas. Para mais informações, clique aqui e confira FAQ do Seguro Viagem, consulte seu Corretor ou fale com nossa Central de Atendimento.
+w14:paraId="010AC02A" w14:textId="147ACE8C" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">
+w14:paraId="30D6D668" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Como funciona o pagamento de despesas com médico, hospital ou dentista, se eu precisar usar mais de uma vez na mesma viagem?
+w14:paraId="465288AF" w14:textId="4920EDEE" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">Para esse tipo de cobertura é realizada a prestação de serviço através da Assistência 24h ou reembolso, limitado ao valor do capital segurado.
+w14:paraId="0F5496C9" w14:textId="3B294FE5" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">
+w14:paraId="1C7DAE1E" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Quem pode contratar o Seguro Viagem?
+w14:paraId="3AEAEAD8" w14:textId="7B47B6EC" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">Podem contratar o seguro as pessoas físicas com idade até 70 anos ou 90 anos, dependendo do Plano a ser contratado e período de viagem. Mulheres grávidas podem contratar o Seguro Viagem, lembrando apenas que em todos os Planos disponibilizados para comercialização pela Porto Seguro, estão excluídos problemas de gravidez após o 7º mês (28º semana) de gestação,  quando decorrentes de doença. OBS.: O Seguro Viagem pode ser contratado até um dia antes do inícío da viagem.
+w14:paraId="09417259" w14:textId="2ECC887D" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">
+w14:paraId="3EDB44B7" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Pra que serve o Seguro Viagem?
+w14:paraId="779CFA2D" w14:textId="55ADAC91" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">Despesas Médicas, Hospitalares e/ou Odontológicas, Extravio e Danos de Bagagem, Cancelamento de Viagem, Despesas Farmacêuticas, Prática de Esportes Radicais/Turismo. + Diferenciais Diamante (verificar as coberturas direntes que podemos considerar).
+w14:paraId="02C229FF" w14:textId="6DD1BDA7" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">
+w14:paraId="7A751663" w14:textId="77777777" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71" w:rsidP="00EC0B71">Quais documentos receberei na contratação do seguro viagem?
+w14:paraId="22659B58" w14:textId="377DDF5A" w:rsidR="00EC0B71" w:rsidRDefault="00EC0B71">Após a contratação, o segurado receberá dois emails. O primeiro terá a Carta Garantia, com os dados do plano, coberturas e limites, bem como os telefones da Central de Atendimento e como entrar em contato. O segundo email terá o documento da Apólice do Seguro e Manual da Assistência.
