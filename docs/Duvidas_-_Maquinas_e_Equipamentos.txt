@@ -1,0 +1,98 @@
+w14:paraId="415BA160" w14:textId="374AF809" w:rsidR="00747AE6" w:rsidRDefault="003C4874">Duvidas – Maquinas e Equipamentos
+w14:paraId="72E46BFD" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">O que é Seguro para Máquinas e Equipamentos?
+w14:paraId="7A06DBE2" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">É um produto que visa proteger maquinários de diversas categorias contra perdas, roubo e danos materiais.As coberturas são para equipamentos novos e usados nos ramos de construção civil, industrial, médicos, estéticos, odontológicos, veterinários, análises e medição, acessibilidade, mobilidade, além de equipamentos de riscos diversos.
+w14:paraId="742E6835" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Pode ser contratado por Pessoa Física ou Jurídica e tem abrangência em todo território nacional. Para equipamentos médicos, há garantia fora do Brasil.
+w14:paraId="3246655C" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quais são as formas de pagamento disponíveis?
+w14:paraId="521A4FD4" w14:textId="5DB0BC0E" w:rsidR="003C4874" w:rsidRDefault="003C4874">Pague em até 12x sem juros no cartão Porto Bank ou até 10x sem juros nos demais cartões. Além disso, é possível pagar por meio de boleto bancário ou débito em conta.
+w14:paraId="602B4B49" w14:textId="77F4266D" w:rsidR="003C4874" w:rsidRDefault="003C4874">
+w14:paraId="56C25421" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quais equipamentos são aceitos?
+w14:paraId="3509D3BA" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">São diversos equipamentos, de acordo com o ramo de atividade.
+w14:paraId="550C5372" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="54EA2430" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Construção Civil:
+w14:paraId="357B353B" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Betoneira e bomba para concreto
+w14:paraId="52B5F292" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Rolo compactador
+w14:paraId="2927B896" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Empilhadeiras
+w14:paraId="73E11B65" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Geradores
+w14:paraId="1DE4E7C8" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Perfuratriz
+w14:paraId="719CA152" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Entre outros
+w14:paraId="20E5B370" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="272191DA" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Industrial:
+w14:paraId="4DE51A95" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Impressora industrial
+w14:paraId="69399D6B" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Forno industrial
+w14:paraId="62590329" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Máquinas para bordar
+w14:paraId="0BDB2E50" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Formadoras recheadoras
+w14:paraId="728C748C" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Balcão de refrigeração com ou sem expositor
+w14:paraId="116015A0" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Entre outros.
+w14:paraId="2E2A4ADB" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="27868216" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Médicos e Odontológicos:
+w14:paraId="6E394741" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Ultrassom portátil e estacionário
+w14:paraId="266F6A79" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Raio X portátil e estacionário
+w14:paraId="1B546021" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos oftalmológicos
+w14:paraId="0EF87FFF" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Aparelho auditivo
+w14:paraId="6E532157" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos de mobilidade e acessibilidade
+w14:paraId="0633004B" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Entre outros
+w14:paraId="6D9EF01F" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="056EBBEB" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Medição:
+w14:paraId="042BD428" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamento topográfico
+w14:paraId="2076B556" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Medidor de vazão de gases
+w14:paraId="05175D91" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Dosimetria de ruído (frequência sonora)
+w14:paraId="6C6D356D" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Termômetros
+w14:paraId="34A787D1" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Entre outros
+w14:paraId="1A122216" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="44B27292" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Riscos Diversos:
+w14:paraId="0CE216F2" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Patinetes (até 1.000W e 32 km/h);
+w14:paraId="5896F577" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Placas solares
+w14:paraId="3253AEDF" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Monociclos
+w14:paraId="4F687648" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Carrinhos de golfe
+w14:paraId="758E76C1" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Itens de informática
+w14:paraId="6C732DEA" w14:textId="7193D236" w:rsidR="003C4874" w:rsidRDefault="003C4874"/>
+w14:paraId="7F42E8E0" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Qual é a vigência do seguro para Máquinas e Equipamentos?
+w14:paraId="4EF458C1" w14:textId="0F1D22C2" w:rsidR="003C4874" w:rsidRDefault="003C4874">A vigência máxima é de até 5 anos e o prazo mínimo é de 365 dias.
+w14:paraId="6BCB2C8A" w14:textId="6C788F95" w:rsidR="003C4874" w:rsidRDefault="003C4874">
+w14:paraId="2F3418B0" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">O seguro aceita equipamentos com até qual idade de uso?
+w14:paraId="1F3C7B63" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">A idade varia de acordo com o tipo de equipamento, e a aceitação do seguro pode ser submetida a análise técnica por parte da seguradora:
+w14:paraId="6E563837" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="7CB7791B" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos Auditivos: 5 anos.
+w14:paraId="25AE0D00" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos de Construção Civil e Industriais: de 15 a 20 anos..
+w14:paraId="21358D26" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos de Medição: 5 anos.
+w14:paraId="1E749D9C" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos Médicos: 8 anos.
+w14:paraId="7ACF22FD" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos Diversos: 5 anos.
+w14:paraId="777E4263" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos de Energia Solar (Placa solar): 15 anos.
+w14:paraId="6829453B" w14:textId="2C256716" w:rsidR="003C4874" w:rsidRDefault="003C4874"/>
+w14:paraId="31F07F86" w14:textId="72590AEC" w:rsidR="003C4874" w:rsidRDefault="003C4874"/>
+w14:paraId="0A8FBCF9" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quais são as coberturas oferecidas pelo seguro?
+w14:paraId="5D04F85E" w14:textId="4751630A" w:rsidR="003C4874" w:rsidRDefault="003C4874"/>
+w14:paraId="050871B0" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">As coberturas variam de acordo com o segmento de equipamentos a ser segurado.
+w14:paraId="2FFE3219" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="45D4C408" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Cobertura básica:
+w14:paraId="0E713D7D" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Danos físicos ao bem: Danos de causa externa como Incêndio; Queda de raio e explosão de qualquer natureza; Vendaval; Tombamento; Colisão; Quebra de Vidros; Danos durante o transporte (equipamentos móveis); entre outros.
+w14:paraId="2950A6A6" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="1615F7AA" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Coberturas adicionais:
+w14:paraId="63CAE190" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Subtração do bem
+w14:paraId="793C42FA" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Danos elétricos
+w14:paraId="17E25FB8" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Perda ou pagamento do aluguel
+w14:paraId="627EC2B9" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Despesas fixas
+w14:paraId="34012BD8" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Responsabilidade civil
+w14:paraId="2BFBC1E1" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Instalação e Montagem
+w14:paraId="7449A85B" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos operando em proximidade de água
+w14:paraId="48CCA02C" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Garantia Internacional
+w14:paraId="6D298E39" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Despesas de salvamento
+w14:paraId="6E422388" w14:textId="3AC7507A" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Custos de defesa
+w14:paraId="0B6723DA" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">
+w14:paraId="6BDD7F05" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quais equipamentos não são aceitos pelo seguro?
+w14:paraId="18FBB871" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos que operem sob, dentro ou submersos na água (salvo bomba submersa);
+w14:paraId="0BDF774F" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Motos aquáticas;
+w14:paraId="16F0C447" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quadriciclo;
+w14:paraId="2DA6A293" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Instrumentos musicais;
+w14:paraId="6CB79F84" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Scooter;
+w14:paraId="5B6F7B0B" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Drones;
+w14:paraId="5ED04B02" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Equipamentos sem assistência técnica no Brasil.
+w14:paraId="76C32A82" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Como contratar o Seguro para Máquinas e Equipamentos?
+w14:paraId="18515485" w14:textId="32EA85F5" w:rsidR="003C4874" w:rsidRDefault="003C4874">Você pode contratar diretamente com o seu corretor de seguros. Caso ainda não tenha um, solicite o contato aqui.
+w14:paraId="6A21C990" w14:textId="2D3E970B" w:rsidR="003C4874" w:rsidRDefault="003C4874">
+w14:paraId="74C838C1" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quanto custa o Seguro para Máquinas e Equipamentos?
+w14:paraId="6F345741" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">O valor varia de acordo com o tipo de máquina ou equipamento.
+w14:paraId="4604469C" w14:textId="77777777" w:rsidR="003C4874" w:rsidRPr="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Para fazer a cotação, você precisa informar alguns de seus dados e do bem a ser segurado. Informações como idade do aparelho e modelo são essenciais para compor o valor.
+w14:paraId="553552E4" w14:textId="013419F1" w:rsidR="003C4874" w:rsidRDefault="003C4874"/>
+w14:paraId="7957A0FA" w14:textId="77777777" w:rsidR="003C4874" w:rsidRDefault="003C4874" w:rsidP="003C4874">Quem pode contratar o seguro?
+w14:paraId="46D3E367" w14:textId="43D93301" w:rsidR="003C4874" w:rsidRDefault="003C4874">O seguro é destinado tanto a Pessoas Físicas quanto Jurídicas que buscam proteção para seus bens. A solução atende ao uso profissional, abrangendo diversas modalidades de equipamentos como médicos, industriais e de construção, e ao uso pessoal, como itens de mobilidade elétrica. Trata-se de uma opção versátil, desenvolvida para proteger desde aparelhos portáteis de precisão até máquinas pesadas de grande porte.
