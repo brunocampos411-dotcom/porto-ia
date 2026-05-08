@@ -22,7 +22,7 @@ w14:paraId="35787D32" w14:textId="77777777" w:rsidR="00245F70" w:rsidRDefault="0
 w14:paraId="6FEE2E56" w14:textId="41851120" w:rsidR="00245F70" w:rsidRDefault="00245F70"/>
 w14:paraId="28EEC4D4" w14:textId="6B01C870" w:rsidR="00245F70" w:rsidRDefault="00245F70"/>
 w14:paraId="3F240D5F" w14:textId="77777777" w:rsidR="00245F70" w:rsidRDefault="00245F70" w:rsidP="00245F70">Em quais casos o seguro não cobre?
-w14:paraId="3E735F35" w14:textId="119C8810" w:rsidR="00245F70" w:rsidRDefault="00245F70">Para saber o que não está coberto pelo seu seguro residencial da Porto Seguros, consulte as Condições Gerais. Lá, você encontra todos os detalhes do que é ou não amparado pelo seguro.
+w14:paraId="3E735F35" w14:textId="119C8810" w:rsidR="00245F70" w:rsidRDefault="00245F70">Para saber o que não está coberto pelo seu seguro residencial da Porto Seguro, consulte as Condições Gerais. Lá, você encontra todos os detalhes do que é ou não amparado pelo seguro.
 w14:paraId="3D1C76E0" w14:textId="08093789" w:rsidR="00245F70" w:rsidRDefault="00245F70">
 w14:paraId="79235FB9" w14:textId="77777777" w:rsidR="00245F70" w:rsidRDefault="00245F70" w:rsidP="00245F70">Existe franquia para o seguro de imóveis?
 w14:paraId="64A4332C" w14:textId="47356E0C" w:rsidR="00245F70" w:rsidRDefault="00245F70">Para seguros residenciais há a Participação Obrigatório do Segurado (POS) que  é aplicada nas seguintes coberturas: Incêndio e explosão, alagamento, danos ao jardim, danos elétricos, danos morais, desmoronamento, Impacto de Veículos Terrestres, Instalações e Pequenas Reformas, Joias e Relógios, Obras e Objetos de Arte, Placa Solar, Quebra de Vidros, Subtração de Bicicleta, Tremor de Terra e Terremoto, Vazamento de Tubulações, Vendaval
