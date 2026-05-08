@@ -372,14 +372,7 @@ class EmbeddingIndex:
 # ---- System Prompt ----
 SYSTEM_PROMPT = """Você é a Porto IA, assistente técnico oficial do Grupo Porto, especializado em responder dúvidas de corretores sobre produtos, coberturas, condições gerais, assistências, campanhas e diretrizes comerciais.
 
-Responda sempre com base nos documentos fornecidos no contexto abaixo. Seja direto, claro e objetivo. Use linguagem profissional mas acessível.
-
-REGRAS DE RESPOSTA:
-- Se o contexto contiver a informação pedida → responda com base nele, citando a fonte
-- Se o contexto contiver documentos dos produtos perguntados mas não detalhar a diferença específica → sintetize o que está disponível nos docs, informe o que cada documento cobre e oriente: 'Para detalhes comerciais completos (preços, franquias, público-alvo), consulte seu gerente comercial ou o portal Porto.'
-- Se o contexto NÃO contiver nenhum documento relevante → responda: 'Não encontrei essa informação na base de conhecimento. Consulte seu gerente comercial ou acesse o portal Porto.'
-
-Quando a pergunta envolver comparação entre produtos, monte uma tabela comparativa com o que estiver disponível nos docs. Quando a pergunta for sobre cobertura específica, cite a cláusula exata. Ao final de cada resposta, indique a fonte no formato: 'Fonte: [nome do documento] · [cláusula ou seção]'. Nunca invente valores ou coberturas que não estejam explicitamente nos documentos.
+Responda sempre com base nos documentos fornecidos no contexto abaixo. Seja direto, claro e objetivo. Use linguagem profissional mas acessível. Quando a pergunta envolver comparação entre produtos, monte uma tabela comparativa. Quando a pergunta for sobre cobertura específica, cite a cláusula exata. Ao final de cada resposta, indique a fonte no formato: 'Fonte: [nome do documento] · [cláusula ou seção]'. Se a informação não estiver nos documentos disponíveis, responda exatamente: 'Não encontrei essa informação na base de conhecimento. Consulte seu gerente comercial ou acesse o portal Porto.' Nunca invente informações. Nunca responda com base em conhecimento geral — apenas no contexto fornecido.
 
 ═══════════════════════════════════════════════
 REGRAS DE FORMATO — SIGA SEMPRE
@@ -412,30 +405,202 @@ PADRÃO DE QUALIDADE
 ✦ Pergunta simples → resposta direta em 2-4 linhas + 1 destaque em negrito
 ✦ Pergunta sobre 1 produto → bullets com ícones + valores em negrito
 ✦ Pergunta comparativa → tabela obrigatória + resumo de 2 linhas
-✦ Pergunta sobre assistência 24h → tabela comparativa SEMPRE"""
+✦ Pergunta sobre assistência 24h → tabela comparativa SEMPRE
+
+═══════════════════════════════════════════════
+⚖️ REGRA JURÍDICA OBRIGATÓRIA — INTERPRETAÇÃO CONTRATUAL
+═══════════════════════════════════════════════
+
+A Insurian NÃO pode afirmar se um sinistro, situação ou evento é coberto ou não coberto. Isso é interpretação contratual e responsabilidade EXCLUSIVA da seguradora.
+
+O que a Insurian PODE fazer:
+• Ler e transcrever exatamente o que está no documento
+• Explicar o que significa cada cobertura descrita no contrato
+• Listar as exclusões e riscos excluídos conforme o documento
+• Explicar perda de direitos conforme descrito
+• Mostrar limites, franquias e condições descritas no contrato
+• Comparar coberturas entre produtos com base nos documentos
+
+O que a Insurian NÃO pode fazer:
+• Afirmar "esse sinistro é coberto"
+• Afirmar "esse sinistro não é coberto"
+• Interpretar se uma situação específica do cliente se enquadra ou não em uma cobertura
+• Dar qualquer parecer sobre aceitação ou negação de sinistro
+
+MODELO DE RESPOSTA OBRIGATÓRIO quando perguntarem se algo é coberto:
+"Com base no documento [nome do documento], a cobertura prevista é: [descrever exatamente o que diz o documento]. A avaliação se esse caso específico se enquadra nessa cobertura é responsabilidade da seguradora."
+
+Esta regra se aplica a TODAS as perguntas sobre cobertura, sinistro ou enquadramento contratual, sem exceção."""
+
+
+# ---- Deteccao de perguntas comparativas ----
+
+# Palavras que indicam comparacao entre produtos
+PALAVRAS_COMPARATIVAS = [
+    'compar', 'diferença', 'diferente', 'versus', ' vs ', 'qual o melhor',
+    'qual tem', 'qual oferece', 'qual cobre', 'qual inclui', 'qual produto',
+    'todos os produtos', 'entre os produtos', 'entre as seguradoras',
+    'porto e azul', 'porto e itau', 'porto e mitsui', 'azul e itau',
+    'porto vs', 'azul vs', 'itau vs', 'mitsui vs',
+    'comparativo', 'tabela comparativa', 'diferenças entre',
+]
+
+# Grupos de produtos para busca comparativa automatica
+GRUPOS_COMPARATIVOS = {
+    'auto_principais': [
+        'Auto - Porto Seguro', 'Auto - Azul Seguros', 'Auto - Itau Seguros', 'Auto - Mitsui Seguros'
+    ],
+    'auto_compacto': [
+        'Auto Compacto - Azul Seguros', 'Auto Compacto - Itau Seguros'
+    ],
+    'auto_frota': [
+        'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto', 'Auto Frota - Mitsui Seguros'
+    ],
+    'residencial': [
+        'Residencial Essencial - Porto', 'Residencial Facil - Porto',
+        'Residencial Habitual - Porto', 'Residencial Premium Private - Porto',
+        'Residencial Veraneio - Porto', 'Residencial Veraneio Premium Private - Porto'
+    ],
+    'vida': [
+        'Vida Individual - Porto', 'Vida Individual Completo - Porto',
+        'Vida Mais Mulher - Porto', 'Vida Mais Simples - Porto',
+        'Vida On - Porto', 'Vida Presente - Porto', 'Vida do Seu Jeito - Porto'
+    ],
+}
+
+
+def detect_comparative_query(question: str) -> Tuple[bool, List[str]]:
+    """
+    Detecta se pergunta exige comparacao entre multiplos produtos.
+    Retorna (is_comparative, lista_de_fontes_a_incluir).
+    Logica: contexto tematico tem precedencia sobre mencao de seguradora.
+    """
+    q_lower = normalize_text(question)
+
+    is_comparative = any(normalize_text(p) in q_lower for p in PALAVRAS_COMPARATIVAS)
+
+    if not is_comparative:
+        return False, []
+
+    # 1. Contexto tematico tem PRECEDENCIA (residencial, frota, vida, etc.)
+    if any(w in q_lower for w in ['residenci', 'casa', 'imovel', 'veraneio']):
+        return True, GRUPOS_COMPARATIVOS['residencial']
+
+    if any(w in q_lower for w in ['frota compacto', 'frota tradicional', 'frota mitsui']):
+        return True, GRUPOS_COMPARATIVOS['auto_frota']
+
+    if any(w in q_lower for w in ['vida', 'morte', 'obito', 'acidentes pessoais']):
+        return True, GRUPOS_COMPARATIVOS['vida']
+
+    # 2. Mencao a "protecao combinada" — inclui junto com Auto Porto
+    menciona_protecao = any(w in q_lower for w in ['protecao combinada', 'proteção combinada'])
+
+    # 3. Verificar mencoes explicitas a seguradoras
+    menciona_porto  = any(w in q_lower for w in ['porto', 'portoseguro'])
+    menciona_azul   = 'azul' in q_lower
+    menciona_itau   = 'itau' in q_lower
+    menciona_mitsui = 'mitsui' in q_lower
+
+    # Se menciona seguradoras ou produtos especificos
+    if any([menciona_porto, menciona_azul, menciona_itau, menciona_mitsui]):
+        fontes_comparativas = []
+        for fonte in GRUPOS_COMPARATIVOS['auto_principais']:
+            if (menciona_porto  and ('Porto' in fonte or menciona_protecao)) or \
+               (menciona_azul   and 'Azul'   in fonte) or \
+               (menciona_itau   and 'Itau'   in fonte) or \
+               (menciona_mitsui and 'Mitsui' in fonte):
+                fontes_comparativas.append(fonte)
+        # Se mencionou protecao combinada, adicionar explicitamente
+        if menciona_protecao:
+            prot = 'Auto Protecao Combinada - Porto Seguro'
+            if prot not in fontes_comparativas:
+                fontes_comparativas.append(prot)
+        return True, fontes_comparativas
+
+    # 4. Default: todos os auto principais
+    return True, GRUPOS_COMPARATIVOS['auto_principais']
+
+
+def build_comparative_context(
+    question: str,
+    index: EmbeddingIndex,
+    fontes: List[str],
+    chunks_por_fonte: int = 3
+) -> Tuple[str, List[str]]:
+    """
+    Para perguntas comparativas: busca os melhores chunks de CADA fonte separadamente,
+    garantindo representacao balanceada de todos os produtos no contexto.
+    """
+    expanded = expand_synonyms(question)
+    context_parts = []
+    sources_used = []
+
+    for fonte in fontes:
+        # Filtrar chunks desta fonte especifica
+        chunks_da_fonte = [c for c in index.chunks if c.get('source') == fonte]
+        if not chunks_da_fonte:
+            continue
+
+        # Criar sub-indice temporario apenas com chunks desta fonte
+        tfidf_local = TFIDFIndex(chunks_da_fonte)
+        resultados_kw = tfidf_local.search(expanded, top_k=chunks_por_fonte)
+
+        # Pegar melhores chunks por TF-IDF local
+        for idx_local, score in resultados_kw[:chunks_por_fonte]:
+            if 0 <= idx_local < len(chunks_da_fonte):
+                chunk = chunks_da_fonte[idx_local]
+                context_parts.append(f"[{fonte}]\n{chunk['text']}")
+                if fonte not in sources_used:
+                    sources_used.append(fonte)
+
+        # Fallback: se TF-IDF nao retornou nada, pegar os primeiros chunks
+        if not resultados_kw:
+            for chunk in chunks_da_fonte[:chunks_por_fonte]:
+                context_parts.append(f"[{fonte}]\n{chunk['text']}")
+            if fonte not in sources_used:
+                sources_used.append(fonte)
+
+    context = "\n\n---\n\n".join(context_parts) if context_parts else "Nenhum contexto relevante encontrado."
+    return context, sources_used
 
 
 # ---- RAG Query ----
-def query_rag(question: str, index: EmbeddingIndex, conversation_history: List[Dict] = None) -> str:
-    """Busca hibrida + resposta via LLM"""
-    # Determinar se pergunta e complexa (mais contexto necessario)
-    is_complex = any(w in question.lower() for w in [
-        'compar', 'diferença', 'versus', ' vs ', 'todos', 'qual o melhor',
-        'assistência', 'assistencia', 'sinistro', 'cobertura', 'tabela'
-    ])
-    top_k = 7 if is_complex else 5
-
+def _build_standard_context(
+    question: str,
+    index: EmbeddingIndex,
+    top_k: int = 5
+) -> Tuple[str, List[str]]:
+    """Busca hibrida padrao e retorna (context_str, sources_used)."""
     results = index.search(question, top_k=top_k)
 
     context_parts = []
+    sources_used = []
     for chunk, score in results:
         if score > 0.1:
             context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
+            if chunk['source'] not in sources_used:
+                sources_used.append(chunk['source'])
 
     if not context_parts and results:
         context_parts = [f"[{c['source']}]\n{c['text']}" for c, _ in results[:3]]
+        sources_used = list(set(c['source'] for c, _ in results[:3]))
 
     context = "\n\n---\n\n".join(context_parts) if context_parts else "Nenhum contexto relevante encontrado."
+    return context, sources_used
+
+
+def query_rag(question: str, index: EmbeddingIndex, conversation_history: List[Dict] = None) -> str:
+    """Busca hibrida + resposta via LLM. Detecta automaticamente perguntas comparativas."""
+    is_comparative, fontes_comparativas = detect_comparative_query(question)
+
+    if is_comparative and fontes_comparativas:
+        context, sources_used = build_comparative_context(question, index, fontes_comparativas)
+    else:
+        is_complex = any(w in question.lower() for w in [
+            'assistência', 'assistencia', 'sinistro', 'cobertura', 'tabela'
+        ])
+        top_k = 7 if is_complex else 5
+        context, sources_used = _build_standard_context(question, index, top_k=top_k)
 
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
@@ -464,28 +629,17 @@ Pergunta do corretor: {question}"""
 
 
 def query_rag_stream(question: str, index: EmbeddingIndex, conversation_history: List[Dict] = None):
-    """Busca hibrida + resposta em streaming (generator de chunks de texto)"""
-    is_complex = any(w in question.lower() for w in [
-        'compar', 'diferença', 'versus', ' vs ', 'todos', 'qual o melhor',
-        'assistência', 'assistencia', 'sinistro', 'cobertura', 'tabela'
-    ])
-    top_k = 7 if is_complex else 5
+    """Busca hibrida + resposta em streaming. Detecta automaticamente perguntas comparativas."""
+    is_comparative, fontes_comparativas = detect_comparative_query(question)
 
-    results = index.search(question, top_k=top_k)
-
-    context_parts = []
-    sources_used = []
-    for chunk, score in results:
-        if score > 0.1:
-            context_parts.append(f"[{chunk['source']}]\n{chunk['text']}")
-            if chunk['source'] not in sources_used:
-                sources_used.append(chunk['source'])
-
-    if not context_parts and results:
-        context_parts = [f"[{c['source']}]\n{c['text']}" for c, _ in results[:3]]
-        sources_used = list(set(c['source'] for c, _ in results[:3]))
-
-    context = "\n\n---\n\n".join(context_parts) if context_parts else "Nenhum contexto relevante encontrado."
+    if is_comparative and fontes_comparativas:
+        context, sources_used = build_comparative_context(question, index, fontes_comparativas)
+    else:
+        is_complex = any(w in question.lower() for w in [
+            'assistência', 'assistencia', 'sinistro', 'cobertura', 'tabela'
+        ])
+        top_k = 7 if is_complex else 5
+        context, sources_used = _build_standard_context(question, index, top_k=top_k)
 
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 
