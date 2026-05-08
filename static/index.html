@@ -1433,9 +1433,49 @@
       input.focus();
     }
 
+    // ================================================================
+    // LOGIN AUTOMATICO — faz login ao carregar e renova se token expirar
+    // ================================================================
+    async function ensureLogin() {
+      // Tenta com token salvo primeiro
+      const saved = localStorage.getItem('session_token') || '';
+      if (saved) {
+        const r = await fetch('/api/counter', { headers: { 'X-Session-Token': saved } });
+        if (r.ok) return saved; // token ainda valido
+      }
+      // Token expirado ou ausente — faz login
+      try {
+        const r = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: 'corretor', password: 'porto2024' })
+        });
+        if (r.ok) {
+          const d = await r.json();
+          localStorage.setItem('session_token', d.token);
+          return d.token;
+        }
+      } catch(e) { console.warn('Login falhou:', e); }
+      return '';
+    }
+
+    // Intercepta fetch do sendMessage para renovar token se vier 401
+    const _origFetch = window.fetch;
+    window.fetch = async function(url, opts) {
+      let resp = await _origFetch(url, opts);
+      if (resp.status === 401 && url.includes('/api/')) {
+        const newToken = await ensureLogin();
+        if (newToken && opts && opts.headers) {
+          opts.headers['X-Session-Token'] = newToken;
+          resp = await _origFetch(url, opts);
+        }
+      }
+      return resp;
+    };
+
     // Inicializa com a aba Consulta Rapida
     renderWelcome('consulta');
-    loadInitialCounter();
+    ensureLogin().then(loadInitialCounter);
   </script>
 </body>
 </html>
