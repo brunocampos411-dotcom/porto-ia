@@ -276,6 +276,18 @@
     .send-btn svg { width: 18px; height: 18px; fill: var(--white); }
     .input-hint { text-align: center; font-size: 12px; color: var(--text-sec); margin-top: 8px; }
 
+    /* ===================== BOTAO TTS ===================== */
+    .tts-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-sec); padding: 4px 6px; border-radius: 6px;
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-family: inherit;
+      transition: background .15s, color .15s; margin-top: 6px;
+    }
+    .tts-btn:hover { background: var(--blue-bg); color: var(--blue-main); }
+    .tts-btn.playing { color: #e74c3c; }
+    .tts-btn svg { width: 14px; height: 14px; }
+
     /* Botoes de icone no input */
     .input-icon-btn {
       width: 34px; height: 34px; background: none; border: none; border-radius: 8px;
@@ -815,6 +827,9 @@ function appendAIMessage(content, sources = []) {
       <div class="bubble" id="${bubbleId}">${marked.parse(content)}</div>
       ${sources.length ? `<div class="source-tag">${sources.slice(0, 3).join(' · ')}</div>` : ''}
     </div>`;
+  // Botao TTS
+  const innerDiv = div.querySelector('div:not(.avatar)');
+  innerDiv.appendChild(buildTtsBtn(bubbleId));
   chatArea.appendChild(div);
   scrollToBottom();
   return { div, bubbleId };
@@ -914,6 +929,69 @@ function handleKey(e) {
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+// ===================== TTS (VOZ) =====================
+let ttsUtterance = null;
+let ttsActiveBtnId = null;
+
+const TTS_PLAY_ICON = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>`;
+const TTS_STOP_ICON = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>`;
+
+function buildTtsBtn(bubbleId) {
+  const btnId = 'tts-' + bubbleId;
+  const btn = document.createElement('button');
+  btn.className = 'tts-btn';
+  btn.id = btnId;
+  btn.title = 'Ouvir resposta';
+  btn.innerHTML = TTS_PLAY_ICON + '<span>Ouvir</span>';
+  btn.onclick = () => toggleTts(bubbleId);
+  return btn;
+}
+
+function toggleTts(bubbleId) {
+  const btn = document.getElementById('tts-' + bubbleId);
+  const bubble = document.getElementById(bubbleId);
+  if (!btn || !bubble) return;
+
+  // Se ja esta tocando este botao — parar
+  if (ttsActiveBtnId === bubbleId && window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
+  // Parar qualquer TTS ativo
+  if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+
+  // Extrair texto puro do bubble (sem markdown HTML)
+  const text = bubble.innerText || bubble.textContent;
+  if (!text.trim()) return;
+
+  ttsUtterance = new SpeechSynthesisUtterance(text);
+  ttsUtterance.lang = 'pt-BR';
+  ttsUtterance.rate = 1.0;
+  ttsUtterance.pitch = 1.0;
+
+  // Tentar voz feminina pt-BR
+  const voices = window.speechSynthesis.getVoices();
+  const femPtBR = voices.find(v => v.lang === 'pt-BR' && /female|feminino|mulher/i.test(v.name))
+    || voices.find(v => v.lang === 'pt-BR');
+  if (femPtBR) ttsUtterance.voice = femPtBR;
+
+  ttsUtterance.onstart = () => {
+    ttsActiveBtnId = bubbleId;
+    btn.classList.add('playing');
+    btn.innerHTML = TTS_STOP_ICON + '<span>Parar</span>';
+    btn.title = 'Parar leitura';
+  };
+  ttsUtterance.onend = ttsUtterance.onerror = () => {
+    ttsActiveBtnId = null;
+    btn.classList.remove('playing');
+    btn.innerHTML = TTS_PLAY_ICON + '<span>Ouvir</span>';
+    btn.title = 'Ouvir resposta';
+  };
+
+  window.speechSynthesis.speak(ttsUtterance);
 }
 
 // ===================== MICROFONE =====================
@@ -1159,6 +1237,11 @@ async function sendMessage() {
           if (sources.length) {
             sourceEl.textContent = sources.slice(0, 3).join(' · ');
             sourceEl.style.display = 'flex';
+          }
+          // Adicionar botao TTS
+          const innerDiv = bubble.closest('div:not(.message):not(.avatar)') || bubble.parentNode;
+          if (innerDiv && !innerDiv.querySelector('.tts-btn')) {
+            innerDiv.appendChild(buildTtsBtn(bubbleId));
           }
         } else if (event.type === 'error') {
           bubble.innerHTML = `<em style="color:#c0392b">Erro: ${event.message}</em>`;
