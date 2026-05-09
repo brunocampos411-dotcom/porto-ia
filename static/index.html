@@ -484,10 +484,10 @@
     <!-- Abas fixas — sempre visiveis -->
     <div id="tabs-fixed-wrapper" style="background:var(--blue-bg);border-bottom:1px solid var(--border);padding:0 24px;">
       <div class="tabs-nav" id="tabs-nav" style="margin-top:0;margin-bottom:0;">
-        <button class="tab-btn active" onclick="switchTab('consulta')">Consulta Rápida</button>
-        <button class="tab-btn" onclick="switchTab('recentes')">Recentes</button>
-        <button class="tab-btn" onclick="switchTab('campanhas')">Campanhas</button>
-        <button class="tab-btn" onclick="switchTab('vendas')">Aumente suas Vendas</button>
+        <button class="tab-btn active" onclick="selectTab('consulta')">Consulta Rápida</button>
+        <button class="tab-btn" onclick="selectTab('recentes')">Recentes</button>
+        <button class="tab-btn" onclick="selectTab('campanhas')">Campanhas</button>
+        <button class="tab-btn" onclick="selectTab('vendas')">Aumente suas Vendas</button>
       </div>
     </div>
 
@@ -804,7 +804,7 @@ function newChat() {
   const chatArea = document.getElementById('chat-area');
   chatArea.innerHTML = '';
   renderHistoryList();
-  switchTab('consulta');
+  selectTab('consulta');
 }
 
 // ===================== MENSAGENS =====================
@@ -874,9 +874,14 @@ function switchTab(name) {
   panels.querySelectorAll('.tab-panel').forEach(p => {
     p.classList.toggle('active', p.id === 'tab-' + name);
   });
-  // Mostrar painel ao clicar em aba
-  panels.style.display = 'block';
   if (name === 'recentes') renderRecentesPanel();
+}
+
+// Chamado pelos botoes de aba no HTML — sempre mostra o painel
+function selectTab(name) {
+  const panels = document.getElementById('tab-panels-wrapper');
+  if (panels) panels.style.display = 'block';
+  switchTab(name);
 }
 
 // ===================== RECENTES =====================
@@ -1134,8 +1139,6 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text && !attachedFile) return;
 
-  // Garantir que a interface mude para aba Consulta Rapida ao enviar
-  switchTab('consulta');
   // Esconder painel de conteudo das abas — o chat toma a tela
   const panels = document.getElementById('tab-panels-wrapper');
   if (panels) panels.style.display = 'none';
