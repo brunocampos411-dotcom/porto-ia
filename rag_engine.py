@@ -159,6 +159,7 @@ PRODUTOS_KEYWORDS = {
 # filtrar por categoria para evitar contaminacao entre produtos diferentes
 CATEGORIAS_FONTES = {
     'auto': [
+        'Indice - Auto Porto Seguradoras',
         'Auto - Porto Seguro', 'Auto - Azul Seguros', 'Auto - Itau Seguros',
         'Auto - Mitsui Seguros', 'Auto Compacto - Azul Seguros', 'Auto Compacto - Itau Seguros',
         'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto', 'Auto Frota - Mitsui Seguros',
@@ -166,22 +167,24 @@ CATEGORIAS_FONTES = {
         '24 Horas - Itau',
     ],
     'residencial': [
+        'Indice - Residencial Porto',
         'Residencial Essencial - Porto', 'Residencial Facil - Porto', 'Residencial Habitual - Porto',
         'Residencial Premium Private - Porto', 'Residencial Veraneio - Porto',
         'Residencial Veraneio Premium Private - Porto', 'Duvidas - Residencial',
     ],
     'vida': [
+        'Indice - Vida Porto',
         'Vida Individual - Porto', 'Vida Individual Completo - Porto', 'Vida Mais Mulher - Porto',
         'Vida Mais Simples - Porto', 'Vida On - Porto', 'Vida Presente - Porto',
         'Vida do Seu Jeito - Porto', 'Acidentes Pessoais Individual - Porto',
-        'Acidentes Pessoais Individual Prazo Curto - Porto', 'Apoio Familiar - Porto', 'Duvidas - Vida',
+        'Acidentes Pessoais Individual Prazo Curto - Porto', 'Apoio Familiar - Porto',
     ],
-    'viagem': ['Viagem - Porto', 'FAQ - Viagem', 'Duvidas - Viagem'],
-    'moto': ['Moto - Azul Seguros'],
-    'condominio': ['Condominio - Porto', 'Duvidas - Condominio'],
-    'empresarial': ['Empresarial - Porto', 'Duvidas - Empresarial'],
-    'rc profissional': ['RC Profissional - Porto', 'Duvidas - RC Profissional'],
-    'maquinas': ['Maquinas e Equipamentos - Porto', 'Duvidas - Maquinas e Equipamentos'],
+    'viagem': ['Viagem - Porto', 'FAQ - Viagem', 'Duvidas - Viagem', 'Indice - Outros Produtos Porto'],
+    'moto': ['Moto - Azul Seguros', 'Indice - Outros Produtos Porto'],
+    'condominio': ['Condominio - Porto', 'Duvidas - Condominio', 'Indice - Outros Produtos Porto'],
+    'empresarial': ['Empresarial - Porto', 'Duvidas - Empresarial', 'Indice - Outros Produtos Porto'],
+    'rc profissional': ['RC Profissional - Porto', 'Duvidas - RC Profissional', 'Indice - Outros Produtos Porto'],
+    'maquinas': ['Maquinas e Equipamentos - Porto', 'Duvidas - Maquinas e Equipamentos', 'Indice - Outros Produtos Porto'],
     'celular': ['Duvidas - Celular'],
 }
 
