@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Insurian — Assistente Institucional Porto Seguro</title>
+  <title>AV Insurtech — IA para Seguradoras</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -11,15 +11,17 @@
     /* ===================== RESET & BASE ===================== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --blue-main:   #0066CC;
-      --blue-light:  #0091DA;
-      --blue-dark:   #004A97;
-      --blue-sidebar:#003D80;
-      --blue-bg:     #F0F7FF;
-      --text-main:   #1A1A1A;
-      --text-sec:    #5A6A7A;
+      --blue-main:   #1B3A6B;
+      --blue-mid:    #2E86C1;
+      --blue-light:  #5DADE2;
+      --blue-sidebar:#0F2444;
+      --blue-bg:     #F4F7FA;
+      --gold:        #F0A500;
+      --gold-light:  #FFF8E7;
+      --text-main:   #1C2833;
+      --text-sec:    #7F8C8D;
       --white:       #FFFFFF;
-      --border:      #D4E6F8;
+      --border:      #D5E8F5;
       --sidebar-w:   260px;
     }
     html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--blue-bg); color: var(--text-main); }
@@ -31,15 +33,18 @@
     }
     .login-box {
       background: var(--white); border-radius: 16px; padding: 48px 40px;
-      width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,102,204,0.12);
+      width: 100%; max-width: 420px;
+      box-shadow: 0 8px 32px rgba(27,58,107,0.12);
     }
     .login-logo { text-align: center; margin-bottom: 32px; }
     .login-logo .logo-circle {
-      width: 64px; height: 64px; background: var(--blue-main); border-radius: 16px;
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      border-radius: 16px;
       display: inline-flex; align-items: center; justify-content: center;
       font-size: 28px; font-weight: 700; color: var(--white); margin-bottom: 12px;
     }
-    .login-logo h1 { font-size: 22px; font-weight: 700; color: var(--blue-dark); }
+    .login-logo h1 { font-size: 22px; font-weight: 700; color: var(--blue-main); }
     .login-logo p { font-size: 14px; color: var(--text-sec); margin-top: 4px; }
     .login-box label { display: block; font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 6px; margin-top: 20px; }
     .login-box input {
@@ -49,11 +54,12 @@
     }
     .login-box input:focus { border-color: var(--blue-main); }
     .login-btn {
-      width: 100%; margin-top: 28px; padding: 14px; background: var(--blue-main);
+      width: 100%; margin-top: 28px; padding: 14px;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
       color: var(--white); border: none; border-radius: 8px; font-size: 15px;
-      font-weight: 600; cursor: pointer; transition: background .2s;
+      font-weight: 600; cursor: pointer; transition: opacity .2s;
     }
-    .login-btn:hover { background: var(--blue-dark); }
+    .login-btn:hover { opacity: 0.9; }
     .login-error { color: #c0392b; font-size: 13px; margin-top: 12px; text-align: center; display: none; }
 
     /* ===================== APP LAYOUT ===================== */
@@ -66,40 +72,46 @@
     }
     .sidebar-logo {
       padding: 24px 20px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
+    .sidebar-logo-row { display: flex; align-items: center; gap: 12px; }
     .sidebar-logo .logo-mark {
-      width: 40px; height: 40px; background: var(--blue-main); border-radius: 10px;
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      border-radius: 10px;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 10px;
+      font-size: 18px; font-weight: 700; color: var(--white); flex-shrink: 0;
     }
     .sidebar-logo .brand-name { font-size: 17px; font-weight: 700; }
-    .sidebar-logo .brand-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .sidebar-logo .brand-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
     .new-chat-btn {
-      margin: 16px; padding: 10px 14px; background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
-      color: var(--white); font-size: 14px; font-weight: 500; cursor: pointer;
-      display: flex; align-items: center; gap: 8px; transition: background .2s;
+      margin: 16px; padding: 11px 14px;
+      background: var(--blue-mid);
+      border: none; border-radius: 10px;
+      color: var(--white); font-size: 14px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; justify-content: center;
+      transition: background .2s; letter-spacing: .2px;
     }
-    .new-chat-btn:hover { background: rgba(255,255,255,0.15); }
+    .new-chat-btn:hover { background: #2478aa; }
     .sidebar-section-label {
-      padding: 12px 20px 6px; font-size: 11px; font-weight: 600;
-      color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .8px;
+      padding: 12px 20px 6px; font-size: 10px; font-weight: 700;
+      color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.2px;
     }
     .history-list { flex: 1; overflow-y: auto; padding: 0 8px 16px; }
     .history-item {
       padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
-      color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden;
-      text-overflow: ellipsis; transition: background .15s; margin-bottom: 2px;
+      color: rgba(255,255,255,0.7); white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; transition: background .15s, color .15s; margin-bottom: 2px;
     }
-    .history-item:hover { background: rgba(255,255,255,0.08); color: var(--white); }
-    .history-item.active { background: rgba(255,255,255,0.12); color: var(--white); }
+    .history-item:hover { background: rgba(255,255,255,0.07); color: var(--white); }
+    .history-item.active { background: rgba(255,255,255,0.11); color: var(--white); }
     .sidebar-footer {
-      padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1);
-      font-size: 12px; color: rgba(255,255,255,0.4);
+      padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px; color: rgba(255,255,255,0.35);
     }
+    .sidebar-footer .version { margin-bottom: 6px; }
     .logout-btn {
-      background: none; border: none; color: rgba(255,255,255,0.5); font-size: 12px;
+      background: none; border: none; color: rgba(255,255,255,0.4); font-size: 12px;
       cursor: pointer; padding: 4px 0; font-family: inherit;
     }
     .logout-btn:hover { color: var(--white); }
@@ -109,29 +121,37 @@
 
     /* ---- HEADER ---- */
     .header {
-      background: var(--blue-dark); color: var(--white);
-      padding: 0 24px; height: 60px; display: flex; align-items: center;
+      background: linear-gradient(135deg, var(--blue-main) 0%, var(--blue-mid) 100%);
+      color: var(--white);
+      padding: 0 24px; height: 64px; display: flex; align-items: center;
       justify-content: space-between; flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 12px rgba(27,58,107,0.25);
     }
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .header-title { font-size: 16px; font-weight: 700; }
-    .header-sub { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; }
-    .status-dot {
-      width: 8px; height: 8px; background: #2ecc71; border-radius: 50%;
-      box-shadow: 0 0 0 2px rgba(46,204,113,0.3);
-      animation: pulse 2s infinite;
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .header-logo-mark {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: var(--white);
+      flex-shrink: 0;
     }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 2px rgba(46,204,113,0.3); }
-      50% { box-shadow: 0 0 0 5px rgba(46,204,113,0.1); }
-    }
-    .header-right { display: flex; align-items: center; gap: 16px; }
+    .header-title { font-size: 17px; font-weight: 700; color: var(--white); }
+    .header-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
     .counter-badge {
-      background: rgba(255,255,255,0.12); border-radius: 20px;
-      padding: 5px 12px; font-size: 12px; color: rgba(255,255,255,0.85);
+      background: var(--white); border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 12px; color: var(--blue-main); font-weight: 500;
+      display: flex; align-items: center; gap: 5px;
     }
-    .counter-badge strong { color: var(--white); }
+    .counter-badge strong { color: var(--blue-main); font-weight: 700; }
+    .points-badge {
+      background: var(--gold); border-radius: 20px;
+      padding: 5px 12px; font-size: 12px; color: var(--white);
+      font-weight: 700; display: flex; align-items: center; gap: 5px;
+      box-shadow: 0 2px 8px rgba(240,165,0,0.35);
+    }
 
     /* ---- CHAT AREA ---- */
     .chat-area {
@@ -139,58 +159,43 @@
       display: flex; flex-direction: column; gap: 24px;
     }
 
-    /* Mensagem vazia / boas vindas */
-    .welcome-screen {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 16px;
-      text-align: center; padding: 40px 24px;
-    }
-    .welcome-icon {
-      width: 64px; height: 64px; background: var(--blue-main); border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; font-weight: 700; color: var(--white);
-      margin-bottom: 8px;
-    }
-    .welcome-title { font-size: 22px; font-weight: 700; color: var(--blue-dark); }
-    .welcome-sub { font-size: 15px; color: var(--text-sec); max-width: 480px; line-height: 1.6; }
-    .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; max-width: 600px; }
-    .pill {
-      padding: 8px 18px; border: 1.5px solid var(--blue-light); color: var(--blue-main);
-      border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer;
-      background: var(--white); transition: all .2s;
-    }
-    .pill:hover { background: var(--blue-main); color: var(--white); border-color: var(--blue-main); }
-
-    /* Mensagens */
+    /* ===================== MENSAGENS ===================== */
     .message { display: flex; gap: 12px; max-width: 800px; width: 100%; }
     .message.user { flex-direction: row-reverse; align-self: flex-end; }
     .message.ai { align-self: flex-start; }
 
     .avatar {
-      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 14px; color: var(--white);
-      background: var(--blue-main); margin-top: 2px;
+      font-weight: 700; font-size: 13px; color: var(--white);
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      margin-top: 2px;
     }
 
     .bubble {
-      padding: 12px 16px; border-radius: 12px;
+      padding: 12px 16px; border-radius: 16px;
       font-size: 15px; line-height: 1.65; max-width: 680px;
     }
     .message.user .bubble {
-      background: var(--blue-main); color: var(--white);
-      border-radius: 12px 4px 12px 12px;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      color: var(--white);
+      border-radius: 16px 4px 16px 16px;
+      box-shadow: 0 2px 12px rgba(27,58,107,0.2);
     }
     .message.ai .bubble {
-      background: transparent; color: var(--text-main);
-      border-radius: 4px 12px 12px 12px; padding: 4px 0;
+      background: var(--white);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 4px 16px 16px 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      padding: 14px 18px;
     }
 
     /* Markdown dentro da resposta da IA */
     .message.ai .bubble p { margin-bottom: 10px; }
     .message.ai .bubble p:last-child { margin-bottom: 0; }
     .message.ai .bubble h1, .message.ai .bubble h2, .message.ai .bubble h3 {
-      color: var(--blue-dark); margin-bottom: 8px; margin-top: 14px; font-weight: 600;
+      color: var(--blue-main); margin-bottom: 8px; margin-top: 14px; font-weight: 600;
     }
     .message.ai .bubble strong { color: var(--text-main); }
     .message.ai .bubble ul, .message.ai .bubble ol { padding-left: 20px; margin-bottom: 10px; }
@@ -199,42 +204,44 @@
       border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
     }
     .message.ai .bubble th {
-      background: var(--blue-dark); color: var(--white); padding: 8px 12px;
+      background: var(--blue-main); color: var(--white); padding: 8px 12px;
       text-align: left; font-weight: 600;
     }
     .message.ai .bubble td {
       padding: 7px 12px; border-bottom: 1px solid var(--border);
     }
-    .message.ai .bubble tr:hover td { background: rgba(0,102,204,0.04); }
+    .message.ai .bubble tr:hover td { background: rgba(46,134,193,0.05); }
     .message.ai .bubble code {
       background: #f0f4f8; border-radius: 4px; padding: 1px 6px;
       font-size: 13px; font-family: monospace;
     }
     .message.ai .bubble blockquote {
-      border-left: 3px solid var(--blue-light); margin: 8px 0;
-      padding: 6px 12px; background: rgba(0,145,218,0.06); border-radius: 0 6px 6px 0;
+      border-left: 3px solid var(--blue-mid); margin: 8px 0;
+      padding: 6px 12px; background: rgba(46,134,193,0.06); border-radius: 0 6px 6px 0;
       color: var(--text-sec);
     }
 
     /* Fonte do documento */
     .source-tag {
-      font-size: 12px; color: var(--blue-light); margin-top: 10px;
+      font-size: 11px; color: var(--text-sec); margin-top: 8px;
       display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+      background: #F4F7FA; border-radius: 20px; padding: 3px 10px;
+      width: fit-content;
     }
     .source-tag::before { content: "📄"; }
 
     /* Cursor piscante durante streaming */
     .cursor-blink {
       display: inline-block; width: 2px; height: 16px;
-      background: var(--blue-main); margin-left: 2px; vertical-align: text-bottom;
+      background: var(--blue-mid); margin-left: 2px; vertical-align: text-bottom;
       animation: blink .7s step-end infinite;
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     /* Tres pontinhos de loading */
-    .typing-dots { display: flex; gap: 5px; align-items: center; padding: 14px 0; }
+    .typing-dots { display: flex; gap: 5px; align-items: center; padding: 10px 0; }
     .typing-dots span {
-      width: 8px; height: 8px; background: var(--blue-main); border-radius: 50%;
+      width: 8px; height: 8px; background: var(--blue-mid); border-radius: 50%;
       animation: bounce 1.2s ease-in-out infinite;
     }
     .typing-dots span:nth-child(2) { animation-delay: .2s; }
@@ -252,27 +259,30 @@
     .input-container {
       max-width: 700px; margin: 0 auto;
       background: var(--white); border: 1.5px solid var(--border);
-      border-radius: 12px; display: flex; align-items: flex-end; gap: 8px;
-      padding: 12px 14px; box-shadow: 0 2px 12px rgba(0,102,204,0.08);
+      border-radius: 16px; display: flex; align-items: flex-end; gap: 8px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 16px rgba(27,58,107,0.08);
       transition: border-color .2s, box-shadow .2s;
     }
     .input-container:focus-within {
-      border-color: var(--blue-main);
-      box-shadow: 0 2px 12px rgba(0,102,204,0.18);
+      border-color: var(--blue-mid);
+      box-shadow: 0 4px 20px rgba(46,134,193,0.18);
     }
     #user-input {
       flex: 1; border: none; outline: none; resize: none; font-family: inherit;
       font-size: 15px; color: var(--text-main); line-height: 1.5;
       max-height: 160px; overflow-y: auto; background: transparent;
     }
-    #user-input::placeholder { color: #9aafbf; }
+    #user-input::placeholder { color: #AAB8C8; }
     .send-btn {
-      width: 38px; height: 38px; background: var(--blue-light); border: none;
-      border-radius: 9px; cursor: pointer; display: flex; align-items: center;
-      justify-content: center; flex-shrink: 0; transition: background .2s;
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      border: none; border-radius: 11px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: opacity .2s; box-shadow: 0 2px 8px rgba(27,58,107,0.25);
     }
-    .send-btn:hover:not(:disabled) { background: var(--blue-main); }
-    .send-btn:disabled { background: #c8dff5; cursor: not-allowed; }
+    .send-btn:hover:not(:disabled) { opacity: 0.88; }
+    .send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
     .send-btn svg { width: 18px; height: 18px; fill: var(--white); }
     .input-hint { text-align: center; font-size: 12px; color: var(--text-sec); margin-top: 8px; }
 
@@ -284,15 +294,15 @@
       font-size: 12px; font-family: inherit;
       transition: background .15s, color .15s; margin-top: 6px;
     }
-    .tts-btn:hover { background: var(--blue-bg); color: var(--blue-main); }
+    .tts-btn:hover { background: var(--blue-bg); color: var(--blue-mid); }
     .tts-btn.playing { color: #e74c3c; }
     .tts-btn svg { width: 14px; height: 14px; }
 
     /* Botoes de icone no input */
     .input-icon-btn {
-      width: 34px; height: 34px; background: none; border: none; border-radius: 8px;
+      width: 36px; height: 36px; background: none; border: none; border-radius: 9px;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; color: var(--text-sec); transition: background .15s, color .15s;
+      flex-shrink: 0; color: var(--blue-mid); transition: background .15s, color .15s;
       padding: 0;
     }
     .input-icon-btn:hover { background: var(--blue-bg); color: var(--blue-main); }
@@ -308,7 +318,7 @@
     /* ===================== PAINEL DE ABAS FIXO ===================== */
     #tab-panels-wrapper {
       overflow-y: auto;
-      max-height: 40vh;
+      max-height: 45vh;
     }
     #tab-panels-wrapper .tab-panel { display: none; }
     #tab-panels-wrapper .tab-panel.active { display: block; }
@@ -316,8 +326,8 @@
     /* ===================== SCROLLBAR ===================== */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #c8dff5; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--blue-light); }
+    ::-webkit-scrollbar-thumb { background: #C5D8EA; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--blue-mid); }
 
     /* ===================== RESPONSIVO ===================== */
     @media (max-width: 768px) {
@@ -329,28 +339,43 @@
     /* ===================== ABAS DA WELCOME SCREEN ===================== */
     .tabs-nav {
       display: flex; gap: 4px; border-bottom: 2px solid var(--border);
-      margin-top: 16px; margin-bottom: 20px; width: 100%; max-width: 640px;
+      margin-top: 16px; margin-bottom: 0; width: 100%; max-width: 720px;
+      overflow-x: auto;
     }
     .tab-btn {
-      padding: 8px 18px; background: none; border: none; font-family: inherit;
+      padding: 10px 16px; background: none; border: none; font-family: inherit;
       font-size: 13px; font-weight: 600; color: var(--text-sec); cursor: pointer;
       border-bottom: 2px solid transparent; margin-bottom: -2px;
-      transition: color .2s, border-color .2s;
+      transition: color .2s, border-color .2s; white-space: nowrap;
+      display: flex; align-items: center; gap: 6px;
     }
-    .tab-btn:hover { color: var(--blue-main); }
-    .tab-btn.active { color: var(--blue-main); border-bottom-color: var(--blue-main); }
-    .tab-panel { display: none; width: 100%; max-width: 640px; }
+    .tab-btn:hover { color: var(--blue-mid); }
+    .tab-btn.active { color: var(--blue-main); border-bottom-color: var(--blue-main); font-weight: 700; }
+    .tab-panel { display: none; width: 100%; max-width: 720px; }
     .tab-panel.active { display: block; }
 
-    /* Consulta Rapida pills */
-    .cq-pills { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+    /* Consulta Rapida */
+    .cq-pills { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+    @media (max-width: 600px) { .cq-pills { grid-template-columns: 1fr; } }
     .cq-pill {
-      padding: 12px 18px; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 14px 18px 14px 16px; border: 1.5px solid var(--border); border-radius: 12px;
       background: var(--white); font-size: 14px; color: var(--text-main);
       cursor: pointer; text-align: left; font-family: inherit;
       transition: all .18s; line-height: 1.5;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      box-shadow: 0 1px 4px rgba(27,58,107,0.05);
     }
-    .cq-pill:hover { border-color: var(--blue-main); color: var(--blue-main); background: var(--blue-bg); }
+    .cq-pill:hover {
+      border-color: var(--blue-mid); color: var(--blue-main);
+      background: #EEF6FC; box-shadow: 0 2px 10px rgba(46,134,193,0.12);
+    }
+    .cq-pill::after { content: "→"; font-size: 16px; color: var(--blue-mid); flex-shrink: 0; }
+
+    /* Consulta Rapida intro text */
+    .cq-intro {
+      font-size: 14px; color: var(--text-sec); margin-bottom: 14px;
+      line-height: 1.5;
+    }
 
     /* Recentes */
     .recentes-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
@@ -359,7 +384,7 @@
       padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
       background: var(--white); cursor: pointer; transition: all .18s;
     }
-    .recente-item:hover { border-color: var(--blue-main); background: var(--blue-bg); }
+    .recente-item:hover { border-color: var(--blue-mid); background: #EEF6FC; }
     .recente-text { flex: 1; font-size: 14px; color: var(--text-main); line-height: 1.4; }
     .recente-ts { font-size: 11px; color: var(--text-sec); white-space: nowrap; }
     .recentes-empty { text-align: center; color: var(--text-sec); font-size: 14px; padding: 32px 0; }
@@ -368,13 +393,13 @@
     .campanhas-placeholder { text-align: center; color: var(--text-sec); font-size: 14px; padding: 32px 0; }
 
     /* ===================== ABA AUMENTE SUAS VENDAS ===================== */
-    .vendas-wrapper { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 36px; padding-bottom: 16px; }
-    .vendas-section-title { font-size: 17px; font-weight: 700; color: var(--blue-dark); margin-bottom: 4px; }
+    .vendas-wrapper { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 36px; padding-bottom: 16px; }
+    .vendas-section-title { font-size: 17px; font-weight: 700; color: var(--blue-main); margin-bottom: 4px; }
     .vendas-section-sub { font-size: 13px; color: var(--text-sec); margin-bottom: 14px; }
     .vendas-cards { display: flex; flex-direction: column; gap: 12px; }
     .vcard {
       background: var(--white); border-radius: 12px; padding: 16px 18px;
-      border-left: 4px solid var(--blue-main); box-shadow: 0 1px 6px rgba(0,102,204,0.07);
+      border-left: 4px solid var(--blue-mid); box-shadow: 0 1px 6px rgba(27,58,107,0.07);
     }
     .vcard.cross { border-left-color: #27ae60; }
     .vcard.nicho { border-left-color: #8e44ad; }
@@ -384,7 +409,7 @@
       font-size: 10px; font-weight: 700; letter-spacing: .6px; padding: 3px 8px;
       border-radius: 20px; text-transform: uppercase;
     }
-    .vtag.upsell { background: #e8f3ff; color: var(--blue-main); }
+    .vtag.upsell { background: #e8f3ff; color: var(--blue-mid); }
     .vtag.cross-sell { background: #e8f9ef; color: #27ae60; }
     .vtag.nicho { background: #f3e8ff; color: #8e44ad; }
     .vtag.empresarial { background: #fff3e0; color: #e67e22; }
@@ -395,13 +420,13 @@
       background: var(--white); border-radius: 12px; padding: 16px;
       text-align: center; border: 1.5px solid var(--border);
     }
-    .anc-col.rec { border-color: var(--blue-main); box-shadow: 0 2px 12px rgba(0,102,204,0.12); }
+    .anc-col.rec { border-color: var(--blue-mid); box-shadow: 0 2px 12px rgba(46,134,193,0.12); }
     .anc-label { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-sec); margin-bottom: 8px; }
-    .anc-col.rec .anc-label { color: var(--blue-main); }
+    .anc-col.rec .anc-label { color: var(--blue-mid); }
     .anc-col.rec { position: relative; }
     .anc-badge {
       position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      background: var(--blue-main); color: var(--white); font-size: 10px;
+      background: var(--blue-mid); color: var(--white); font-size: 10px;
       font-weight: 700; padding: 2px 10px; border-radius: 20px; white-space: nowrap;
     }
     .anc-desc { font-size: 13px; color: var(--text-sec); line-height: 1.5; }
@@ -410,7 +435,7 @@
     .perguntas-list { display: flex; flex-direction: column; gap: 10px; }
     .pgta-item {
       background: var(--white); border-radius: 10px; padding: 13px 16px;
-      border-left: 3px solid var(--blue-light); font-size: 14px;
+      border-left: 3px solid var(--blue-mid); font-size: 14px;
       color: var(--text-main); line-height: 1.5;
     }
 
@@ -420,17 +445,118 @@
       border-left: 3px solid #e74c3c; font-size: 14px;
       color: var(--text-main); line-height: 1.5;
     }
+
+    /* ===================== ABA AV POINTS ===================== */
+    .avpoints-wrapper {
+      width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 28px; padding-bottom: 16px;
+    }
+
+    /* Saldo Card */
+    .avp-saldo-card {
+      background: linear-gradient(135deg, var(--blue-main) 0%, var(--blue-mid) 100%);
+      border-radius: 20px; padding: 32px 24px; text-align: center;
+      box-shadow: 0 8px 28px rgba(27,58,107,0.25);
+    }
+    .avp-saldo-icon { font-size: 36px; margin-bottom: 8px; }
+    .avp-saldo-num { font-size: 48px; font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 6px; }
+    .avp-saldo-label { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 14px; }
+    .avp-nivel-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gold); color: var(--white);
+      font-size: 13px; font-weight: 700; border-radius: 20px; padding: 6px 16px;
+      margin-bottom: 18px;
+    }
+    .avp-progress-wrap {
+      background: rgba(255,255,255,0.15); border-radius: 20px; height: 8px;
+      max-width: 300px; margin: 0 auto 8px;
+    }
+    .avp-progress-bar {
+      background: var(--gold); border-radius: 20px; height: 100%; width: 62.5%;
+    }
+    .avp-progress-label { font-size: 12px; color: rgba(255,255,255,0.65); }
+
+    /* Como Ganhar */
+    .avp-section-title { font-size: 16px; font-weight: 700; color: var(--blue-main); margin-bottom: 12px; }
+    .avp-earn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 600px) { .avp-earn-grid { grid-template-columns: 1fr; } }
+    .avp-earn-card {
+      background: var(--white); border-radius: 12px; padding: 14px 16px;
+      border: 1.5px solid var(--border); display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 1px 4px rgba(27,58,107,0.05);
+    }
+    .avp-earn-icon { font-size: 22px; flex-shrink: 0; }
+    .avp-earn-text { flex: 1; font-size: 13px; color: var(--text-main); line-height: 1.4; }
+    .avp-earn-pts {
+      background: var(--gold-light); color: var(--gold); border: 1px solid var(--gold);
+      font-size: 12px; font-weight: 700; border-radius: 20px; padding: 3px 10px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Beneficios */
+    .avp-benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .avp-benefits-grid { grid-template-columns: 1fr; } }
+    .avp-benefit-card {
+      background: var(--white); border-radius: 14px; padding: 18px 16px;
+      border: 1.5px solid var(--border); display: flex; flex-direction: column; gap: 8px;
+      box-shadow: 0 1px 6px rgba(27,58,107,0.06);
+    }
+    .avp-benefit-icon { font-size: 26px; }
+    .avp-benefit-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
+    .avp-benefit-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+    .avp-benefit-pts {
+      background: var(--gold-light); color: var(--gold); border: 1px solid var(--gold);
+      font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 10px;
+    }
+    .avp-resgatar-btn {
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      color: var(--white); border: none; border-radius: 8px;
+      font-size: 12px; font-weight: 600; padding: 6px 14px;
+      cursor: pointer; transition: opacity .2s; font-family: inherit;
+    }
+    .avp-resgatar-btn:hover { opacity: 0.88; }
+
+    /* Modal "Em breve" */
+    #avp-modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 9999;
+      align-items: center; justify-content: center;
+    }
+    #avp-modal-overlay.open { display: flex; }
+    .avp-modal-box {
+      background: var(--white); border-radius: 18px; padding: 36px 32px;
+      max-width: 360px; width: 90%; text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    }
+    .avp-modal-icon { font-size: 48px; margin-bottom: 16px; }
+    .avp-modal-title { font-size: 18px; font-weight: 700; color: var(--blue-main); margin-bottom: 8px; }
+    .avp-modal-text { font-size: 14px; color: var(--text-sec); line-height: 1.6; margin-bottom: 24px; }
+    .avp-modal-close {
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      color: var(--white); border: none; border-radius: 10px;
+      padding: 12px 28px; font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
   </style>
 </head>
 <body>
+
+<!-- Modal "Em breve" AV Points -->
+<div id="avp-modal-overlay" onclick="closeAvpModal(event)">
+  <div class="avp-modal-box">
+    <div class="avp-modal-icon">🚀</div>
+    <div class="avp-modal-title">Em breve!</div>
+    <div class="avp-modal-text">Este benefício estará disponível em breve. Fique de olho nas atualizações da plataforma!</div>
+    <button class="avp-modal-close" onclick="closeAvpModal()">Entendido</button>
+  </div>
+</div>
 
 <!-- ===================== LOGIN ===================== -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
-      <div class=\"logo-circle\">IN</div>
-      <h1>Insurian</h1>
-      <p>Assistente Institucional · Porto Seguro</p>
+      <div class="logo-circle">AV</div>
+      <h1>AV Insurtech</h1>
+      <p>IA para Seguradoras</p>
     </div>
     <label for="login-user">Usuário</label>
     <input type="text" id="login-user" placeholder="seu usuário" autocomplete="username" />
@@ -446,20 +572,24 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-mark">IN</div>
-      <div class="brand-name">Insurian</div>
-      <div class="brand-sub">Assistente Institucional Porto Seguro</div>
+      <div class="sidebar-logo-row">
+        <div class="logo-mark">AV</div>
+        <div>
+          <div class="brand-name">AV Insurtech</div>
+          <div class="brand-sub">IA para Seguradoras</div>
+        </div>
+      </div>
     </div>
     <button class="new-chat-btn" onclick="newChat()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
       </svg>
-      Nova conversa
+      Nova Conversa
     </button>
     <div class="sidebar-section-label">Histórico</div>
     <div class="history-list" id="history-list"></div>
     <div class="sidebar-footer">
-      <div style="margin-bottom:6px">Insurian v4.0</div>
+      <div class="version">AV Insurtech v1.0</div>
       <button class="logout-btn" onclick="doLogout()">Sair da conta</button>
     </div>
   </aside>
@@ -469,36 +599,39 @@
     <!-- Header -->
     <header class="header">
       <div class="header-left">
+        <div class="header-logo-mark">AV</div>
         <div>
-          <div class="header-title">Insurian <span class="status-dot" style="display:inline-block;vertical-align:middle;margin-left:6px"></span></div>
-          <div class="header-sub">Assistente Institucional Porto Seguro</div>
+          <div class="header-title">AV Insurtech</div>
+          <div class="header-sub">IA para Seguradoras</div>
         </div>
       </div>
       <div class="header-right">
         <div class="counter-badge" id="counter-badge">
-          <strong id="counter-num">—</strong> dúvidas esta semana
+          💬 <strong id="counter-num">—</strong> dúvidas esta semana
+        </div>
+        <div class="points-badge">
+          ⭐ 1.250 AV Points
         </div>
       </div>
     </header>
 
     <!-- Abas fixas — sempre visiveis -->
-    <div id="tabs-fixed-wrapper" style="background:var(--blue-bg);border-bottom:1px solid var(--border);padding:0 24px;">
+    <div id="tabs-fixed-wrapper" style="background:var(--white);border-bottom:2px solid var(--border);padding:0 24px;">
       <div class="tabs-nav" id="tabs-nav" style="margin-top:0;margin-bottom:0;">
-        <button class="tab-btn active" onclick="selectTab('consulta')">Consulta Rápida</button>
-        <button class="tab-btn" onclick="selectTab('recentes')">Recentes</button>
-        <button class="tab-btn" onclick="selectTab('campanhas')">Campanhas</button>
-        <button class="tab-btn" onclick="selectTab('vendas')">Aumente suas Vendas</button>
+        <button class="tab-btn active" onclick="selectTab('consulta')">🔍 Consulta Rápida</button>
+        <button class="tab-btn" onclick="selectTab('recentes')">🕐 Recentes</button>
+        <button class="tab-btn" onclick="selectTab('avpoints')">⭐ AV Points</button>
+        <button class="tab-btn" onclick="selectTab('campanhas')">📢 Campanhas</button>
+        <button class="tab-btn" onclick="selectTab('vendas')">💡 Aumente suas Vendas</button>
       </div>
     </div>
 
     <!-- Paineis de aba — ficam sempre presentes, acima do chat -->
-    <div id="tab-panels-wrapper" style="background:var(--blue-bg);border-bottom:1px solid var(--border);padding:16px 24px;display:block;">
+    <div id="tab-panels-wrapper" style="background:var(--blue-bg);border-bottom:1px solid var(--border);padding:20px 24px;display:block;">
 
       <!-- ABA: Consulta Rápida -->
       <div class="tab-panel active" id="tab-consulta">
-        <div class="welcome-sub" style="margin-bottom:14px;text-align:left">
-          Consulte coberturas, condições, exclusões e assistências dos produtos Porto Seguro disponíveis na base.
-        </div>
+        <p class="cq-intro">Consulte coberturas, condições, exclusões e assistências dos produtos Porto Seguro disponíveis na base.</p>
         <div class="cq-pills">
           <button class="cq-pill" onclick="sendCQ(this)">Quais coberturas estão incluídas no Auto Porto?</button>
           <button class="cq-pill" onclick="sendCQ(this)">Qual a diferença entre Auto Porto e Auto Proteção Combinada?</button>
@@ -513,91 +646,191 @@
         <div class="recentes-list" id="recentes-list"></div>
       </div>
 
+      <!-- ABA: AV Points -->
+      <div class="tab-panel" id="tab-avpoints">
+        <div class="avpoints-wrapper">
+
+          <!-- SEÇÃO 1 — SALDO -->
+          <div class="avp-saldo-card">
+            <div class="avp-saldo-icon">⭐</div>
+            <div class="avp-saldo-num">1.250</div>
+            <div class="avp-saldo-label">AV Points disponíveis</div>
+            <div class="avp-nivel-badge">🏆 Corretor Inovador</div>
+            <div class="avp-progress-wrap">
+              <div class="avp-progress-bar"></div>
+            </div>
+            <div class="avp-progress-label">750 pts para Corretor Expert</div>
+          </div>
+
+          <!-- SEÇÃO 2 — COMO GANHAR -->
+          <div>
+            <div class="avp-section-title">Como ganhar AV Points</div>
+            <div class="avp-earn-grid">
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">💬</div>
+                <div class="avp-earn-text">Pergunta respondida pela IA</div>
+                <div class="avp-earn-pts">+10 pts</div>
+              </div>
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">📎</div>
+                <div class="avp-earn-text">Upload de apólice analisada</div>
+                <div class="avp-earn-pts">+25 pts</div>
+              </div>
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">📢</div>
+                <div class="avp-earn-text">Campanha consultada</div>
+                <div class="avp-earn-pts">+15 pts</div>
+              </div>
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">🎤</div>
+                <div class="avp-earn-text">Uso da voz</div>
+                <div class="avp-earn-pts">+10 pts</div>
+              </div>
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">🤝</div>
+                <div class="avp-earn-text">Cross-sell realizado</div>
+                <div class="avp-earn-pts">+200 pts</div>
+              </div>
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">✅</div>
+                <div class="avp-earn-text">Venda fechada após consulta</div>
+                <div class="avp-earn-pts">+150 pts</div>
+              </div>
+              <div class="avp-earn-card">
+                <div class="avp-earn-icon">☀️</div>
+                <div class="avp-earn-text">Primeiro acesso do dia</div>
+                <div class="avp-earn-pts">+5 pts</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 3 — BENEFÍCIOS -->
+          <div>
+            <div class="avp-section-title">Resgate seus benefícios</div>
+            <div class="avp-benefits-grid">
+              <div class="avp-benefit-card">
+                <div class="avp-benefit-icon">🎯</div>
+                <div class="avp-benefit-name">Acesso antecipado a campanhas</div>
+                <div class="avp-benefit-bottom">
+                  <div class="avp-benefit-pts">500 pts</div>
+                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
+                </div>
+              </div>
+              <div class="avp-benefit-card">
+                <div class="avp-benefit-icon">💰</div>
+                <div class="avp-benefit-name">Condição especial de comissão</div>
+                <div class="avp-benefit-bottom">
+                  <div class="avp-benefit-pts">1.000 pts</div>
+                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
+                </div>
+              </div>
+              <div class="avp-benefit-card">
+                <div class="avp-benefit-icon">🎓</div>
+                <div class="avp-benefit-name">Treinamento técnico avançado</div>
+                <div class="avp-benefit-bottom">
+                  <div class="avp-benefit-pts">800 pts</div>
+                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
+                </div>
+              </div>
+              <div class="avp-benefit-card">
+                <div class="avp-benefit-icon">🏆</div>
+                <div class="avp-benefit-name">Evento exclusivo Porto Seguro</div>
+                <div class="avp-benefit-bottom">
+                  <div class="avp-benefit-pts">2.000 pts</div>
+                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ABA: Campanhas -->
       <div class="tab-panel" id="tab-campanhas">
         <div class="campanhas-placeholder">Em breve — campanhas e materiais de apoio.</div>
       </div>
 
       <!-- ABA: Aumente suas Vendas -->
-        <div class="tab-panel" id="tab-vendas">
-          <div class="vendas-wrapper">
+      <div class="tab-panel" id="tab-vendas">
+        <div class="vendas-wrapper">
 
-            <!-- SEÇÃO 1 — UPSELL CONSULTIVO -->
-            <div>
-              <div class="vendas-section-title">Como vender mais na mesma apólice</div>
-              <div class="vendas-section-sub">Mostre o custo real do problema versus o custo da solução</div>
-              <div class="vendas-cards">
-                <div class="vcard">
-                  <div class="vcard-header"><span class="vtag upsell">Upsell</span></div>
-                  <div class="vcard-body"><strong>🚗 Carro Reserva</strong><br>Uma diária de carro reserva custa em torno de R$90. Adicionar 15 dias de carro reserva na apólice sai por volta de R$150 ao ano — R$15 a mais por parcela. Se o carro ficar na oficina por uma semana, já pagou o investimento do ano inteiro.</div>
-                </div>
-                <div class="vcard cross">
-                  <div class="vcard-header"><span class="vtag cross-sell">Cross-sell</span></div>
-                  <div class="vcard-body"><strong>❤️ Seguro de Vida</strong><br>Seguro de vida é um produto que se compra com saúde, não com dinheiro. Quando o cliente precisar, pode não ter mais saúde para contratar. A maioria das coberturas pode ser usada em vida — diária por internação, doenças graves, invalidez parcial. A cobertura de morte é só uma delas.</div>
-                </div>
-                <div class="vcard cross">
-                  <div class="vcard-header"><span class="vtag cross-sell">Cross-sell</span></div>
-                  <div class="vcard-body"><strong>🏠 Residencial</strong><br>O cliente acabou de contratar seguro para o carro de R$80 mil. A casa dele vale R$400 mil e está desprotegida. Um seguro residencial custa em torno de R$100 por parcela. Faz sentido proteger o patrimônio maior com o mesmo raciocínio que ele acabou de usar.</div>
-                </div>
-                <div class="vcard nicho">
-                  <div class="vcard-header"><span class="vtag nicho">Nicho</span></div>
-                  <div class="vcard-body"><strong>⚖️ RC Profissional</strong><br>Com a explosão dos procedimentos estéticos e o poder das redes sociais, a régua de expectativa do paciente nunca esteve tão alta. Um resultado tecnicamente correto pode virar processo porque o cliente viu algo diferente no Instagram. Médicos, dentistas e esteticistas estão entre as categorias com maior crescimento de processos no Brasil. Um processo pode custar R$50 mil só em honorários advocatícios. O seguro RC Profissional cobre a defesa jurídica e a indenização. A parcela mensal costuma ser menor do que uma consulta que o profissional faz em um dia.</div>
-                </div>
-                <div class="vcard empresarial">
-                  <div class="vcard-header"><span class="vtag empresarial">Empresarial</span></div>
-                  <div class="vcard-body"><strong>🏢 Seguro Empresarial</strong><br>Se a empresa parar amanhã por incêndio, alagamento ou qualquer sinistro — o aluguel continua, a folha continua, os fornecedores continuam. O faturamento para, as despesas não. Quantos meses a empresa sobrevive sem receita? O seguro de lucros cessantes garante que as despesas fixas continuem sendo pagas enquanto o empresário reconstrói a operação. A pergunta não é se ele pode pagar o seguro — é se ele consegue sobreviver sem ele.</div>
-                </div>
+          <!-- SEÇÃO 1 — UPSELL CONSULTIVO -->
+          <div>
+            <div class="vendas-section-title">Como vender mais na mesma apólice</div>
+            <div class="vendas-section-sub">Mostre o custo real do problema versus o custo da solução</div>
+            <div class="vendas-cards">
+              <div class="vcard">
+                <div class="vcard-header"><span class="vtag upsell">Upsell</span></div>
+                <div class="vcard-body"><strong>🚗 Carro Reserva</strong><br>Uma diária de carro reserva custa em torno de R$90. Adicionar 15 dias de carro reserva na apólice sai por volta de R$150 ao ano — R$15 a mais por parcela. Se o carro ficar na oficina por uma semana, já pagou o investimento do ano inteiro.</div>
+              </div>
+              <div class="vcard cross">
+                <div class="vcard-header"><span class="vtag cross-sell">Cross-sell</span></div>
+                <div class="vcard-body"><strong>❤️ Seguro de Vida</strong><br>Seguro de vida é um produto que se compra com saúde, não com dinheiro. Quando o cliente precisar, pode não ter mais saúde para contratar. A maioria das coberturas pode ser usada em vida — diária por internação, doenças graves, invalidez parcial. A cobertura de morte é só uma delas.</div>
+              </div>
+              <div class="vcard cross">
+                <div class="vcard-header"><span class="vtag cross-sell">Cross-sell</span></div>
+                <div class="vcard-body"><strong>🏠 Residencial</strong><br>O cliente acabou de contratar seguro para o carro de R$80 mil. A casa dele vale R$400 mil e está desprotegida. Um seguro residencial custa em torno de R$100 por parcela. Faz sentido proteger o patrimônio maior com o mesmo raciocínio que ele acabou de usar.</div>
+              </div>
+              <div class="vcard nicho">
+                <div class="vcard-header"><span class="vtag nicho">Nicho</span></div>
+                <div class="vcard-body"><strong>⚖️ RC Profissional</strong><br>Com a explosão dos procedimentos estéticos e o poder das redes sociais, a régua de expectativa do paciente nunca esteve tão alta. Um resultado tecnicamente correto pode virar processo porque o cliente viu algo diferente no Instagram. Médicos, dentistas e esteticistas estão entre as categorias com maior crescimento de processos no Brasil. Um processo pode custar R$50 mil só em honorários advocatícios. O seguro RC Profissional cobre a defesa jurídica e a indenização. A parcela mensal costuma ser menor do que uma consulta que o profissional faz em um dia.</div>
+              </div>
+              <div class="vcard empresarial">
+                <div class="vcard-header"><span class="vtag empresarial">Empresarial</span></div>
+                <div class="vcard-body"><strong>🏢 Seguro Empresarial</strong><br>Se a empresa parar amanhã por incêndio, alagamento ou qualquer sinistro — o aluguel continua, a folha continua, os fornecedores continuam. O faturamento para, as despesas não. Quantos meses a empresa sobrevive sem receita? O seguro de lucros cessantes garante que as despesas fixas continuem sendo pagas enquanto o empresário reconstrói a operação. A pergunta não é se ele pode pagar o seguro — é se ele consegue sobreviver sem ele.</div>
               </div>
             </div>
-
-            <!-- SEÇÃO 2 — ANCORAGEM -->
-            <div>
-              <div class="vendas-section-title">Apresente sempre 3 opções</div>
-              <div class="vendas-section-sub">O cliente raramente escolhe a mais barata quando vê o valor que a intermediária oferece</div>
-              <div class="ancoragem-grid">
-                <div class="anc-col">
-                  <div class="anc-label">Básico</div>
-                  <div class="anc-desc">Cobertura essencial. Cobre os riscos principais, sem adicionais.</div>
-                </div>
-                <div class="anc-col rec">
-                  <div class="anc-badge">⭐ Recomendado</div>
-                  <div class="anc-label">Intermediário</div>
-                  <div class="anc-desc">Melhor custo-benefício. Inclui assistências e coberturas extras com diferença pequena no valor.</div>
-                </div>
-                <div class="anc-col">
-                  <div class="anc-label">Premium</div>
-                  <div class="anc-desc">Cobertura completa. Para quem quer tranquilidade total sem preocupação com franquias.</div>
-                </div>
-              </div>
-              <div class="anc-nota">Os valores variam conforme o produto e perfil do cliente. Use essa lógica independente do produto.</div>
-            </div>
-
-            <!-- SEÇÃO 3 — PERGUNTAS QUE ABREM VENDAS -->
-            <div>
-              <div class="vendas-section-title">Perguntas que revelam necessidade</div>
-              <div class="vendas-section-sub">Faça o cliente chegar na conclusão sozinho</div>
-              <div class="perguntas-list">
-                <div class="pgta-item">Se acontecesse um sinistro amanhã, quantos dias você consegue ficar sem o carro?</div>
-                <div class="pgta-item">Além do carro, quais são os bens mais valiosos que você tem?</div>
-                <div class="pgta-item">Você já pensou no que acontece com sua família se você faltar ou ficar incapacitado?</div>
-                <div class="pgta-item">Sua empresa consegue sobreviver quantos meses se a operação parar por completo?</div>
-                <div class="pgta-item">Você é profissional de saúde ou estética? Já pensou na sua exposição jurídica?</div>
-                <div class="pgta-item">Seu celular e notebook estão segurados? Você usa mais eles do que o carro.</div>
-              </div>
-            </div>
-
-            <!-- SEÇÃO 4 — GATILHOS DE URGÊNCIA -->
-            <div>
-              <div class="vendas-section-title">Use com responsabilidade — só urgência real</div>
-              <div class="urgencia-list">
-                <div class="urg-item">Essa condição vai até o fim do mês. Se fecharmos hoje, você garante a bonificação.</div>
-                <div class="urg-item">Cada dia sem seguro é um risco real. A melhor hora de segurar é antes do sinistro.</div>
-                <div class="urg-item">Seguro de vida se contrata quando se tem saúde. Se o cliente sair sem contratar e tiver um problema amanhã, pode não conseguir mais.</div>
-              </div>
-            </div>
-
           </div>
+
+          <!-- SEÇÃO 2 — ANCORAGEM -->
+          <div>
+            <div class="vendas-section-title">Apresente sempre 3 opções</div>
+            <div class="vendas-section-sub">O cliente raramente escolhe a mais barata quando vê o valor que a intermediária oferece</div>
+            <div class="ancoragem-grid">
+              <div class="anc-col">
+                <div class="anc-label">Básico</div>
+                <div class="anc-desc">Cobertura essencial. Cobre os riscos principais, sem adicionais.</div>
+              </div>
+              <div class="anc-col rec">
+                <div class="anc-badge">⭐ Recomendado</div>
+                <div class="anc-label">Intermediário</div>
+                <div class="anc-desc">Melhor custo-benefício. Inclui assistências e coberturas extras com diferença pequena no valor.</div>
+              </div>
+              <div class="anc-col">
+                <div class="anc-label">Premium</div>
+                <div class="anc-desc">Cobertura completa. Para quem quer tranquilidade total sem preocupação com franquias.</div>
+              </div>
+            </div>
+            <div class="anc-nota">Os valores variam conforme o produto e perfil do cliente. Use essa lógica independente do produto.</div>
+          </div>
+
+          <!-- SEÇÃO 3 — PERGUNTAS QUE ABREM VENDAS -->
+          <div>
+            <div class="vendas-section-title">Perguntas que revelam necessidade</div>
+            <div class="vendas-section-sub">Faça o cliente chegar na conclusão sozinho</div>
+            <div class="perguntas-list">
+              <div class="pgta-item">Se acontecesse um sinistro amanhã, quantos dias você consegue ficar sem o carro?</div>
+              <div class="pgta-item">Além do carro, quais são os bens mais valiosos que você tem?</div>
+              <div class="pgta-item">Você já pensou no que acontece com sua família se você faltar ou ficar incapacitado?</div>
+              <div class="pgta-item">Sua empresa consegue sobreviver quantos meses se a operação parar por completo?</div>
+              <div class="pgta-item">Você é profissional de saúde ou estética? Já pensou na sua exposição jurídica?</div>
+              <div class="pgta-item">Seu celular e notebook estão segurados? Você usa mais eles do que o carro.</div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 4 — GATILHOS DE URGÊNCIA -->
+          <div>
+            <div class="vendas-section-title">Use com responsabilidade — só urgência real</div>
+            <div class="urgencia-list">
+              <div class="urg-item">Essa condição vai até o fim do mês. Se fecharmos hoje, você garante a bonificação.</div>
+              <div class="urg-item">Cada dia sem seguro é um risco real. A melhor hora de segurar é antes do sinistro.</div>
+              <div class="urg-item">Seguro de vida se contrata quando se tem saúde. Se o cliente sair sem contratar e tiver um problema amanhã, pode não conseguir mais.</div>
+            </div>
+          </div>
+
         </div>
+      </div>
 
     </div><!-- fim tab-panels-wrapper -->
 
@@ -608,7 +841,7 @@
     <!-- Input -->
     <div class="input-wrapper">
       <!-- Preview de arquivo/imagem -->
-      <div id="attach-preview" style="display:none;max-width:700px;margin:0 auto 8px;display:none;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;">
+      <div id="attach-preview" style="display:none;max-width:700px;margin:0 auto 8px;align-items:center;gap:10px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;">
         <span id="attach-preview-icon" style="font-size:20px;">📎</span>
         <span id="attach-preview-name" style="flex:1;font-size:13px;color:var(--text-main);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
         <img id="attach-preview-img" src="" alt="" style="display:none;height:40px;width:40px;object-fit:cover;border-radius:4px;" />
@@ -752,6 +985,16 @@ function updateCounter(n) {
   document.getElementById('counter-num').textContent = n.toLocaleString('pt-BR');
 }
 
+// ===================== AV POINTS MODAL =====================
+function openAvpModal() {
+  document.getElementById('avp-modal-overlay').classList.add('open');
+}
+function closeAvpModal(evt) {
+  if (!evt || evt.target === document.getElementById('avp-modal-overlay') || !evt.target) {
+    document.getElementById('avp-modal-overlay').classList.remove('open');
+  }
+}
+
 // ===================== HISTORICO =====================
 function saveCurrentSession() {
   if (conversationHistory.length === 0) return;
@@ -825,7 +1068,7 @@ function appendAIMessage(content, sources = []) {
   div.className = 'message ai';
   const bubbleId = 'bubble-' + Date.now();
   div.innerHTML = `
-    <div class="avatar">IN</div>
+    <div class="avatar">AV</div>
     <div>
       <div class="bubble" id="${bubbleId}">${marked.parse(content)}</div>
       ${sources.length ? `<div class="source-tag">${sources.slice(0, 3).join(' · ')}</div>` : ''}
@@ -844,7 +1087,7 @@ function appendLoadingDots() {
   div.className = 'message ai';
   div.id = 'loading-dots';
   div.innerHTML = `
-    <div class="avatar">IN</div>
+    <div class="avatar">AV</div>
     <div class="bubble">
       <div class="typing-dots"><span></span><span></span><span></span></div>
     </div>`;
@@ -867,8 +1110,8 @@ function switchTab(name) {
   const nav = document.getElementById('tabs-nav');
   const panels = document.getElementById('tab-panels-wrapper');
   if (!nav || !panels) return;
+  const tabs = ['consulta','recentes','avpoints','campanhas','vendas'];
   nav.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const tabs = ['consulta','recentes','campanhas','vendas'];
     b.classList.toggle('active', tabs[i] === name);
   });
   panels.querySelectorAll('.tab-panel').forEach(p => {
@@ -918,7 +1161,7 @@ function sendFromRecente(text) {
 
 // ===================== CONSULTA RAPIDA / PILLS =====================
 function sendCQ(el) {
-  const text = el.textContent.trim();
+  const text = el.textContent.trim().replace(/→\s*$/, '').trim();
   document.getElementById('user-input').value = text;
   sendMessage();
 }
@@ -1203,7 +1446,7 @@ async function sendMessage() {
     aiDiv.className = 'message ai';
     const bubbleId = 'bubble-' + Date.now();
     aiDiv.innerHTML = `
-      <div class="avatar">IN</div>
+      <div class="avatar">AV</div>
       <div>
         <div class="bubble" id="${bubbleId}"><span class="cursor-blink"></span></div>
         <div class="source-tag" id="source-${bubbleId}" style="display:none"></div>
@@ -1272,7 +1515,7 @@ async function sendMessage() {
     const errDiv = document.createElement('div');
     errDiv.className = 'message ai';
     errDiv.innerHTML = `
-      <div class="avatar">IN</div>
+      <div class="avatar">AV</div>
       <div class="bubble"><em style="color:#c0392b">Erro de conexão. Tente novamente.</em></div>`;
     chatArea.appendChild(errDiv);
     console.error(err);
