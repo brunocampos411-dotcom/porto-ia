@@ -1,5 +1,5 @@
 """
-Porto IA - Backend FastAPI v4.0
+AV Insurtech - Backend FastAPI v1.0
 API do chatbot para corretores — com streaming SSE
 """
 import os
@@ -22,7 +22,55 @@ from rag_engine import get_index, query_rag, query_rag_stream, EmbeddingIndex
 
 BASE_DIR = Path(__file__).parent
 
-app = FastAPI(title="Porto IA", description="Assistente inteligente Porto Seguro para corretores")
+# ---- Tracking de metricas ----
+_metrics = {
+    "total_interacoes": 0,
+    "interacoes_por_hora": {},       # "YYYY-MM-DD HH" -> count
+    "interacoes_por_dia": {},        # "YYYY-MM-DD" -> count
+    "top_perguntas": [],             # lista de {pergunta, count, ultima_vez}
+    "top_sources": {},               # source -> count de uso
+    "response_times": [],            # ultimos 100 response times
+    "sessoes_ativas": 0,
+    "inicio": datetime.datetime.now().isoformat(),
+}
+_perguntas_map: dict = {}           # pergunta normalizada -> {original, count, ultima_vez}
+
+
+def _track_interaction(pergunta: str, sources: list, response_time: float):
+    global _metrics
+    now = datetime.datetime.now()
+    hora_key = now.strftime("%Y-%m-%d %H")
+    dia_key = now.strftime("%Y-%m-%d")
+
+    _metrics["total_interacoes"] += 1
+    _metrics["interacoes_por_hora"][hora_key] = _metrics["interacoes_por_hora"].get(hora_key, 0) + 1
+    _metrics["interacoes_por_dia"][dia_key] = _metrics["interacoes_por_dia"].get(dia_key, 0) + 1
+
+    # Tracking de response time (guarda ultimos 100)
+    _metrics["response_times"].append(round(response_time, 2))
+    if len(_metrics["response_times"]) > 100:
+        _metrics["response_times"] = _metrics["response_times"][-100:]
+
+    # Tracking de fontes usadas
+    for s in sources:
+        _metrics["top_sources"][s] = _metrics["top_sources"].get(s, 0) + 1
+
+    # Tracking de perguntas (normaliza para agrupar similares)
+    key = pergunta.strip().lower()[:100]
+    if key in _perguntas_map:
+        _perguntas_map[key]["count"] += 1
+        _perguntas_map[key]["ultima_vez"] = now.isoformat()
+    else:
+        _perguntas_map[key] = {
+            "pergunta": pergunta[:200],
+            "count": 1,
+            "ultima_vez": now.isoformat()
+        }
+    # Atualiza top_perguntas (top 20)
+    sorted_q = sorted(_perguntas_map.values(), key=lambda x: x["count"], reverse=True)
+    _metrics["top_perguntas"] = sorted_q[:20]
+
+app = FastAPI(title="AV Insurtech", description="IA para Seguradoras - AV Insurtech")
 
 app.add_middleware(
     CORSMiddleware,
@@ -76,33 +124,8 @@ def require_auth(request: Request):
         raise HTTPException(status_code=401, detail="Nao autorizado. Faca login novamente.")
 
 
-# ---- Contador semanal (persistente em counter.json) ----
-COUNTER_FILE = BASE_DIR / "counter.json"
+# ---- Contador semanal ----
 _counter_data = {"count": 0, "week": 0, "year": 0}
-
-
-def _load_counter():
-    """Carrega contador do arquivo JSON ao iniciar."""
-    global _counter_data
-    try:
-        if COUNTER_FILE.exists():
-            data = json.loads(COUNTER_FILE.read_text(encoding='utf-8'))
-            week, year = get_current_week()
-            if data.get("week") == week and data.get("year") == year:
-                _counter_data = data
-                print(f"Contador semanal carregado: {data['count']} interacoes (semana {week}/{year})")
-            else:
-                print(f"Nova semana — contador resetado.")
-    except Exception as e:
-        print(f"Aviso: nao foi possivel carregar counter.json: {e}")
-
-
-def _save_counter():
-    """Salva contador no arquivo JSON."""
-    try:
-        COUNTER_FILE.write_text(json.dumps(_counter_data, ensure_ascii=False), encoding='utf-8')
-    except Exception as e:
-        print(f"Aviso: nao foi possivel salvar counter.json: {e}")
 
 
 def get_current_week():
@@ -116,7 +139,6 @@ def increment_counter() -> int:
     if _counter_data["week"] != week or _counter_data["year"] != year:
         _counter_data = {"count": 0, "week": week, "year": year}
     _counter_data["count"] += 1
-    _save_counter()
     return _counter_data["count"]
 
 
@@ -131,70 +153,9 @@ def get_counter_value() -> int:
 def get_cached_index():
     global _index
     if _index is None:
-        _load_counter()
         print("Carregando indice...")
         _index = get_index()
     return _index
-
-
-def extract_pdf_text(base64_data: str) -> str:
-    """Extrai texto de PDF enviado em base64."""
-    import base64, tempfile, sys
-    sys.path.insert(0, '/usr/local/lib/python3.13/dist-packages')
-    try:
-        import pdfplumber
-        raw = base64.b64decode(base64_data)
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
-            tmp.write(raw)
-            tmp_path = tmp.name
-        text_parts = []
-        with pdfplumber.open(tmp_path) as pdf:
-            for page in pdf.pages:
-                t = page.extract_text()
-                if t:
-                    text_parts.append(t)
-        import os
-        os.unlink(tmp_path)
-        return '\n\n'.join(text_parts)[:12000]  # limita 12k chars
-    except Exception as e:
-        return f"[Erro ao extrair texto do PDF: {e}]"
-
-
-def build_message_with_attachment(question: str, attachment, context: str) -> list:
-    """Monta a lista de messages para a API com suporte a imagem (multimodal) ou texto de doc."""
-    from rag_engine import SYSTEM_PROMPT
-
-    if attachment.type == 'image':
-        # Multimodal — imagem em base64
-        return [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": [
-                {"type": "text", "text": (
-                    f"Contexto dos documentos indexados:\n{context}\n\n"
-                    f"O corretor enviou uma imagem ({attachment.name}) e perguntou:\n{question}\n\n"
-                    "Descreva o conteúdo da imagem e responda a pergunta. "
-                    "Lembre-se: não afirme se algo é ou não coberto — siga a regra jurídica."
-                )},
-                {"type": "image_url", "image_url": {
-                    "url": f"data:{attachment.mime_type};base64,{attachment.data}"
-                }}
-            ]}
-        ]
-    else:
-        # PDF / DOCX — texto extraído
-        doc_text = extract_pdf_text(attachment.data) if attachment.ext == 'pdf' else \
-                   f"[Arquivo DOCX: extração de texto não implementada — peça ao usuário para copiar o texto.]"
-        return [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": (
-                f"Contexto dos documentos indexados:\n{context}\n\n"
-                f"O corretor anexou o arquivo '{attachment.name}' com o seguinte conteúdo:\n"
-                f"---\n{doc_text}\n---\n\n"
-                f"Pergunta do corretor: {question}\n\n"
-                "Responda com base no conteúdo do arquivo. "
-                "Não afirme se algo é ou não coberto — siga a regra jurídica."
-            )}
-        ]
 
 
 # ---- Models ----
@@ -203,18 +164,9 @@ class Message(BaseModel):
     content: str
 
 
-class Attachment(BaseModel):
-    type: str          # 'image' | 'doc'
-    name: str
-    data: str          # base64
-    mime_type: str
-    ext: Optional[str] = None
-
-
 class ChatRequest(BaseModel):
     message: str
     history: List[Message] = []
-    attachment: Optional[Attachment] = None
 
 
 class ChatResponse(BaseModel):
@@ -235,12 +187,12 @@ async def root():
     html_path = BASE_DIR / "static" / "index.html"
     if html_path.exists():
         return HTMLResponse(content=html_path.read_text(encoding='utf-8'))
-    return HTMLResponse(content="<h1>Porto IA</h1><p>Interface em construcao...</p>")
+    return HTMLResponse(content="<h1>AV Insurtech</h1><p>IA para Seguradoras</p>")
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "Porto IA", "version": "4.0.0"}
+    return {"status": "ok", "service": "AV Insurtech", "version": "1.0.0"}
 
 
 @app.post("/api/login")
@@ -263,7 +215,7 @@ async def logout(request: Request):
 # ---- Endpoints protegidos ----
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, _auth=Depends(require_auth)):
-    """Chat normal (resposta completa de uma vez) — com suporte a anexos PDF e imagem."""
+    """Chat normal (resposta completa de uma vez)"""
     import traceback
     start = time.time()
     try:
@@ -275,37 +227,10 @@ async def chat(request: ChatRequest, _auth=Depends(require_auth)):
         if not sources and results:
             sources = list(set([r[0]['source'] for r in results[:3]]))
 
-        if request.attachment:
-            # Com anexo: monta contexto RAG + processa o arquivo
-            context_parts = [f"[{r[0]['source']}]\n{r[0]['text']}" for r in results if r[1] > 0.05]
-            context = "\n\n---\n\n".join(context_parts[:4]) if context_parts else "Nenhum contexto adicional nos documentos indexados."
-
-            from rag_engine import get_llm_client, SYSTEM_PROMPT
-            client = get_llm_client()
-
-            messages = build_message_with_attachment(request.message, request.attachment, context)
-            # Injeta historico antes da mensagem do usuario
-            if history and len(messages) >= 2:
-                messages = [messages[0]] + history[-6:] + [messages[-1]]
-
-            model = "anthropic/claude-haiku-4-5" if request.attachment.type == 'doc' else "anthropic/claude-haiku-4-5"
-            resp = client.chat.completions.create(
-                model=model,
-                max_tokens=1200,
-                temperature=0.2,
-                messages=messages
-            )
-            answer = resp.choices[0].message.content
-            if request.attachment.type == 'image':
-                sources = [f"Imagem: {request.attachment.name}"]
-            else:
-                sources = [f"Arquivo: {request.attachment.name}"] + sources
-        else:
-            # Sem anexo: fluxo normal
-            answer = query_rag(request.message, idx, history)
-
+        answer = query_rag(request.message, idx, history)
         weekly_count = increment_counter()
         elapsed = time.time() - start
+        _track_interaction(request.message, sources, elapsed)
 
         return ChatResponse(
             answer=answer,
@@ -340,6 +265,7 @@ async def chat_stream(request: ChatRequest, _auth=Depends(require_auth)):
 
                 if not sources_sent and sources:
                     count = increment_counter()
+                    _track_interaction(request.message, sources, 0)
                     meta = json.dumps({
                         "type": "sources",
                         "sources": sources,
@@ -402,11 +328,68 @@ async def stats(_auth=Depends(require_auth)):
     }
 
 
+@app.get("/api/dashboard")
+async def dashboard_data(_auth=Depends(require_auth)):
+    """Retorna todos os dados de metricas para o dashboard."""
+    idx = get_cached_index()
+    sources_list = sorted(list(set([c['source'] for c in idx.chunks])))
+
+    # Calcula tempo medio de resposta
+    rts = _metrics["response_times"]
+    avg_response = round(sum(rts) / len(rts), 2) if rts else 0
+
+    # Ultimos 7 dias
+    hoje = datetime.date.today()
+    ultimos_7_dias = []
+    for i in range(6, -1, -1):
+        d = (hoje - datetime.timedelta(days=i)).strftime("%Y-%m-%d")
+        ultimos_7_dias.append({
+            "data": d,
+            "label": (hoje - datetime.timedelta(days=i)).strftime("%d/%m"),
+            "count": _metrics["interacoes_por_dia"].get(d, 0)
+        })
+
+    # Top fontes consultadas
+    top_fontes = sorted(
+        [{"source": k, "count": v} for k, v in _metrics["top_sources"].items()],
+        key=lambda x: x["count"], reverse=True
+    )[:10]
+
+    # Sessoes ativas (tokens validos agora)
+    now_ts = time.time()
+    sessoes_ativas = sum(1 for exp in _sessions.values() if now_ts < exp)
+
+    return {
+        "resumo": {
+            "total_interacoes": _metrics["total_interacoes"],
+            "interacoes_semana": get_counter_value(),
+            "avg_response_time": avg_response,
+            "sessoes_ativas": sessoes_ativas,
+            "total_documentos": len(sources_list),
+            "total_chunks": len(idx.chunks),
+            "engine": "Hibrido (Embeddings + TF-IDF)",
+            "status": "Operacional",
+            "online_desde": _metrics["inicio"],
+        },
+        "grafico_7_dias": ultimos_7_dias,
+        "top_perguntas": _metrics["top_perguntas"][:15],
+        "top_fontes": top_fontes,
+        "documentos": sources_list,
+    }
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard_page():
+    html_path = BASE_DIR / "static" / "dashboard.html"
+    if html_path.exists():
+        return HTMLResponse(content=html_path.read_text(encoding='utf-8'))
+    return HTMLResponse(content="<h1>Dashboard em construcao</h1>")
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
-    print("Iniciando Porto IA v4.0 (Busca Hibrida + Streaming)...")
+    print("Iniciando AV Insurtech v1.0 (Busca Hibrida + Streaming)...")
     print("Carregando base de conhecimento...")
-    _load_counter()
     _index = get_index()
     print(f"Base carregada: {len(_index.chunks)} chunks")
     print(f"\nServidor: http://0.0.0.0:{port}")
