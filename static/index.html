@@ -315,13 +315,22 @@
       50% { box-shadow: 0 0 0 6px rgba(231,76,60,0); }
     }
 
-    /* ===================== PAINEL DE ABAS FIXO ===================== */
+    /* ===================== ZONAS DE CONTEUDO ===================== */
+    /* Zona editorial (conteúdo das abas) */
     #tab-panels-wrapper {
-      overflow-y: auto;
-      max-height: 45vh;
+      flex: 1; overflow-y: auto;
+      padding: 20px 24px;
+      background: var(--blue-bg);
+      display: none; /* começa oculto; showTab() ativa */
     }
     #tab-panels-wrapper .tab-panel { display: none; }
     #tab-panels-wrapper .tab-panel.active { display: block; }
+
+    /* Zona de chat: chat-area + input-wrapper ficam dentro de #chat-zone */
+    #chat-zone {
+      flex: 1; display: flex; flex-direction: column; overflow: hidden;
+      /* começa visível — estado inicial é o chat */
+    }
 
     /* ===================== SCROLLBAR ===================== */
     ::-webkit-scrollbar { width: 6px; }
@@ -618,16 +627,16 @@
     <!-- Abas fixas — sempre visiveis -->
     <div id="tabs-fixed-wrapper" style="background:var(--white);border-bottom:2px solid var(--border);padding:0 24px;">
       <div class="tabs-nav" id="tabs-nav" style="margin-top:0;margin-bottom:0;">
-        <button class="tab-btn active" onclick="selectTab('consulta')">🔍 Consulta Rápida</button>
-        <button class="tab-btn" onclick="selectTab('recentes')">🕐 Recentes</button>
-        <button class="tab-btn" onclick="selectTab('avpoints')">⭐ AV Points</button>
-        <button class="tab-btn" onclick="selectTab('campanhas')">📢 Campanhas</button>
-        <button class="tab-btn" onclick="selectTab('vendas')">💡 Aumente suas Vendas</button>
+        <button class="tab-btn active" onclick="showChat()">🔍 Consulta Rápida</button>
+        <button class="tab-btn" onclick="showTab('recentes')">🕐 Recentes</button>
+        <button class="tab-btn" onclick="showTab('avpoints')">⭐ AV Points</button>
+        <button class="tab-btn" onclick="showTab('campanhas')">📢 Campanhas</button>
+        <button class="tab-btn" onclick="showTab('vendas')">💡 Aumente suas Vendas</button>
       </div>
     </div>
 
-    <!-- Paineis de aba — ficam sempre presentes, acima do chat -->
-    <div id="tab-panels-wrapper" style="background:var(--blue-bg);border-bottom:1px solid var(--border);padding:20px 24px;display:block;">
+    <!-- Paineis de aba — zona editorial (alternada com o chat) -->
+    <div id="tab-panels-wrapper">
 
       <!-- ABA: Consulta Rápida -->
       <div class="tab-panel active" id="tab-consulta">
@@ -834,6 +843,8 @@
 
     </div><!-- fim tab-panels-wrapper -->
 
+    <!-- Zona do chat: mensagens + input (alternada com tab-panels-wrapper) -->
+    <div id="chat-zone">
     <!-- Chat -->
     <div class="chat-area" id="chat-area">
     </div>
@@ -873,8 +884,9 @@
       </div>
       <div class="input-hint">Enter para enviar · Shift+Enter para nova linha</div>
     </div>
-  </div>
-</div>
+  </div><!-- fim chat-zone -->
+  </div><!-- fim main -->
+</div><!-- fim app -->
 
 <script>
 // ===================== ESTADO =====================
@@ -898,6 +910,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('login-pass').addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();
   });
+  // Estado inicial: chat visível, conteúdo editorial oculto
+  showChat();
   renderHistoryList();
   renderRecentesPanel();
 });
@@ -1034,9 +1048,8 @@ function loadSession(id) {
     if (m.role === 'user') appendUserMessage(m.content);
     else appendAIMessage(m.content, m.sources || []);
   });
-  // Esconder painel de abas — conversa existente ocupa a tela
-  const panels = document.getElementById('tab-panels-wrapper');
-  if (panels) panels.style.display = 'none';
+  // Esconder conteúdo editorial — mostrar chat com sessão carregada
+  showChat();
   renderHistoryList();
 }
 
@@ -1047,7 +1060,7 @@ function newChat() {
   const chatArea = document.getElementById('chat-area');
   chatArea.innerHTML = '';
   renderHistoryList();
-  selectTab('consulta');
+  showChat();
 }
 
 // ===================== MENSAGENS =====================
@@ -1105,26 +1118,30 @@ function scrollToBottom() {
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-// ===================== ABAS =====================
-function switchTab(name) {
-  const nav = document.getElementById('tabs-nav');
-  const panels = document.getElementById('tab-panels-wrapper');
-  if (!nav || !panels) return;
+// ===================== ALTERNANCIA CHAT / ABAS =====================
+// showChat() — esconde conteúdo editorial, mostra o chat, marca Consulta Rápida como ativa
+function showChat() {
+  document.getElementById('tab-panels-wrapper').style.display = 'none';
+  document.getElementById('chat-zone').style.display = 'flex';
+  // marcar aba Consulta Rápida como ativa visualmente (primeira aba)
+  document.querySelectorAll('#tabs-nav .tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === 0);
+  });
+}
+
+// showTab(name) — esconde chat, mostra conteúdo da aba, marca aba como ativa
+function showTab(name) {
+  document.getElementById('chat-zone').style.display = 'none';
+  document.getElementById('tab-panels-wrapper').style.display = 'block';
+  // alternar painéis internos
   const tabs = ['consulta','recentes','avpoints','campanhas','vendas'];
-  nav.querySelectorAll('.tab-btn').forEach((b, i) => {
+  document.querySelectorAll('#tabs-nav .tab-btn').forEach((b, i) => {
     b.classList.toggle('active', tabs[i] === name);
   });
-  panels.querySelectorAll('.tab-panel').forEach(p => {
+  document.querySelectorAll('#tab-panels-wrapper .tab-panel').forEach(p => {
     p.classList.toggle('active', p.id === 'tab-' + name);
   });
   if (name === 'recentes') renderRecentesPanel();
-}
-
-// Chamado pelos botoes de aba no HTML — sempre mostra o painel
-function selectTab(name) {
-  const panels = document.getElementById('tab-panels-wrapper');
-  if (panels) panels.style.display = 'block';
-  switchTab(name);
 }
 
 // ===================== RECENTES =====================
@@ -1382,9 +1399,8 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text && !attachedFile) return;
 
-  // Esconder painel de conteudo das abas — o chat toma a tela
-  const panels = document.getElementById('tab-panels-wrapper');
-  if (panels) panels.style.display = 'none';
+  // Mudar para o chat — esconder conteúdo editorial
+  showChat();
 
   // Montar mensagem com anexo se houver
   let fullMessage = text;
