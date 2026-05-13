@@ -168,6 +168,19 @@ PRODUTOS_KEYWORDS = {
     'seguro da mitsui': ['Auto - Mitsui Seguros'],
     'seguro mitsui': ['Auto - Mitsui Seguros'],
     'mitsui seguros auto': ['Auto - Mitsui Seguros'],
+    # Aliases para queries sobre o grupo Porto como um todo (multi-produto auto)
+    'grupo porto': ['Auto - Porto Seguro', 'Auto Protecao Combinada - Porto Seguro',
+                    'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto'],
+    'grupo porto auto': ['Auto - Porto Seguro', 'Auto Protecao Combinada - Porto Seguro',
+                         'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto'],
+    'produtos porto': ['Auto - Porto Seguro', 'Auto Protecao Combinada - Porto Seguro',
+                       'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto'],
+    'porto auto': ['Auto - Porto Seguro', 'Auto Protecao Combinada - Porto Seguro',
+                   'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto'],
+    'seguros porto': ['Auto - Porto Seguro', 'Auto Protecao Combinada - Porto Seguro',
+                      'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto'],
+    'linha porto': ['Auto - Porto Seguro', 'Auto Protecao Combinada - Porto Seguro',
+                    'Auto Frota Compacto - Porto', 'Auto Frota Tradicional - Porto'],
 }
 
 # Categorias de produto — quando nenhuma seguradora especifica e detectada,
@@ -251,6 +264,31 @@ def normalize_text(text: str) -> str:
     """Remove acentos e normaliza para minusculas"""
     nfkd = unicodedata.normalize('NFD', text.lower())
     return ''.join(c for c in nfkd if unicodedata.category(c) != 'Mn')
+
+
+def is_index_chunk(text: str) -> bool:
+    """
+    Detecta se um chunk e um indice/sumario (tabela de conteudos) e nao texto real.
+    Esses chunks devem receber penalizacao de score para que o conteudo real sempre
+    supere o sumario quando a query for especifica.
+
+    Criterios:
+    - Tem 3 ou mais linhas com '...' (padrao de tabela de conteudos: 'Titulo.......42')
+    - Tem 5 ou mais linhas que terminam com numero de pagina (ex: '....... 40')
+    - Maioria das linhas sao curtas e terminam em '...' ou numero
+    - Contem padrao tipico de indice: multiplos '........'
+    """
+    dot_lines = sum(1 for line in text.splitlines() if line.strip().endswith('...') or
+                    ('...' in line and line.strip()[-1].isdigit()))
+    ellipsis_count = text.count('........')
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    # Linha tipica de indice: termina em numero apos pontos
+    index_pattern_lines = sum(
+        1 for l in lines
+        if (l.endswith(')') is False) and
+           (l[-1:].isdigit() and ('...' in l or '  ' in l))
+    )
+    return dot_lines >= 3 or ellipsis_count >= 4 or index_pattern_lines >= 4
 
 
 def detect_priority_sources(query: str) -> List[str]:
@@ -456,6 +494,10 @@ class EmbeddingIndex:
             if priority_sources and any(ps.lower() in chunk['source'].lower() for ps in priority_sources):
                 hybrid_score *= 1.5
 
+            # Penalizar chunks de indice/sumario (tabela de conteudos) — FIX B
+            if is_index_chunk(chunk.get('text', '')):
+                hybrid_score *= 0.4
+
             combined.append((chunk, hybrid_score))
 
         # 4. Adicionar resultados TF-IDF que nao apareceram na busca semantica
@@ -465,7 +507,11 @@ class EmbeddingIndex:
                 c = pool_chunks[idx]
                 if c.get('chunk_id') not in sem_ids:
                     boost = 1.5 if priority_sources and any(ps.lower() in c['source'].lower() for ps in priority_sources) else 1.0
-                    combined.append((c, 0.40 * kw_norm * boost))
+                    score_tfidf = 0.40 * kw_norm * boost
+                    # Penalizar chunks de indice/sumario — FIX B
+                    if is_index_chunk(c.get('text', '')):
+                        score_tfidf *= 0.4
+                    combined.append((c, score_tfidf))
 
         # 5. Garantir diversidade de fontes: para perguntas genericas de categoria,
         # incluir pelo menos 1 chunk de cada seguradora disponivel no pool
