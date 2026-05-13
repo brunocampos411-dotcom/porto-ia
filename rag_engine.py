@@ -147,12 +147,27 @@ PRODUTOS_KEYWORDS = {
     'moto azul': ['Moto - Azul Seguros'],
     'moto': ['Moto - Azul Seguros'],
     '24 horas itau': ['24 Horas - Itau'],
-    '24 horas': ['24 Horas - Itau'],
+    # ATENCAO: '24 horas' generico foi removido intencionalmente — ativava priority_sources
+    # exclusivo para Itau em queries genericas como "assistencia 24h seguro auto", bloqueando
+    # a diversidade de fontes das 4 marcas. Use '24 horas itau' para queries especificas.
     'celular': ['Duvidas - Celular'],
+    # Aliases de marca — produto auto por seguradora especifica
     'auto porto': ['Auto - Porto Seguro'],
+    'seguro da porto': ['Auto - Porto Seguro'],
+    'seguro porto': ['Auto - Porto Seguro'],
+    'porto seguro auto': ['Auto - Porto Seguro'],
     'auto azul': ['Auto - Azul Seguros'],
+    'seguro da azul': ['Auto - Azul Seguros'],
+    'seguro azul': ['Auto - Azul Seguros'],
+    'azul seguros auto': ['Auto - Azul Seguros'],
     'auto itau': ['Auto - Itau Seguros'],
+    'seguro da itau': ['Auto - Itau Seguros'],
+    'seguro itau': ['Auto - Itau Seguros'],
+    'itau seguros auto': ['Auto - Itau Seguros'],
     'auto mitsui': ['Auto - Mitsui Seguros'],
+    'seguro da mitsui': ['Auto - Mitsui Seguros'],
+    'seguro mitsui': ['Auto - Mitsui Seguros'],
+    'mitsui seguros auto': ['Auto - Mitsui Seguros'],
 }
 
 # Categorias de produto — quando nenhuma seguradora especifica e detectada,
