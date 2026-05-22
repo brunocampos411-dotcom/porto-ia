@@ -3,48 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AV Insurtech — IA para Seguradoras</title>
+  <title>FOCUS AI — IA para Corretores de Seguros</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     /* ===================== RESET & BASE ===================== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --blue-main:   #1B3A6B;
-      --blue-mid:    #2E86C1;
-      --blue-light:  #5DADE2;
-      --blue-sidebar:#0F2444;
-      --blue-bg:     #F4F7FA;
-      --gold:        #F0A500;
-      --gold-light:  #FFF8E7;
+      --navy:        #0D1B2A;
+      --navy-mid:    #1A2F45;
+      --navy-sidebar:#0A1520;
+      --green:       #00CB96;
+      --green-light: #7ED957;
+      --green-glow:  rgba(0,203,150,0.18);
+      --bg:          #F4F7FA;
       --text-main:   #1C2833;
       --text-sec:    #7F8C8D;
       --white:       #FFFFFF;
       --border:      #D5E8F5;
       --sidebar-w:   260px;
     }
-    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--blue-bg); color: var(--text-main); }
+    html, body {
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+    }
 
     /* ===================== TELA DE LOGIN ===================== */
     #login-screen {
       display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; background: var(--blue-bg);
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
     }
     .login-box {
-      background: var(--white); border-radius: 16px; padding: 48px 40px;
+      background: var(--white); border-radius: 20px; padding: 48px 40px;
       width: 100%; max-width: 420px;
-      box-shadow: 0 8px 32px rgba(27,58,107,0.12);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
     }
     .login-logo { text-align: center; margin-bottom: 32px; }
-    .login-logo .logo-circle {
+    .login-logo-img {
+      width: 80px; height: 80px;
+      border-radius: 16px;
+      object-fit: contain;
+      margin-bottom: 12px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .login-logo-fallback {
       width: 64px; height: 64px;
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      background: linear-gradient(135deg, var(--navy), var(--green));
       border-radius: 16px;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 28px; font-weight: 700; color: var(--white); margin-bottom: 12px;
+      font-size: 22px; font-weight: 700; color: var(--white);
+      margin-bottom: 12px;
+      font-family: 'Poppins', sans-serif;
     }
-    .login-logo h1 { font-size: 22px; font-weight: 700; color: var(--blue-main); }
+    .login-logo h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px; font-weight: 700; color: var(--navy);
+    }
     .login-logo p { font-size: 14px; color: var(--text-sec); margin-top: 4px; }
     .login-box label { display: block; font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 6px; margin-top: 20px; }
     .login-box input {
@@ -52,14 +72,15 @@
       border-radius: 8px; font-size: 15px; font-family: inherit; outline: none;
       transition: border-color .2s;
     }
-    .login-box input:focus { border-color: var(--blue-main); }
+    .login-box input:focus { border-color: var(--green); }
     .login-btn {
       width: 100%; margin-top: 28px; padding: 14px;
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
-      color: var(--white); border: none; border-radius: 8px; font-size: 15px;
+      background: linear-gradient(135deg, var(--navy), var(--green));
+      color: var(--white); border: none; border-radius: 10px; font-size: 15px;
       font-weight: 600; cursor: pointer; transition: opacity .2s;
+      font-family: 'Poppins', sans-serif;
     }
-    .login-btn:hover { opacity: 0.9; }
+    .login-btn:hover { opacity: 0.88; }
     .login-error { color: #c0392b; font-size: 13px; margin-top: 12px; text-align: center; display: none; }
 
     /* ===================== APP LAYOUT ===================== */
@@ -67,7 +88,7 @@
 
     /* ---- SIDEBAR ---- */
     .sidebar {
-      width: var(--sidebar-w); background: var(--blue-sidebar); color: var(--white);
+      width: var(--sidebar-w); background: var(--navy-sidebar); color: var(--white);
       display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
     }
     .sidebar-logo {
@@ -77,22 +98,38 @@
     .sidebar-logo-row { display: flex; align-items: center; gap: 12px; }
     .sidebar-logo .logo-mark {
       width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-logo .logo-mark img {
+      width: 100%; height: 100%; object-fit: contain;
+    }
+    .sidebar-logo .logo-mark-text {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--navy), var(--green));
       border-radius: 10px;
       display: inline-flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; color: var(--white); flex-shrink: 0;
+      font-size: 14px; font-weight: 700; color: var(--white); flex-shrink: 0;
+      font-family: 'Poppins', sans-serif;
     }
-    .sidebar-logo .brand-name { font-size: 17px; font-weight: 700; }
+    .sidebar-logo .brand-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px; font-weight: 700;
+    }
     .sidebar-logo .brand-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
     .new-chat-btn {
       margin: 16px; padding: 11px 14px;
-      background: var(--blue-mid);
+      background: var(--green);
       border: none; border-radius: 10px;
-      color: var(--white); font-size: 14px; font-weight: 600; cursor: pointer;
+      color: var(--navy); font-size: 14px; font-weight: 600; cursor: pointer;
       display: flex; align-items: center; gap: 8px; justify-content: center;
       transition: background .2s; letter-spacing: .2px;
+      font-family: 'Poppins', sans-serif;
     }
-    .new-chat-btn:hover { background: #2478aa; }
+    .new-chat-btn:hover { background: var(--green-light); }
     .sidebar-section-label {
       padding: 12px 20px 6px; font-size: 10px; font-weight: 700;
       color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.2px;
@@ -104,7 +141,7 @@
       text-overflow: ellipsis; transition: background .15s, color .15s; margin-bottom: 2px;
     }
     .history-item:hover { background: rgba(255,255,255,0.07); color: var(--white); }
-    .history-item.active { background: rgba(255,255,255,0.11); color: var(--white); }
+    .history-item.active { background: rgba(0,203,150,0.15); color: var(--white); }
     .sidebar-footer {
       padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
       font-size: 12px; color: rgba(255,255,255,0.35);
@@ -121,37 +158,46 @@
 
     /* ---- HEADER ---- */
     .header {
-      background: linear-gradient(135deg, var(--blue-main) 0%, var(--blue-mid) 100%);
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
       color: var(--white);
       padding: 0 24px; height: 64px; display: flex; align-items: center;
       justify-content: space-between; flex-shrink: 0;
-      box-shadow: 0 2px 12px rgba(27,58,107,0.25);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .header-logo-mark {
       width: 40px; height: 40px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .header-logo-mark img {
+      width: 100%; height: 100%; object-fit: contain;
+    }
+    .header-logo-mark-text {
+      width: 40px; height: 40px;
       background: rgba(255,255,255,0.15);
       border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; color: var(--white);
+      font-size: 14px; font-weight: 700; color: var(--white);
       flex-shrink: 0;
+      font-family: 'Poppins', sans-serif;
     }
-    .header-title { font-size: 17px; font-weight: 700; color: var(--white); }
+    .header-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px; font-weight: 700; color: var(--white);
+    }
     .header-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 1px; }
     .header-right { display: flex; align-items: center; gap: 10px; }
     .counter-badge {
-      background: var(--white); border: 1.5px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.2);
       border-radius: 20px; padding: 5px 12px;
-      font-size: 12px; color: var(--blue-main); font-weight: 500;
+      font-size: 12px; color: var(--white); font-weight: 500;
       display: flex; align-items: center; gap: 5px;
     }
-    .counter-badge strong { color: var(--blue-main); font-weight: 700; }
-    .points-badge {
-      background: var(--gold); border-radius: 20px;
-      padding: 5px 12px; font-size: 12px; color: var(--white);
-      font-weight: 700; display: flex; align-items: center; gap: 5px;
-      box-shadow: 0 2px 8px rgba(240,165,0,0.35);
-    }
+    .counter-badge strong { color: var(--green); font-weight: 700; }
 
     /* ---- CHAT AREA ---- */
     .chat-area {
@@ -166,21 +212,24 @@
 
     .avatar {
       width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      overflow: hidden;
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 13px; color: var(--white);
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      background: linear-gradient(135deg, var(--navy), var(--green));
       margin-top: 2px;
+      font-family: 'Poppins', sans-serif;
     }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
     .bubble {
       padding: 12px 16px; border-radius: 16px;
       font-size: 15px; line-height: 1.65; max-width: 680px;
     }
     .message.user .bubble {
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
       color: var(--white);
       border-radius: 16px 4px 16px 16px;
-      box-shadow: 0 2px 12px rgba(27,58,107,0.2);
+      box-shadow: 0 2px 12px rgba(13,27,42,0.2);
     }
     .message.ai .bubble {
       background: var(--white);
@@ -195,7 +244,8 @@
     .message.ai .bubble p { margin-bottom: 10px; }
     .message.ai .bubble p:last-child { margin-bottom: 0; }
     .message.ai .bubble h1, .message.ai .bubble h2, .message.ai .bubble h3 {
-      color: var(--blue-main); margin-bottom: 8px; margin-top: 14px; font-weight: 600;
+      color: var(--navy); margin-bottom: 8px; margin-top: 14px; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
     }
     .message.ai .bubble strong { color: var(--text-main); }
     .message.ai .bubble ul, .message.ai .bubble ol { padding-left: 20px; margin-bottom: 10px; }
@@ -204,20 +254,20 @@
       border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 14px;
     }
     .message.ai .bubble th {
-      background: var(--blue-main); color: var(--white); padding: 8px 12px;
+      background: var(--navy); color: var(--white); padding: 8px 12px;
       text-align: left; font-weight: 600;
     }
     .message.ai .bubble td {
       padding: 7px 12px; border-bottom: 1px solid var(--border);
     }
-    .message.ai .bubble tr:hover td { background: rgba(46,134,193,0.05); }
+    .message.ai .bubble tr:hover td { background: var(--green-glow); }
     .message.ai .bubble code {
       background: #f0f4f8; border-radius: 4px; padding: 1px 6px;
       font-size: 13px; font-family: monospace;
     }
     .message.ai .bubble blockquote {
-      border-left: 3px solid var(--blue-mid); margin: 8px 0;
-      padding: 6px 12px; background: rgba(46,134,193,0.06); border-radius: 0 6px 6px 0;
+      border-left: 3px solid var(--green); margin: 8px 0;
+      padding: 6px 12px; background: var(--green-glow); border-radius: 0 6px 6px 0;
       color: var(--text-sec);
     }
 
@@ -233,7 +283,7 @@
     /* Cursor piscante durante streaming */
     .cursor-blink {
       display: inline-block; width: 2px; height: 16px;
-      background: var(--blue-mid); margin-left: 2px; vertical-align: text-bottom;
+      background: var(--green); margin-left: 2px; vertical-align: text-bottom;
       animation: blink .7s step-end infinite;
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -241,7 +291,7 @@
     /* Tres pontinhos de loading */
     .typing-dots { display: flex; gap: 5px; align-items: center; padding: 10px 0; }
     .typing-dots span {
-      width: 8px; height: 8px; background: var(--blue-mid); border-radius: 50%;
+      width: 8px; height: 8px; background: var(--green); border-radius: 50%;
       animation: bounce 1.2s ease-in-out infinite;
     }
     .typing-dots span:nth-child(2) { animation-delay: .2s; }
@@ -253,7 +303,7 @@
 
     /* ---- INPUT AREA ---- */
     .input-wrapper {
-      padding: 16px 24px 20px; background: var(--blue-bg);
+      padding: 16px 24px 20px; background: var(--bg);
       border-top: 1px solid var(--border);
     }
     .input-container {
@@ -261,12 +311,12 @@
       background: var(--white); border: 1.5px solid var(--border);
       border-radius: 16px; display: flex; align-items: flex-end; gap: 8px;
       padding: 12px 14px;
-      box-shadow: 0 4px 16px rgba(27,58,107,0.08);
+      box-shadow: 0 4px 16px rgba(13,27,42,0.08);
       transition: border-color .2s, box-shadow .2s;
     }
     .input-container:focus-within {
-      border-color: var(--blue-mid);
-      box-shadow: 0 4px 20px rgba(46,134,193,0.18);
+      border-color: var(--green);
+      box-shadow: 0 4px 20px var(--green-glow);
     }
     #user-input {
       flex: 1; border: none; outline: none; resize: none; font-family: inherit;
@@ -276,10 +326,10 @@
     #user-input::placeholder { color: #AAB8C8; }
     .send-btn {
       width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
+      background: linear-gradient(135deg, var(--navy), var(--green));
       border: none; border-radius: 11px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; transition: opacity .2s; box-shadow: 0 2px 8px rgba(27,58,107,0.25);
+      flex-shrink: 0; transition: opacity .2s; box-shadow: 0 2px 8px rgba(0,203,150,0.3);
     }
     .send-btn:hover:not(:disabled) { opacity: 0.88; }
     .send-btn:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -294,7 +344,7 @@
       font-size: 12px; font-family: inherit;
       transition: background .15s, color .15s; margin-top: 6px;
     }
-    .tts-btn:hover { background: var(--blue-bg); color: var(--blue-mid); }
+    .tts-btn:hover { background: var(--bg); color: var(--green); }
     .tts-btn.playing { color: #e74c3c; }
     .tts-btn svg { width: 14px; height: 14px; }
 
@@ -302,10 +352,10 @@
     .input-icon-btn {
       width: 36px; height: 36px; background: none; border: none; border-radius: 9px;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; color: var(--blue-mid); transition: background .15s, color .15s;
+      flex-shrink: 0; color: var(--green); transition: background .15s, color .15s;
       padding: 0;
     }
-    .input-icon-btn:hover { background: var(--blue-bg); color: var(--blue-main); }
+    .input-icon-btn:hover { background: var(--bg); color: var(--navy); }
     .input-icon-btn.mic-active {
       color: #e74c3c;
       animation: mic-pulse 1s ease-in-out infinite;
@@ -316,27 +366,24 @@
     }
 
     /* ===================== ZONAS DE CONTEUDO ===================== */
-    /* Zona editorial (conteúdo das abas) */
     #tab-panels-wrapper {
       flex: 1; overflow-y: auto;
       padding: 20px 24px;
-      background: var(--blue-bg);
-      display: none; /* começa oculto; showTab() ativa */
+      background: var(--bg);
+      display: none;
     }
     #tab-panels-wrapper .tab-panel { display: none; }
     #tab-panels-wrapper .tab-panel.active { display: block; }
 
-    /* Zona de chat: chat-area + input-wrapper ficam dentro de #chat-zone */
     #chat-zone {
       flex: 1; display: flex; flex-direction: column; overflow: hidden;
-      /* começa visível — estado inicial é o chat */
     }
 
     /* ===================== SCROLLBAR ===================== */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #C5D8EA; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--blue-mid); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--green); }
 
     /* ===================== RESPONSIVO ===================== */
     @media (max-width: 768px) {
@@ -345,10 +392,10 @@
       .input-wrapper { padding: 12px 16px 16px; }
     }
 
-    /* ===================== ABAS DA WELCOME SCREEN ===================== */
+    /* ===================== ABAS DA NAV ===================== */
     .tabs-nav {
       display: flex; gap: 4px; border-bottom: 2px solid var(--border);
-      margin-top: 16px; margin-bottom: 0; width: 100%; max-width: 720px;
+      margin-top: 0; margin-bottom: 0; width: 100%; max-width: 720px;
       overflow-x: auto;
     }
     .tab-btn {
@@ -358,8 +405,8 @@
       transition: color .2s, border-color .2s; white-space: nowrap;
       display: flex; align-items: center; gap: 6px;
     }
-    .tab-btn:hover { color: var(--blue-mid); }
-    .tab-btn.active { color: var(--blue-main); border-bottom-color: var(--blue-main); font-weight: 700; }
+    .tab-btn:hover { color: var(--green); }
+    .tab-btn.active { color: var(--navy); border-bottom-color: var(--green); font-weight: 700; }
     .tab-panel { display: none; width: 100%; max-width: 720px; }
     .tab-panel.active { display: block; }
 
@@ -372,15 +419,14 @@
       cursor: pointer; text-align: left; font-family: inherit;
       transition: all .18s; line-height: 1.5;
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      box-shadow: 0 1px 4px rgba(27,58,107,0.05);
+      box-shadow: 0 1px 4px rgba(13,27,42,0.05);
     }
     .cq-pill:hover {
-      border-color: var(--blue-mid); color: var(--blue-main);
-      background: #EEF6FC; box-shadow: 0 2px 10px rgba(46,134,193,0.12);
+      border-color: var(--green); color: var(--navy);
+      background: #EEFAF6; box-shadow: 0 2px 10px var(--green-glow);
     }
-    .cq-pill::after { content: "→"; font-size: 16px; color: var(--blue-mid); flex-shrink: 0; }
+    .cq-pill::after { content: "→"; font-size: 16px; color: var(--green); flex-shrink: 0; }
 
-    /* Consulta Rapida intro text */
     .cq-intro {
       font-size: 14px; color: var(--text-sec); margin-bottom: 14px;
       line-height: 1.5;
@@ -393,22 +439,22 @@
       padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px;
       background: var(--white); cursor: pointer; transition: all .18s;
     }
-    .recente-item:hover { border-color: var(--blue-mid); background: #EEF6FC; }
+    .recente-item:hover { border-color: var(--green); background: #EEFAF6; }
     .recente-text { flex: 1; font-size: 14px; color: var(--text-main); line-height: 1.4; }
     .recente-ts { font-size: 11px; color: var(--text-sec); white-space: nowrap; }
     .recentes-empty { text-align: center; color: var(--text-sec); font-size: 14px; padding: 32px 0; }
 
-    /* Campanhas */
-    .campanhas-placeholder { text-align: center; color: var(--text-sec); font-size: 14px; padding: 32px 0; }
-
     /* ===================== ABA AUMENTE SUAS VENDAS ===================== */
     .vendas-wrapper { width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 36px; padding-bottom: 16px; }
-    .vendas-section-title { font-size: 17px; font-weight: 700; color: var(--blue-main); margin-bottom: 4px; }
+    .vendas-section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 4px;
+    }
     .vendas-section-sub { font-size: 13px; color: var(--text-sec); margin-bottom: 14px; }
     .vendas-cards { display: flex; flex-direction: column; gap: 12px; }
     .vcard {
       background: var(--white); border-radius: 12px; padding: 16px 18px;
-      border-left: 4px solid var(--blue-mid); box-shadow: 0 1px 6px rgba(27,58,107,0.07);
+      border-left: 4px solid var(--green); box-shadow: 0 1px 6px rgba(13,27,42,0.07);
     }
     .vcard.cross { border-left-color: #27ae60; }
     .vcard.nicho { border-left-color: #8e44ad; }
@@ -418,7 +464,7 @@
       font-size: 10px; font-weight: 700; letter-spacing: .6px; padding: 3px 8px;
       border-radius: 20px; text-transform: uppercase;
     }
-    .vtag.upsell { background: #e8f3ff; color: var(--blue-mid); }
+    .vtag.upsell { background: #e8fff8; color: var(--green); }
     .vtag.cross-sell { background: #e8f9ef; color: #27ae60; }
     .vtag.nicho { background: #f3e8ff; color: #8e44ad; }
     .vtag.empresarial { background: #fff3e0; color: #e67e22; }
@@ -429,13 +475,13 @@
       background: var(--white); border-radius: 12px; padding: 16px;
       text-align: center; border: 1.5px solid var(--border);
     }
-    .anc-col.rec { border-color: var(--blue-mid); box-shadow: 0 2px 12px rgba(46,134,193,0.12); }
+    .anc-col.rec { border-color: var(--green); box-shadow: 0 2px 12px var(--green-glow); }
     .anc-label { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-sec); margin-bottom: 8px; }
-    .anc-col.rec .anc-label { color: var(--blue-mid); }
+    .anc-col.rec .anc-label { color: var(--green); }
     .anc-col.rec { position: relative; }
     .anc-badge {
       position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      background: var(--blue-mid); color: var(--white); font-size: 10px;
+      background: var(--green); color: var(--white); font-size: 10px;
       font-weight: 700; padding: 2px 10px; border-radius: 20px; white-space: nowrap;
     }
     .anc-desc { font-size: 13px; color: var(--text-sec); line-height: 1.5; }
@@ -444,7 +490,7 @@
     .perguntas-list { display: flex; flex-direction: column; gap: 10px; }
     .pgta-item {
       background: var(--white); border-radius: 10px; padding: 13px 16px;
-      border-left: 3px solid var(--blue-mid); font-size: 14px;
+      border-left: 3px solid var(--green); font-size: 14px;
       color: var(--text-main); line-height: 1.5;
     }
 
@@ -454,118 +500,19 @@
       border-left: 3px solid #e74c3c; font-size: 14px;
       color: var(--text-main); line-height: 1.5;
     }
-
-    /* ===================== ABA AV POINTS ===================== */
-    .avpoints-wrapper {
-      width: 100%; max-width: 720px; display: flex; flex-direction: column; gap: 28px; padding-bottom: 16px;
-    }
-
-    /* Saldo Card */
-    .avp-saldo-card {
-      background: linear-gradient(135deg, var(--blue-main) 0%, var(--blue-mid) 100%);
-      border-radius: 20px; padding: 32px 24px; text-align: center;
-      box-shadow: 0 8px 28px rgba(27,58,107,0.25);
-    }
-    .avp-saldo-icon { font-size: 36px; margin-bottom: 8px; }
-    .avp-saldo-num { font-size: 48px; font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 6px; }
-    .avp-saldo-label { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 14px; }
-    .avp-nivel-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--gold); color: var(--white);
-      font-size: 13px; font-weight: 700; border-radius: 20px; padding: 6px 16px;
-      margin-bottom: 18px;
-    }
-    .avp-progress-wrap {
-      background: rgba(255,255,255,0.15); border-radius: 20px; height: 8px;
-      max-width: 300px; margin: 0 auto 8px;
-    }
-    .avp-progress-bar {
-      background: var(--gold); border-radius: 20px; height: 100%; width: 62.5%;
-    }
-    .avp-progress-label { font-size: 12px; color: rgba(255,255,255,0.65); }
-
-    /* Como Ganhar */
-    .avp-section-title { font-size: 16px; font-weight: 700; color: var(--blue-main); margin-bottom: 12px; }
-    .avp-earn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 600px) { .avp-earn-grid { grid-template-columns: 1fr; } }
-    .avp-earn-card {
-      background: var(--white); border-radius: 12px; padding: 14px 16px;
-      border: 1.5px solid var(--border); display: flex; align-items: center; gap: 12px;
-      box-shadow: 0 1px 4px rgba(27,58,107,0.05);
-    }
-    .avp-earn-icon { font-size: 22px; flex-shrink: 0; }
-    .avp-earn-text { flex: 1; font-size: 13px; color: var(--text-main); line-height: 1.4; }
-    .avp-earn-pts {
-      background: var(--gold-light); color: var(--gold); border: 1px solid var(--gold);
-      font-size: 12px; font-weight: 700; border-radius: 20px; padding: 3px 10px;
-      white-space: nowrap; flex-shrink: 0;
-    }
-
-    /* Beneficios */
-    .avp-benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 600px) { .avp-benefits-grid { grid-template-columns: 1fr; } }
-    .avp-benefit-card {
-      background: var(--white); border-radius: 14px; padding: 18px 16px;
-      border: 1.5px solid var(--border); display: flex; flex-direction: column; gap: 8px;
-      box-shadow: 0 1px 6px rgba(27,58,107,0.06);
-    }
-    .avp-benefit-icon { font-size: 26px; }
-    .avp-benefit-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
-    .avp-benefit-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
-    .avp-benefit-pts {
-      background: var(--gold-light); color: var(--gold); border: 1px solid var(--gold);
-      font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 10px;
-    }
-    .avp-resgatar-btn {
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
-      color: var(--white); border: none; border-radius: 8px;
-      font-size: 12px; font-weight: 600; padding: 6px 14px;
-      cursor: pointer; transition: opacity .2s; font-family: inherit;
-    }
-    .avp-resgatar-btn:hover { opacity: 0.88; }
-
-    /* Modal "Em breve" */
-    #avp-modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.45); z-index: 9999;
-      align-items: center; justify-content: center;
-    }
-    #avp-modal-overlay.open { display: flex; }
-    .avp-modal-box {
-      background: var(--white); border-radius: 18px; padding: 36px 32px;
-      max-width: 360px; width: 90%; text-align: center;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
-    }
-    .avp-modal-icon { font-size: 48px; margin-bottom: 16px; }
-    .avp-modal-title { font-size: 18px; font-weight: 700; color: var(--blue-main); margin-bottom: 8px; }
-    .avp-modal-text { font-size: 14px; color: var(--text-sec); line-height: 1.6; margin-bottom: 24px; }
-    .avp-modal-close {
-      background: linear-gradient(135deg, var(--blue-main), var(--blue-mid));
-      color: var(--white); border: none; border-radius: 10px;
-      padding: 12px 28px; font-size: 14px; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-    }
   </style>
 </head>
 <body>
-
-<!-- Modal "Em breve" AV Points -->
-<div id="avp-modal-overlay" onclick="closeAvpModal(event)">
-  <div class="avp-modal-box">
-    <div class="avp-modal-icon">🚀</div>
-    <div class="avp-modal-title">Em breve!</div>
-    <div class="avp-modal-text">Este benefício estará disponível em breve. Fique de olho nas atualizações da plataforma!</div>
-    <button class="avp-modal-close" onclick="closeAvpModal()">Entendido</button>
-  </div>
-</div>
 
 <!-- ===================== LOGIN ===================== -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
-      <div class="logo-circle">AV</div>
-      <h1>AV Insurtech</h1>
-      <p>IA para Seguradoras</p>
+      <img class="login-logo-img" src="/assets/brand/Logo.jpeg" alt="FOCUS AI"
+           onerror="this.style.display='none';document.getElementById('login-logo-fallback').style.display='inline-flex'" />
+      <div class="login-logo-fallback" id="login-logo-fallback" style="display:none">F</div>
+      <h1>FOCUS AI</h1>
+      <p>IA para Corretores de Seguros</p>
     </div>
     <label for="login-user">Usuário</label>
     <input type="text" id="login-user" placeholder="seu usuário" autocomplete="username" />
@@ -582,10 +529,14 @@
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-row">
-        <div class="logo-mark">AV</div>
+        <div class="logo-mark">
+          <img src="/assets/brand/Logo.jpeg" alt="FOCUS AI"
+               onerror="this.parentNode.style.display='none';document.getElementById('sidebar-logo-text').style.display='inline-flex'" />
+        </div>
+        <div class="logo-mark-text" id="sidebar-logo-text" style="display:none">F</div>
         <div>
-          <div class="brand-name">AV Insurtech</div>
-          <div class="brand-sub">IA para Seguradoras</div>
+          <div class="brand-name">FOCUS AI</div>
+          <div class="brand-sub">IA para Corretores</div>
         </div>
       </div>
     </div>
@@ -598,7 +549,7 @@
     <div class="sidebar-section-label">Histórico</div>
     <div class="history-list" id="history-list"></div>
     <div class="sidebar-footer">
-      <div class="version">AV Insurtech v1.0</div>
+      <div class="version">FOCUS AI v2.0</div>
       <button class="logout-btn" onclick="doLogout()">Sair da conta</button>
     </div>
   </aside>
@@ -608,18 +559,19 @@
     <!-- Header -->
     <header class="header">
       <div class="header-left">
-        <div class="header-logo-mark">AV</div>
+        <div class="header-logo-mark">
+          <img src="/assets/brand/Logo.jpeg" alt="FOCUS AI"
+               onerror="this.style.display='none';document.getElementById('header-logo-text').style.display='flex'" />
+        </div>
+        <div class="header-logo-mark-text" id="header-logo-text" style="display:none">F</div>
         <div>
-          <div class="header-title">AV Insurtech</div>
-          <div class="header-sub">IA para Seguradoras</div>
+          <div class="header-title">FOCUS AI</div>
+          <div class="header-sub">IA para Corretores de Seguros</div>
         </div>
       </div>
       <div class="header-right">
         <div class="counter-badge" id="counter-badge">
           💬 <strong id="counter-num">—</strong> dúvidas esta semana
-        </div>
-        <div class="points-badge">
-          ⭐ 1.250 AV Points
         </div>
       </div>
     </header>
@@ -629,8 +581,6 @@
       <div class="tabs-nav" id="tabs-nav" style="margin-top:0;margin-bottom:0;">
         <button class="tab-btn active" onclick="showChat()">🔍 Consulta Rápida</button>
         <button class="tab-btn" onclick="showTab('recentes')">🕐 Recentes</button>
-        <button class="tab-btn" onclick="showTab('avpoints')">⭐ AV Points</button>
-        <button class="tab-btn" onclick="showTab('campanhas')">📢 Campanhas</button>
         <button class="tab-btn" onclick="showTab('vendas')">💡 Aumente suas Vendas</button>
       </div>
     </div>
@@ -640,10 +590,10 @@
 
       <!-- ABA: Consulta Rápida -->
       <div class="tab-panel active" id="tab-consulta">
-        <p class="cq-intro">Consulte coberturas, condições, exclusões e assistências dos produtos Porto Seguro disponíveis na base.</p>
+        <p class="cq-intro">Consulte coberturas, condições, exclusões e assistências dos produtos disponíveis na base de conhecimento.</p>
         <div class="cq-pills">
-          <button class="cq-pill" onclick="sendCQ(this)">Quais coberturas estão incluídas no Auto Porto?</button>
-          <button class="cq-pill" onclick="sendCQ(this)">Qual a diferença entre Auto Porto e Auto Proteção Combinada?</button>
+          <button class="cq-pill" onclick="sendCQ(this)">Quais coberturas estão incluídas no seguro auto?</button>
+          <button class="cq-pill" onclick="sendCQ(this)">Qual a diferença entre cobertura básica e ampla?</button>
           <button class="cq-pill" onclick="sendCQ(this)">O seguro cobre quando o condutor não é o proprietário?</button>
           <button class="cq-pill" onclick="sendCQ(this)">Quais são os riscos excluídos no seguro auto?</button>
           <button class="cq-pill" onclick="sendCQ(this)">Qual o prazo de assistência 24h para guincho?</button>
@@ -653,111 +603,6 @@
       <!-- ABA: Recentes -->
       <div class="tab-panel" id="tab-recentes">
         <div class="recentes-list" id="recentes-list"></div>
-      </div>
-
-      <!-- ABA: AV Points -->
-      <div class="tab-panel" id="tab-avpoints">
-        <div class="avpoints-wrapper">
-
-          <!-- SEÇÃO 1 — SALDO -->
-          <div class="avp-saldo-card">
-            <div class="avp-saldo-icon">⭐</div>
-            <div class="avp-saldo-num">1.250</div>
-            <div class="avp-saldo-label">AV Points disponíveis</div>
-            <div class="avp-nivel-badge">🏆 Corretor Inovador</div>
-            <div class="avp-progress-wrap">
-              <div class="avp-progress-bar"></div>
-            </div>
-            <div class="avp-progress-label">750 pts para Corretor Expert</div>
-          </div>
-
-          <!-- SEÇÃO 2 — COMO GANHAR -->
-          <div>
-            <div class="avp-section-title">Como ganhar AV Points</div>
-            <div class="avp-earn-grid">
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">💬</div>
-                <div class="avp-earn-text">Pergunta respondida pela IA</div>
-                <div class="avp-earn-pts">+10 pts</div>
-              </div>
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">📎</div>
-                <div class="avp-earn-text">Upload de apólice analisada</div>
-                <div class="avp-earn-pts">+25 pts</div>
-              </div>
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">📢</div>
-                <div class="avp-earn-text">Campanha consultada</div>
-                <div class="avp-earn-pts">+15 pts</div>
-              </div>
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">🎤</div>
-                <div class="avp-earn-text">Uso da voz</div>
-                <div class="avp-earn-pts">+10 pts</div>
-              </div>
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">🤝</div>
-                <div class="avp-earn-text">Cross-sell realizado</div>
-                <div class="avp-earn-pts">+200 pts</div>
-              </div>
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">✅</div>
-                <div class="avp-earn-text">Venda fechada após consulta</div>
-                <div class="avp-earn-pts">+150 pts</div>
-              </div>
-              <div class="avp-earn-card">
-                <div class="avp-earn-icon">☀️</div>
-                <div class="avp-earn-text">Primeiro acesso do dia</div>
-                <div class="avp-earn-pts">+5 pts</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SEÇÃO 3 — BENEFÍCIOS -->
-          <div>
-            <div class="avp-section-title">Resgate seus benefícios</div>
-            <div class="avp-benefits-grid">
-              <div class="avp-benefit-card">
-                <div class="avp-benefit-icon">🎯</div>
-                <div class="avp-benefit-name">Acesso antecipado a campanhas</div>
-                <div class="avp-benefit-bottom">
-                  <div class="avp-benefit-pts">500 pts</div>
-                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
-                </div>
-              </div>
-              <div class="avp-benefit-card">
-                <div class="avp-benefit-icon">💰</div>
-                <div class="avp-benefit-name">Condição especial de comissão</div>
-                <div class="avp-benefit-bottom">
-                  <div class="avp-benefit-pts">1.000 pts</div>
-                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
-                </div>
-              </div>
-              <div class="avp-benefit-card">
-                <div class="avp-benefit-icon">🎓</div>
-                <div class="avp-benefit-name">Treinamento técnico avançado</div>
-                <div class="avp-benefit-bottom">
-                  <div class="avp-benefit-pts">800 pts</div>
-                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
-                </div>
-              </div>
-              <div class="avp-benefit-card">
-                <div class="avp-benefit-icon">🏆</div>
-                <div class="avp-benefit-name">Evento exclusivo Porto Seguro</div>
-                <div class="avp-benefit-bottom">
-                  <div class="avp-benefit-pts">2.000 pts</div>
-                  <button class="avp-resgatar-btn" onclick="openAvpModal()">Resgatar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ABA: Campanhas -->
-      <div class="tab-panel" id="tab-campanhas">
-        <div class="campanhas-placeholder">Em breve — campanhas e materiais de apoio.</div>
       </div>
 
       <!-- ABA: Aumente suas Vendas -->
@@ -874,7 +719,7 @@
           </svg>
         </button>
         <textarea id="user-input" rows="1"
-          placeholder="Consulte os produtos Porto Seguro disponíveis..."
+          placeholder="Consulte coberturas, condições, exclusões e muito mais..."
           onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <button class="send-btn" id="send-btn" onclick="sendMessage()">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -999,16 +844,6 @@ function updateCounter(n) {
   document.getElementById('counter-num').textContent = n.toLocaleString('pt-BR');
 }
 
-// ===================== AV POINTS MODAL =====================
-function openAvpModal() {
-  document.getElementById('avp-modal-overlay').classList.add('open');
-}
-function closeAvpModal(evt) {
-  if (!evt || evt.target === document.getElementById('avp-modal-overlay') || !evt.target) {
-    document.getElementById('avp-modal-overlay').classList.remove('open');
-  }
-}
-
 // ===================== HISTORICO =====================
 function saveCurrentSession() {
   if (conversationHistory.length === 0) return;
@@ -1048,7 +883,6 @@ function loadSession(id) {
     if (m.role === 'user') appendUserMessage(m.content);
     else appendAIMessage(m.content, m.sources || []);
   });
-  // Esconder conteúdo editorial — mostrar chat com sessão carregada
   showChat();
   renderHistoryList();
 }
@@ -1081,7 +915,9 @@ function appendAIMessage(content, sources = []) {
   div.className = 'message ai';
   const bubbleId = 'bubble-' + Date.now();
   div.innerHTML = `
-    <div class="avatar">AV</div>
+    <div class="avatar">
+      <img src="/assets/brand/Logo.jpeg" alt="AI" onerror="this.style.display='none';this.parentNode.textContent='F'" />
+    </div>
     <div>
       <div class="bubble" id="${bubbleId}">${marked.parse(content)}</div>
       ${sources.length ? `<div class="source-tag">${sources.slice(0, 3).join(' · ')}</div>` : ''}
@@ -1100,7 +936,9 @@ function appendLoadingDots() {
   div.className = 'message ai';
   div.id = 'loading-dots';
   div.innerHTML = `
-    <div class="avatar">AV</div>
+    <div class="avatar">
+      <img src="/assets/brand/Logo.jpeg" alt="AI" onerror="this.style.display='none';this.parentNode.textContent='F'" />
+    </div>
     <div class="bubble">
       <div class="typing-dots"><span></span><span></span><span></span></div>
     </div>`;
@@ -1119,22 +957,19 @@ function scrollToBottom() {
 }
 
 // ===================== ALTERNANCIA CHAT / ABAS =====================
-// showChat() — esconde conteúdo editorial, mostra o chat, marca Consulta Rápida como ativa
 function showChat() {
   document.getElementById('tab-panels-wrapper').style.display = 'none';
   document.getElementById('chat-zone').style.display = 'flex';
-  // marcar aba Consulta Rápida como ativa visualmente (primeira aba)
+  const tabs = ['consulta','recentes','vendas'];
   document.querySelectorAll('#tabs-nav .tab-btn').forEach((b, i) => {
     b.classList.toggle('active', i === 0);
   });
 }
 
-// showTab(name) — esconde chat, mostra conteúdo da aba, marca aba como ativa
 function showTab(name) {
   document.getElementById('chat-zone').style.display = 'none';
   document.getElementById('tab-panels-wrapper').style.display = 'block';
-  // alternar painéis internos
-  const tabs = ['consulta','recentes','avpoints','campanhas','vendas'];
+  const tabs = ['consulta','recentes','vendas'];
   document.querySelectorAll('#tabs-nav .tab-btn').forEach((b, i) => {
     b.classList.toggle('active', tabs[i] === name);
   });
@@ -1224,16 +1059,13 @@ function toggleTts(bubbleId) {
   const bubble = document.getElementById(bubbleId);
   if (!btn || !bubble) return;
 
-  // Se ja esta tocando este botao — parar
   if (ttsActiveBtnId === bubbleId && window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
     return;
   }
 
-  // Parar qualquer TTS ativo
   if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
 
-  // Extrair texto puro do bubble (sem markdown HTML)
   const text = bubble.innerText || bubble.textContent;
   if (!text.trim()) return;
 
@@ -1242,7 +1074,6 @@ function toggleTts(bubbleId) {
   ttsUtterance.rate = 1.0;
   ttsUtterance.pitch = 1.0;
 
-  // Tentar voz feminina pt-BR
   const voices = window.speechSynthesis.getVoices();
   const femPtBR = voices.find(v => v.lang === 'pt-BR' && /female|feminino|mulher/i.test(v.name))
     || voices.find(v => v.lang === 'pt-BR');
@@ -1306,12 +1137,12 @@ function toggleMic() {
 }
 
 // ===================== UPLOAD DE ARQUIVO =====================
-let attachedFile = null; // { type: 'text'|'image', name, content }
+let attachedFile = null;
 
 function handleFileSelect(event) {
   const file = event.target.files[0];
   if (!file) return;
-  event.target.value = ''; // limpar input para permitir re-selecao
+  event.target.value = '';
 
   const ext = file.name.split('.').pop().toLowerCase();
   const isImage = ['jpg', 'jpeg', 'png'].includes(ext);
@@ -1330,10 +1161,9 @@ function handleFileSelect(event) {
   previewName.textContent = file.name;
 
   if (isImage) {
-    // Ler como base64 para visao
     const reader = new FileReader();
     reader.onload = (e) => {
-      const b64 = e.target.result; // data:image/...;base64,...
+      const b64 = e.target.result;
       attachedFile = { type: 'image', name: file.name, content: b64 };
       previewIcon.style.display = 'none';
       previewImg.src = b64;
@@ -1342,16 +1172,12 @@ function handleFileSelect(event) {
     };
     reader.readAsDataURL(file);
   } else {
-    // PDF/DOCX — extrair texto via FileReader (PDF como text fallback)
-    // Para PDF e DOCX vamos ler como ArrayBuffer e extrair texto simples
     const reader = new FileReader();
     reader.onload = async (e) => {
       let text = '';
       if (ext === 'docx') {
-        // DOCX: extrair XML do arquivo zip e pegar texto das tags <w:t>
         try {
           const arr = new Uint8Array(e.target.result);
-          // Decodificar como string para buscar padroes (funciona para docx simples)
           const raw = new TextDecoder('utf-8', { fatal: false }).decode(arr);
           const matches = [...raw.matchAll(/<w:t[^>]*>([^<]+)<\/w:t>/g)];
           text = matches.map(m => m[1]).join(' ');
@@ -1360,11 +1186,9 @@ function handleFileSelect(event) {
           text = '[Erro ao ler DOCX]';
         }
       } else {
-        // PDF: decodificar como string e extrair texto visivel (heuristica)
         try {
           const arr = new Uint8Array(e.target.result);
           const raw = new TextDecoder('latin1', { fatal: false }).decode(arr);
-          // Extrair strings entre parenteses (formato PDF streams)
           const matches = [...raw.matchAll(/\(([^\)]{3,200})\)/g)];
           const candidates = matches.map(m => m[1])
             .filter(s => /[a-zA-ZÀ-ÿ]{3,}/.test(s))
@@ -1399,19 +1223,16 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text && !attachedFile) return;
 
-  // Mudar para o chat — esconder conteúdo editorial
   showChat();
 
-  // Montar mensagem com anexo se houver
   let fullMessage = text;
   let imageData = null;
   let attachName = attachedFile ? attachedFile.name : null;
   if (attachedFile) {
     if (attachedFile.type === 'image') {
-      imageData = attachedFile.content; // base64 data URL
+      imageData = attachedFile.content;
       if (!fullMessage) fullMessage = 'Analise esta imagem.';
     } else {
-      // Texto de documento — incluir no final da mensagem
       const docContext = `\n\n[Arquivo anexado: ${attachedFile.name}]\n${attachedFile.content}`;
       fullMessage = (fullMessage || 'Analise este documento.') + docContext;
     }
@@ -1427,10 +1248,8 @@ async function sendMessage() {
   conversationHistory.push({ role: 'user', content: fullMessage });
   saveRecente(text || fullMessage.slice(0, 60));
 
-  // Loading dots
   const loadingEl = appendLoadingDots();
 
-  // Streaming via SSE
   try {
     const body = JSON.stringify({
       message: fullMessage,
@@ -1453,16 +1272,16 @@ async function sendMessage() {
       throw new Error(`HTTP ${response.status}`);
     }
 
-    // Remover loading
     loadingEl.remove();
 
-    // Criar container da resposta
     const chatArea = document.getElementById('chat-area');
     const aiDiv = document.createElement('div');
     aiDiv.className = 'message ai';
     const bubbleId = 'bubble-' + Date.now();
     aiDiv.innerHTML = `
-      <div class="avatar">AV</div>
+      <div class="avatar">
+        <img src="/assets/brand/Logo.jpeg" alt="AI" onerror="this.style.display='none';this.parentNode.textContent='F'" />
+      </div>
       <div>
         <div class="bubble" id="${bubbleId}"><span class="cursor-blink"></span></div>
         <div class="source-tag" id="source-${bubbleId}" style="display:none"></div>
@@ -1475,7 +1294,6 @@ async function sendMessage() {
     let fullText = '';
     let sources = [];
 
-    // Ler SSE
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -1486,7 +1304,7 @@ async function sendMessage() {
       buffer += decoder.decode(value, { stream: true });
 
       const lines = buffer.split('\n');
-      buffer = lines.pop(); // Ultimo pedaco pode estar incompleto
+      buffer = lines.pop();
 
       for (const line of lines) {
         if (!line.startsWith('data: ')) continue;
@@ -1498,20 +1316,17 @@ async function sendMessage() {
 
         if (event.type === 'chunk') {
           fullText += event.content;
-          // Renderizar markdown progressivo com cursor
           bubble.innerHTML = marked.parse(fullText) + '<span class="cursor-blink"></span>';
           scrollToBottom();
         } else if (event.type === 'sources') {
           sources = event.sources || [];
           updateCounter(event.weekly_count || 0);
         } else if (event.type === 'done') {
-          // Remover cursor, renderizar markdown final
           bubble.innerHTML = marked.parse(fullText);
           if (sources.length) {
             sourceEl.textContent = sources.slice(0, 3).join(' · ');
             sourceEl.style.display = 'flex';
           }
-          // Adicionar botao TTS
           const innerDiv = bubble.closest('div:not(.message):not(.avatar)') || bubble.parentNode;
           if (innerDiv && !innerDiv.querySelector('.tts-btn')) {
             innerDiv.appendChild(buildTtsBtn(bubbleId));
@@ -1531,7 +1346,9 @@ async function sendMessage() {
     const errDiv = document.createElement('div');
     errDiv.className = 'message ai';
     errDiv.innerHTML = `
-      <div class="avatar">AV</div>
+      <div class="avatar">
+        <img src="/assets/brand/Logo.jpeg" alt="AI" onerror="this.style.display='none';this.parentNode.textContent='F'" />
+      </div>
       <div class="bubble"><em style="color:#c0392b">Erro de conexão. Tente novamente.</em></div>`;
     chatArea.appendChild(errDiv);
     console.error(err);
