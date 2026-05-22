@@ -390,6 +390,32 @@ async def dashboard_page():
     return HTMLResponse(content="<h1>Dashboard em construcao</h1>")
 
 
+@app.post("/api/reindex")
+async def reindex(request: Request):
+    """
+    Rebuilda o indice RAG lendo todos os PDFs de docs/.
+    Requer header X-Admin-Key com a senha admin.
+    """
+    admin_key = request.headers.get("X-Admin-Key", "")
+    expected = os.environ.get("ADMIN_KEY", "focusai-reindex-2024")
+    if admin_key != expected:
+        raise HTTPException(status_code=403, detail="Acesso negado.")
+
+    import threading
+
+    def run_reindex():
+        global _index
+        print("Iniciando reindexacao...")
+        from rag_engine import build_index
+        new_index = build_index()
+        _index = new_index
+        print(f"Reindexacao concluida: {len(new_index.chunks)} chunks")
+
+    t = threading.Thread(target=run_reindex, daemon=True)
+    t.start()
+    return {"status": "reindexacao iniciada", "message": "Processo rodando em background. Verifique os logs do Render."}
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
     print("Iniciando FOCUS AI v2.0 (Busca Hibrida + Streaming)...")
