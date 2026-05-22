@@ -1,6 +1,6 @@
 """
-AV Insurtech - Backend FastAPI v1.0
-API do chatbot para corretores — com streaming SSE
+FOCUS AI - Backend FastAPI v2.0
+API do chatbot para corretores de seguros — com streaming SSE
 """
 import os
 import time
@@ -70,7 +70,7 @@ def _track_interaction(pergunta: str, sources: list, response_time: float):
     sorted_q = sorted(_perguntas_map.values(), key=lambda x: x["count"], reverse=True)
     _metrics["top_perguntas"] = sorted_q[:20]
 
-app = FastAPI(title="AV Insurtech", description="IA para Seguradoras - AV Insurtech")
+app = FastAPI(title="FOCUS AI", description="IA para Corretores de Seguros - FOCUS AI")
 
 app.add_middleware(
     CORSMiddleware,
@@ -187,12 +187,12 @@ async def root():
     html_path = BASE_DIR / "static" / "index.html"
     if html_path.exists():
         return HTMLResponse(content=html_path.read_text(encoding='utf-8'))
-    return HTMLResponse(content="<h1>AV Insurtech</h1><p>IA para Seguradoras</p>")
+    return HTMLResponse(content="<h1>FOCUS AI</h1><p>IA para Corretores de Seguros</p>")
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "AV Insurtech", "version": "1.0.0"}
+    return {"status": "ok", "service": "FOCUS AI", "version": "2.0.0"}
 
 
 @app.post("/api/login")
@@ -302,16 +302,16 @@ async def get_counter(_auth=Depends(require_auth)):
 async def suggest_questions(_auth=Depends(require_auth)):
     return {
         "suggestions": [
-            "Quais os produtos disponíveis no Grupo Porto?",
-            "Compare a assistência 24h da Porto, Itaú, Azul e Mitsui",
+            "Quais coberturas estão incluídas no seguro auto?",
+            "Qual a diferença entre cobertura básica e ampla?",
             "O seguro viagem cobre cancelamento de voo?",
-            "Qual a diferença entre Auto Compacto e Auto Frota Compacto?",
-            "Como funciona o Projeto 15 Minutos da Porto?",
-            "O que cobre o seguro residencial da Porto?",
             "Quais são as exclusões para perda total?",
-            "Como funciona o seguro de vida Porto?",
+            "Como funciona o seguro de vida?",
+            "O que cobre o seguro residencial?",
             "O que é RC Profissional e quem precisa?",
-            "Quais as vantagens do Cartão Porto Bank?",
+            "Como funciona a assistência 24h para guincho?",
+            "O seguro cobre quando o condutor não é o proprietário?",
+            "Quais produtos cobrem equipamentos eletrônicos?",
         ]
     }
 
@@ -388,7 +388,7 @@ async def dashboard_page():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8001))
-    print("Iniciando AV Insurtech v1.0 (Busca Hibrida + Streaming)...")
+    print("Iniciando FOCUS AI v2.0 (Busca Hibrida + Streaming)...")
     print("Carregando base de conhecimento...")
     _index = get_index()
     print(f"Base carregada: {len(_index.chunks)} chunks")
