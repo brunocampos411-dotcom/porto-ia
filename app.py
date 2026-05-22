@@ -84,6 +84,10 @@ static_dir = BASE_DIR / "static"
 static_dir.mkdir(exist_ok=True)
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
+assets_dir = BASE_DIR / "assets"
+assets_dir.mkdir(exist_ok=True)
+app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
 _index: Optional[EmbeddingIndex] = None
 
 # ---- Credenciais de acesso ----
